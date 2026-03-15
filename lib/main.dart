@@ -69,17 +69,36 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 
-class GridListScreen extends StatelessWidget {
+class GridListScreen extends StatefulWidget {
+	@override
+	_GridListScreenState createState() => _GridListScreenState();
+}
+
+class _GridListScreenState extends State<GridListScreen> {
+	late Future<Map<String, dynamic>> _catalogFuture;
+
+	@override
+	void initState() {
+		super.initState();
+		_catalogFuture = libria.fetchCatalog();
+	}
+
+	Future<void> _refreshCatalog() async {
+		setState(() {
+			_catalogFuture = libria.fetchCatalog(); // Создаем новый Future
+		});
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		return FutureBuilder<Map<String, dynamic>>(
-			future: libria.fetchCatalog(), // Асинхронный запрос
+			future: _catalogFuture,
 			builder: (context, snapshot) {
 				// Проверка состояния загрузки
 				if (snapshot.connectionState == ConnectionState.waiting) {
 					return Center(child: CircularProgressIndicator());
 				}
-	  
+  
 				// Проверка на ошибки
 				if (snapshot.hasError) {
 					return Center(
@@ -91,85 +110,86 @@ class GridListScreen extends StatelessWidget {
 								Text('Ошибка загрузки: ${snapshot.error}'),
 								SizedBox(height: 16),
 								ElevatedButton(
-									onPressed: () {
-										// Перезагрузка через ключ или setState
-									},
+									onPressed: _refreshCatalog,
 									child: Text('Повторить'),
 								),
 							],
 						),
 					);
 				}
-		
+    
 				// Проверка наличия данных
 				if (!snapshot.hasData || snapshot.data!.isEmpty) {
 					return Center(
 						child: Text('Нет данных для отображения'),
 					);
 				}
-		
+    
 				// Отображение данных
 				final items = snapshot.data!['data'];
-				return GridView.builder(
-					padding: EdgeInsets.all(16),
-					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-						crossAxisCount: 2,
-						crossAxisSpacing: 16,
-						mainAxisSpacing: 16,
-						childAspectRatio: 0.6,
-					),
-					itemCount: items.length,
-					itemBuilder: (context, index) {
-						return Container(
-							decoration: BoxDecoration(
-								borderRadius: BorderRadius.circular(12),
-								color: Colors.black,
-								boxShadow: [
-									BoxShadow(
-										color: Colors.grey.withOpacity(0.2),
-										spreadRadius: 1,
-										blurRadius: 4,
-										offset: Offset(0, 2),
-									),
-								],
-							),
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								children: [
-									// Изображение фиксированной высоты
-									ClipRRect(
-										borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-										child: Image.network(
-											base_url + items[index]['poster']['optimized']['preview'],
-											height: 530, // Фиксированная высота изображения
-											width: double.infinity,
-											fit: BoxFit.cover,
-											errorBuilder: (context, error, stackTrace) {
-												return Container(
-													height: 530,
-													color: Colors.grey[300],
-													child: Center(child: Icon(Icons.broken_image)),
-												);
-											},
+				return RefreshIndicator(
+					onRefresh: _refreshCatalog,
+					child: GridView.builder(
+						padding: EdgeInsets.all(16),
+						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+							crossAxisCount: 2,
+							crossAxisSpacing: 16,
+							mainAxisSpacing: 16,
+							childAspectRatio: 0.55,
+						),
+						itemCount: items.length,
+						itemBuilder: (context, index) {
+							return Container(
+								decoration: BoxDecoration(
+									borderRadius: BorderRadius.circular(12),
+									color: Colors.black,
+									boxShadow: [
+										BoxShadow(
+											color: Colors.grey.withOpacity(0.2),
+											spreadRadius: 1,
+											blurRadius: 4,
+											offset: Offset(0, 2),
 										),
-									),
-									// Заголовок
-									Padding(
-										padding: EdgeInsets.all(12),
-										child: Text(
-											items[index]['name']['main'],
-											style: TextStyle(
-												fontSize: 16,
-												fontWeight: FontWeight.w600,
+									],
+								),
+								child: Column(
+									crossAxisAlignment: CrossAxisAlignment.start,
+									children: [
+										AspectRatio(
+											aspectRatio: 0.7,
+											child: ClipRRect(
+												borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+												child: Image.network(
+													base_url + items[index]['poster']['optimized']['preview'],
+													width: double.infinity,
+													fit: BoxFit.cover,
+													errorBuilder: (context, error, stackTrace) {
+														return Container(
+															color: Colors.grey[300],
+															child: Center(child: Icon(Icons.broken_image)),
+														);
+													},
+												),
 											),
-											maxLines: 2,
-											overflow: TextOverflow.ellipsis,
 										),
-									),
-								],
-							),
-						);
-					},
+										// Заголовок
+										Padding(
+											padding: EdgeInsets.all(12),
+											child: Text(
+												items[index]['name']['main'],
+												style: TextStyle(
+													fontSize: 12,
+													fontWeight: FontWeight.w600,
+												),
+												maxLines: 2,
+												overflow: TextOverflow.ellipsis,
+											),
+										),
+									],
+								),
+							);
+						},
+					),
 				);
 			},
 		);
