@@ -19,7 +19,7 @@ class Anilibria {
 	Future<Map<String, dynamic>> fetchCatalog() async {
 		final response = await this._dio.get(
 			'/anime/catalog/releases',
-			queryParameters: { 'limit': 10 },
+			queryParameters: { 'limit': 25 },
 		);
 
 		return response.data;

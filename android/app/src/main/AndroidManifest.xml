@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
     <application
         android:label="libria"
         android:name="${applicationName}"
@@ -41,5 +45,9 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+		<intent>
+			<action android:name="android.intent.actiom.VIEW"/>
+			<data android:scheme="https"/>
+		</intent>
     </queries>
 </manifest>

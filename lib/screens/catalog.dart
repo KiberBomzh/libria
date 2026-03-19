@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:libria/main.dart';
+import 'package:libria/screens/title.dart';
 
 
 class Catalog extends StatefulWidget {
@@ -117,7 +119,11 @@ class _CatalogState extends State<Catalog> {
 					titleCoverUrl: img_url,
 					titleName: name,
 					onTap: () {
-						// TODO
+						Navigator.push(context,
+							MaterialPageRoute(
+								builder: (context) => TitleEpisodes(titleId: _catalogResponse['data'][index]['id']),
+							),
+						);
 					}
 				);
 			}
@@ -169,7 +175,7 @@ class CatalogGridItem extends StatelessWidget {
 					children: [
 						// Cover
 						Expanded(
-							flex: 9,
+							flex: 16,
 							child: Container(
 								width: double.infinity,
 								child: Image.network( titleCoverUrl,
@@ -203,7 +209,7 @@ class CatalogGridItem extends StatelessWidget {
 
 						// Title
 						Expanded(
-							flex: 2,
+							flex: 4,
 							child: Container(
 								padding: const EdgeInsets.all(8),
 								child: Text( titleName,
