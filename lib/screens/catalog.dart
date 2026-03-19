@@ -67,7 +67,7 @@ class _CatalogState extends State<Catalog> {
 			);
 		}
 
-		if (_isError && _catalogResponse.isEmpty) {
+		if (_isError) {
 			return Center(
 				child: Column(
 					mainAxisAlignment: MainAxisAlignment.center,
@@ -158,6 +158,7 @@ class CatalogGridItem extends StatelessWidget {
 		return GestureDetector(
 			onTap: onTap,
 			child: Card(
+				color: Colors.grey[900],
 				elevation: 4,
 				clipBehavior: Clip.antiAlias,
 				shape: RoundedRectangleBorder(
@@ -168,7 +169,7 @@ class CatalogGridItem extends StatelessWidget {
 					children: [
 						// Cover
 						Expanded(
-							flex: 5,
+							flex: 9,
 							child: Container(
 								width: double.infinity,
 								child: Image.network( titleCoverUrl,
@@ -202,7 +203,7 @@ class CatalogGridItem extends StatelessWidget {
 
 						// Title
 						Expanded(
-							flex: 1,
+							flex: 2,
 							child: Container(
 								padding: const EdgeInsets.all(8),
 								child: Text( titleName,
