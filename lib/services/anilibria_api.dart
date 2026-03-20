@@ -16,10 +16,13 @@ class Anilibria {
 		));
 	
 
-	Future<Map<String, dynamic>> fetchCatalog() async {
+	Future<Map<String, dynamic>> fetchCatalog(String? query) async {
 		final response = await this._dio.get(
 			'/anime/catalog/releases',
-			queryParameters: { 'limit': 25 },
+			queryParameters: {
+				'limit': 25,
+				'f[search]': query,
+			},
 		);
 
 		return response.data;

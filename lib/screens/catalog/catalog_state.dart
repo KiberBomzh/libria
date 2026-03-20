@@ -16,14 +16,14 @@ class _CatalogState extends State<Catalog> {
 	}
 
 
-	Future<void> _loadTitles() async {
+	Future<void> _loadTitles({String? query = null}) async {
 		setState(() {
 			_isLoading = true;
 			_isError = false;
 		});
 
 		try {
-			final resp = await libria.fetchCatalog();
+			final resp = await libria.fetchCatalog(query);
 			setState(() {
 				_catalogResponse = resp;
 				_isLoading = false;
@@ -38,6 +38,11 @@ class _CatalogState extends State<Catalog> {
 		}
 	}
 
+	void _openSearchDialog() async {
+		final q = await SearchDialog.show(context);
+		_loadTitles(query: q);
+	}
+
 
 
 	@override
@@ -46,6 +51,13 @@ class _CatalogState extends State<Catalog> {
 			appBar: AppBar(
 				title: const Text('Каталог'),
 				centerTitle: true,
+				actions: [
+					IconButton(
+						icon: const Icon(Icons.search),
+						onPressed: _openSearchDialog,
+						tooltip: 'Поиск',
+					),
+				],
 			),
 			body: _buildBody(context),
 		);
