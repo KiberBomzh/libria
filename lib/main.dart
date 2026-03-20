@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:libria/services/anilibria_api.dart';
-import 'package:libria/screens/catalog.dart';
+import 'package:libria/screens/catalog/catalog.dart';
 
 
 void main() {
@@ -21,9 +21,10 @@ class MyApp extends StatelessWidget {
 		return MaterialApp(
 			title: 'Libria',
 			theme: ThemeData(
-				colorScheme: ColorScheme.dark(
-					primary: Colors.blue,
-					secondary: Colors.yellow,
+				useMaterial3: true,
+				colorScheme: ColorScheme.fromSeed(
+					seedColor: Colors.blue,
+					brightness: Brightness.dark,
 				),
 			),
 			home: Catalog(),
