@@ -14,13 +14,6 @@ class SearchDialog {
 					shape: RoundedRectangleBorder(
 						borderRadius: BorderRadius.circular(20),
 					),
-					title: Row(
-						children: [
-							Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
-							const SizedBox(width: 8),
-							const Text('Поиск'),
-						],
-					),
 					content: TextField(
 						controller: controller,
 						autofocus: true,
