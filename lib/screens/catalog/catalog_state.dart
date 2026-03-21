@@ -40,7 +40,9 @@ class _CatalogState extends State<Catalog> {
 
 	void _openSearchDialog() async {
 		final q = await SearchDialog.show(context);
-		_loadTitles(query: q);
+		if (q != null) {
+			_loadTitles(query: q);
+		}
 	}
 
 
