@@ -45,6 +45,13 @@ class _TitleState extends State<TitleEpisodes> {
 				centerTitle: true,
 			),
 			body: _buildBody(),
+			floatingActionButton: Container(
+				margin: EdgeInsets.only(
+					bottom: 20,
+					right: 20,
+				),
+				child: _buildFAB(),
+			),
 		);
 	}
 
@@ -79,10 +86,28 @@ class _TitleState extends State<TitleEpisodes> {
 
 
 
-		return _buildMain();
+		return Text('Всё хуйня');
 	}
 
-	Widget _buildMain() {
-		return EpisodesList(episodes: _titleResponse['episodes']);
+	Widget _buildFAB() {
+		double screenHeight = MediaQuery.of(context).size.height;
+
+		return FloatingActionButton(
+			child: const Icon(Icons.play_arrow),
+			onPressed: () {
+				showModalBottomSheet<void>(
+					context: context,
+					builder: (BuildContext context) {
+						return Container(
+							height: screenHeight * 0.5,
+							margin: EdgeInsets.all(20),
+							child: Center(
+								child: EpisodesList(episodes: _titleResponse['episodes']),
+							),
+						);
+					},
+				);
+			},
+		);
 	}
 }

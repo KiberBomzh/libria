@@ -19,13 +19,13 @@ class EpisodeListItem extends StatelessWidget {
 	Widget build(BuildContext context) {
 		return Container(
 			decoration: BoxDecoration(
-				border: Border(
-					bottom: BorderSide(
-						color: Colors.grey.withOpacity(0.1),
-						width: 1.5,
-					),
+				border: Border.all(
+					width: 2,
+					color: Theme.of(context).colorScheme.primary,
 				),
+				borderRadius: BorderRadius.circular(12),
 			),
+			margin: const EdgeInsets.symmetric(vertical: 5),
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(

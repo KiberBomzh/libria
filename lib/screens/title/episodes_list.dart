@@ -12,7 +12,7 @@ class EpisodesList extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		return ListView.builder(
-			padding: const EdgeInsets.all(8),
+			// padding: const EdgeInsets.symmetric(horizontal: 20),
 			itemCount: episodes.length,
 			itemBuilder: (context, index) {
 				return EpisodeListItem(
