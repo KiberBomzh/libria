@@ -86,7 +86,17 @@ class _TitleState extends State<TitleEpisodes> {
 
 
 
-		return Text('Всё хуйня');
+		// TODO сделать нормальную поддержку широких экранов
+		return SingleChildScrollView(
+			child: TitleDetails(
+				nameRu: _titleResponse['name']['main'],
+				nameEn: _titleResponse['name']['english'],
+				coverImageUrl: base_url + _titleResponse['poster']['optimized']['src'],
+				description: _titleResponse['description'],
+				type: _titleResponse['type']['value'],
+				episodesTotal: _titleResponse['episodes_total'].toString(),
+			),
+		);
 	}
 
 	Widget _buildFAB() {
@@ -100,7 +110,6 @@ class _TitleState extends State<TitleEpisodes> {
 					builder: (BuildContext context) {
 						return Container(
 							height: screenHeight * 0.5,
-							margin: EdgeInsets.all(20),
 							child: Center(
 								child: EpisodesList(episodes: _titleResponse['episodes']),
 							),

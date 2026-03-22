@@ -25,7 +25,7 @@ class EpisodeListItem extends StatelessWidget {
 				),
 				borderRadius: BorderRadius.circular(12),
 			),
-			margin: const EdgeInsets.symmetric(vertical: 5),
+			margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(
