@@ -7,6 +7,7 @@ import 'package:libria/main.dart';
 
 part 'title_state.dart';
 part 'list_item.dart';
+part 'episodes_list.dart';
 
 
 class TitleEpisodes extends StatefulWidget {

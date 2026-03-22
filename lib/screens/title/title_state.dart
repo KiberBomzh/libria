@@ -83,30 +83,6 @@ class _TitleState extends State<TitleEpisodes> {
 	}
 
 	Widget _buildMain() {
-		return ListView.builder(
-			padding: const EdgeInsets.all(8),
-			itemCount: _titleResponse['episodes'].length,
-			itemBuilder: (context, index) {
-				return EpisodeListItem(
-					ordinal: _titleResponse['episodes'][index]['ordinal'],
-					name: _titleResponse['episodes'][index]['name'],
-					onTap: () {
-						if (Platform.isAndroid) {
-							final intent = AndroidIntent(
-								action: 'android.intent.action.VIEW',
-								data: _titleResponse['episodes'][index]['hls_720'],
-								type: 'video/mp4',
-							);
-							intent.launch();
-						} else {
-							Process.run('mpv', [
-								'--save-position-on-quit',
-								_titleResponse['episodes'][index]['hls_720'],
-							]);
-						}
-					},
-				);
-			}
-		);
+		return EpisodesList(episodes: _titleResponse['episodes']);
 	}
 }
