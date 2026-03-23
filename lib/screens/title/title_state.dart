@@ -45,13 +45,15 @@ class _TitleState extends State<TitleScreen> {
 				centerTitle: true,
 			),
 			body: _buildBody(),
-			floatingActionButton: Container(
-				margin: EdgeInsets.only(
-					bottom: 20,
-					right: 20,
+			floatingActionButton: (_isWideScreen(MediaQuery.of(context).size.width))
+				? Container()
+				: Container(
+					margin: EdgeInsets.only(
+						bottom: 20,
+						right: 20,
+					),
+					child: _buildFAB(),
 				),
-				child: _buildFAB(),
-			),
 		);
 	}
 
@@ -85,8 +87,38 @@ class _TitleState extends State<TitleScreen> {
 		}
 
 
+		if (_isWideScreen(MediaQuery.of(context).size.width)) {
+			return Row(
+				crossAxisAlignment: CrossAxisAlignment.start,
+				children: [
+					Expanded(
+						flex: 5,
+						child: _buildTitleDetails(),
+					),
 
-		// TODO сделать нормальную поддержку широких экранов
+					Expanded(
+						flex: 5,
+						child: Container(
+							margin: const EdgeInsets.only(bottom: 5, right: 5),
+							decoration: BoxDecoration(
+								border: Border.all(
+									width: 2,
+									color: Theme.of(context).colorScheme.secondary,
+								),
+								borderRadius: BorderRadius.circular(12),
+								color: Colors.grey[900],
+							),
+							child: EpisodesList(episodes: _titleResponse['episodes']),
+						),
+					),
+				],
+			);
+		}
+
+		return _buildTitleDetails();
+	}
+
+	Widget _buildTitleDetails() {
 		return SingleChildScrollView(
 			child: TitleDetails(
 				nameRu: _titleResponse['name']['main'],
@@ -123,5 +155,15 @@ class _TitleState extends State<TitleScreen> {
 				}
 			},
 		);
+	}
+
+
+
+	bool _isWideScreen(double screenWidth) {
+		if (screenWidth > 800) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

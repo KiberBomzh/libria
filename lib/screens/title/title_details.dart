@@ -39,7 +39,7 @@ class TitleDetails extends StatelessWidget {
 							borderRadius: BorderRadius.circular(12),
 						),
 						child: ReadMoreText(description,
-							trimLines: 5,
+							trimLines: 10,
 							style: Theme.of(context).textTheme.bodyLarge,
 							colorClickableText: Theme.of(context).colorScheme.primary,
 							trimMode: TrimMode.Line,
