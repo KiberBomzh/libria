@@ -104,19 +104,23 @@ class _TitleState extends State<TitleScreen> {
 		return FloatingActionButton(
 			child: const Icon(Icons.play_arrow),
 			onPressed: () {
-				showModalBottomSheet(
-					context: context,
-					isScrollControlled: true,
-					builder: (context) => DraggableScrollableSheet(
-						initialChildSize: 0.8,
-						expand: false,
-						builder: (context, scrollController) => Container(
-							child: Center(
-								child: EpisodesList(episodes: _titleResponse['episodes']),
+				if (_titleResponse['type']['value'] == 'MOVIE') {
+					play(_titleResponse['episodes'][0][DEFAULT_VIDEO_QUALITY]);
+				} else {
+					showModalBottomSheet(
+						context: context,
+						isScrollControlled: true,
+						builder: (context) => DraggableScrollableSheet(
+							initialChildSize: 0.8,
+							expand: false,
+							builder: (context, scrollController) => Container(
+								child: Center(
+									child: EpisodesList(episodes: _titleResponse['episodes']),
+								),
 							),
 						),
-					),
-				);
+					);
+				}
 			},
 		);
 	}

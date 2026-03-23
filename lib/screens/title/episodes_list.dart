@@ -18,21 +18,7 @@ class EpisodesList extends StatelessWidget {
 				return EpisodeListItem(
 					ordinal: episodes[index]['ordinal'].toString(),
 					name: episodes[index]['name'],
-					onTap: () {
-						if (Platform.isAndroid) {
-							final intent = AndroidIntent(
-								action: 'android.intent.action.VIEW',
-								data: episodes[index]['hls_720'],
-								type: 'video/mp4',
-							);
-							intent.launch();
-						} else {
-							Process.run('mpv', [
-								'--save-position-on-quit',
-								episodes[index]['hls_720'],
-							]);
-						}
-					},
+					onTap: () => play(episodes[index][DEFAULT_VIDEO_QUALITY]),
 				);
 			}
 		);
