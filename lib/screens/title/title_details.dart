@@ -143,11 +143,14 @@ class TitleDetails extends StatelessWidget {
 				children: [
 					Text(description,
 						overflow: TextOverflow.ellipsis,
-						maxLines: 2,
+						maxLines: 1,
 						style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
 					),
 					const SizedBox(height: 1),
-					Text(value),
+					Text(value,
+						overflow: TextOverflow.ellipsis,
+						maxLines: 2,
+					),
 				],
 			),
 		);
