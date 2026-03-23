@@ -55,7 +55,9 @@ class _CatalogState extends State<Catalog> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: const Text('Каталог'),
+				title: Text(
+					(widget.searchQuery == null) ? 'Каталог' : widget.searchQuery!
+				),
 				centerTitle: true,
 				actions: [
 					IconButton(
