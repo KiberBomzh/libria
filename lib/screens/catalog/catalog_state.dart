@@ -99,6 +99,25 @@ class _CatalogState extends State<Catalog> {
 			);
 		}
 
+		if (_catalogResponse['data'].isEmpty) {
+			return Center(
+				child: Column(
+					mainAxisAlignment: MainAxisAlignment.center,
+					children: [
+						Icon( Icons.info,
+							size: 60,
+						),
+						const SizedBox(height: 16),
+
+						Text('Ничего не найдено',
+							style: Theme.of(context).textTheme.titleLarge,
+						),
+						const SizedBox(height: 60),
+					],
+				),
+			);
+		}
+
 
 		// Main
 		return RefreshIndicator(
