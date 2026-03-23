@@ -16,7 +16,7 @@ class EpisodesList extends StatelessWidget {
 			itemCount: episodes.length,
 			itemBuilder: (context, index) {
 				return EpisodeListItem(
-					ordinal: episodes[index]['ordinal'],
+					ordinal: episodes[index]['ordinal'].toString(),
 					name: episodes[index]['name'],
 					onTap: () {
 						if (Platform.isAndroid) {

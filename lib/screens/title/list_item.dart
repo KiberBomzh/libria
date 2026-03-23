@@ -4,7 +4,7 @@ part of 'title.dart';
 class EpisodeListItem extends StatelessWidget {
 	final VoidCallback onTap;
 
-	final int ordinal;
+	final String ordinal;
 	final String? name;
 	
 	const EpisodeListItem({
@@ -51,7 +51,7 @@ class EpisodeListItem extends StatelessWidget {
 										),
 									),
 									child: Center(
-										child: Text(ordinal.toString()),
+										child: Text(ordinal),
 									),
 								),
 
