@@ -14,8 +14,6 @@ void main() {
 var base_url = 'https://anilibria.top';
 var libria = Anilibria(base_url + '/api/v1');
 
-const String DEFAULT_VIDEO_QUALITY = 'hls_720';
-
 
 
 
@@ -39,7 +37,8 @@ class MyApp extends StatelessWidget {
 }
 
 
-void play(String link) {
+void play({required String? hls_480, required String? hls_720, required String? hls_1080}) {
+	var link = hls_720!;
 	if (Platform.isAndroid) {
 		final intent = AndroidIntent(
 			action: 'android.intent.action.VIEW',

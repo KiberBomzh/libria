@@ -18,7 +18,11 @@ class EpisodesList extends StatelessWidget {
 				return EpisodeListItem(
 					ordinal: episodes[index]['ordinal'].toString(),
 					name: episodes[index]['name'],
-					onTap: () => play(episodes[index][DEFAULT_VIDEO_QUALITY]),
+					onTap: () => play(
+						hls_480: episodes[index]['hls_480'],
+						hls_720: episodes[index]['hls_720'],
+						hls_1080: episodes[index]['hls_1080']
+					),
 				);
 			}
 		);
