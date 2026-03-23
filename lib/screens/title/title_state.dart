@@ -94,7 +94,8 @@ class _TitleState extends State<TitleEpisodes> {
 				coverImageUrl: base_url + _titleResponse['poster']['optimized']['src'],
 				description: _titleResponse['description'],
 				type: _titleResponse['type']['value'],
-				episodesTotal: _titleResponse['episodes_total'].toString(),
+				episodesTotal: (_titleResponse['episodes_total'] != null) ?
+					_titleResponse['episodes_total'].toString() : null
 			),
 		);
 	}

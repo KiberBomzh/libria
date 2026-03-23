@@ -2,12 +2,12 @@ part of 'title.dart';
 
 
 class TitleDetails extends StatelessWidget {
-	final String nameRu;
-	final String nameEn;
+	final String? nameRu;
+	final String? nameEn;
 	final String coverImageUrl;
 	final String description;
-	final String type;
-	final String episodesTotal;
+	final String? type;
+	final String? episodesTotal;
 
 	TitleDetails({
 		Key? key,
@@ -99,80 +99,52 @@ class TitleDetails extends StatelessWidget {
 					child: Column(
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
-							Container(
-								margin: const EdgeInsets.only(top: 5, bottom: 1),
-								child: Text('Название на русском',
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-								),
+							_buildHeadInfoContainer(context,
+								description: 'Название на русском',
+								value: nameRu
 							),
 
-							Container(
-								margin: const EdgeInsets.only(bottom: 5),
-								child: Text(nameRu,
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: TextStyle(
-										fontWeight: FontWeight.bold,
-									),
-								),
+							_buildHeadInfoContainer(context,
+								description: 'Название на английском',
+								value: nameEn
 							),
 
-
-							Container(
-								margin: const EdgeInsets.only(top: 5, bottom: 1),
-								child: Text('Название на английском',
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-								),
+							_buildHeadInfoContainer(context,
+								description: 'Тип',
+								value: type
 							),
 
-							Container(
-								margin: const EdgeInsets.only(bottom: 5),
-								child: Text(nameEn,
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: TextStyle(
-										color: Colors.grey[300],
-									),
-								),
-							),
-
-
-							Container(
-								margin: const EdgeInsets.only(top: 5, bottom: 1),
-								child: Text('Тип',
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-								),
-							),
-
-							Container(
-								margin: const EdgeInsets.only(bottom: 5),
-								child: Text(type),
-							),
-
-
-							Container(
-								margin: const EdgeInsets.only(top: 5, bottom: 1),
-								child: Text('Эпизодов всего',
-									overflow: TextOverflow.ellipsis,
-									maxLines: 2,
-									style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-								),
-							),
-
-							Container(
-								margin: const EdgeInsets.only(bottom: 5),
-								child: Text(episodesTotal),
+							_buildHeadInfoContainer(context,
+								description: 'Эпизодов всего',
+								value: episodesTotal
 							),
 						],
 					),
 				),
 			],
+		);
+	}
+
+
+	Widget _buildHeadInfoContainer(BuildContext context, {required String description, required String? value}) {
+		if (value == null) {
+			return Container(margin: const EdgeInsets.symmetric(vertical: 5));
+		}
+
+		return Container(
+			margin: const EdgeInsets.symmetric(vertical: 5),
+			child: Column(
+				crossAxisAlignment: CrossAxisAlignment.start,
+				children: [
+					Text(description,
+						overflow: TextOverflow.ellipsis,
+						maxLines: 2,
+						style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
+					),
+					const SizedBox(height: 1),
+					Text(value),
+				],
+			),
 		);
 	}
 }
