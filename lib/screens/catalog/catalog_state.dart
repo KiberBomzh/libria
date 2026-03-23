@@ -16,14 +16,14 @@ class _CatalogState extends State<Catalog> {
 	}
 
 
-	Future<void> _loadTitles({String? query = null}) async {
+	Future<void> _loadTitles() async {
 		setState(() {
 			_isLoading = true;
 			_isError = false;
 		});
 
 		try {
-			final resp = await libria.fetchCatalog(query);
+			final resp = await libria.fetchCatalog(widget.searchQuery);
 			setState(() {
 				_catalogResponse = resp;
 				_isLoading = false;
@@ -40,8 +40,12 @@ class _CatalogState extends State<Catalog> {
 
 	void _openSearchDialog() async {
 		final q = await SearchDialog.show(context);
-		if (q != null) {
-			_loadTitles(query: q);
+		if (q != null && q.isNotEmpty) {
+			Navigator.push(context,
+				MaterialPageRoute(
+					builder: (context) => Catalog(searchQuery: q),
+				),
+			);
 		}
 	}
 
@@ -124,7 +128,7 @@ class _CatalogState extends State<Catalog> {
 					onTap: () {
 						Navigator.push(context,
 							MaterialPageRoute(
-								builder: (context) => TitleEpisodes(titleId: _catalogResponse['data'][index]['id']),
+								builder: (context) => TitleScreen(titleId: _catalogResponse['data'][index]['id']),
 							),
 						);
 					}

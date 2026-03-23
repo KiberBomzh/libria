@@ -9,7 +9,9 @@ part 'search_dialog.dart';
 
 
 class Catalog extends StatefulWidget {
-	Catalog({super.key});
+	String? searchQuery;
+
+	Catalog({super.key, this.searchQuery});
 
 	@override
 	State<Catalog> createState() => _CatalogState();

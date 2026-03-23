@@ -1,7 +1,7 @@
 part of 'title.dart';
 
 
-class _TitleState extends State<TitleEpisodes> {
+class _TitleState extends State<TitleScreen> {
 	Map<String, dynamic> _titleResponse = {};
 	bool _isLoading = false;
 	bool _isError = false;

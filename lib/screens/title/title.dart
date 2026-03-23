@@ -11,15 +11,15 @@ part 'list_item.dart';
 part 'episodes_list.dart';
 
 
-class TitleEpisodes extends StatefulWidget {
+class TitleScreen extends StatefulWidget {
 	int titleId;
 
-	TitleEpisodes({
+	TitleScreen({
 		Key? key,
 		required this.titleId,
 	}) : super(key: key);
 
 
 	@override
-	State<TitleEpisodes> createState() => _TitleState();
+	State<TitleScreen> createState() => _TitleState();
 }
