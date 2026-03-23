@@ -100,21 +100,21 @@ class _TitleState extends State<TitleEpisodes> {
 	}
 
 	Widget _buildFAB() {
-		double screenHeight = MediaQuery.of(context).size.height;
-
 		return FloatingActionButton(
 			child: const Icon(Icons.play_arrow),
 			onPressed: () {
-				showModalBottomSheet<void>(
+				showModalBottomSheet(
 					context: context,
-					builder: (BuildContext context) {
-						return Container(
-							height: screenHeight * 0.5,
+					isScrollControlled: true,
+					builder: (context) => DraggableScrollableSheet(
+						initialChildSize: 0.8,
+						expand: false,
+						builder: (context, scrollController) => Container(
 							child: Center(
 								child: EpisodesList(episodes: _titleResponse['episodes']),
 							),
-						);
-					},
+						),
+					),
 				);
 			},
 		);
