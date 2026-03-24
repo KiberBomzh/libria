@@ -118,15 +118,24 @@ class _TitleState extends State<TitleScreen> {
 	}
 
 	Widget _buildTitleDetails() {
-		return SingleChildScrollView(
-			child: TitleDetails(
-				nameRu: _titleResponse['name']['main'],
-				nameEn: _titleResponse['name']['english'],
-				coverImageUrl: base_url + _titleResponse['poster']['optimized']['src'],
-				description: _titleResponse['description'],
-				type: _titleResponse['type']['description'],
-				episodesTotal: (_titleResponse['episodes_total'] != null) ?
-					_titleResponse['episodes_total'].toString() : null
+		ScrollController scrollController = ScrollController();
+
+		return Scrollbar(
+			interactive: true,
+			thickness: 4.0,
+			radius: const Radius.circular(12),
+			controller: scrollController,
+			child: SingleChildScrollView(
+				controller: scrollController,
+				child: TitleDetails(
+					nameRu: _titleResponse['name']['main'],
+					nameEn: _titleResponse['name']['english'],
+					coverImageUrl: base_url + _titleResponse['poster']['optimized']['src'],
+					description: _titleResponse['description'],
+					type: _titleResponse['type']['description'],
+					episodesTotal: (_titleResponse['episodes_total'] != null) ?
+						_titleResponse['episodes_total'].toString() : null
+				),
 			),
 		);
 	}

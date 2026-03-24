@@ -43,12 +43,12 @@ class EpisodeListItem extends StatelessWidget {
 									width: 36,
 									height: 36,
 									decoration: BoxDecoration(
-										shape: BoxShape.circle,
 										color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
 										border: Border.all(
 											color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
 											width: 2,
 										),
+										borderRadius: BorderRadius.circular(12),
 									),
 									child: Center(
 										child: Text(ordinal),
