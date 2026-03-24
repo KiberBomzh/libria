@@ -13,12 +13,14 @@ class EpisodesList extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
+		ScrollController scrollController = (controller == null) ? ScrollController() : controller!;
+
 		return Scrollbar(
 			thumbVisibility: true,
 			interactive: true,
-			controller: (controller == null) ? ScrollController() : controller,
+			controller: scrollController,
 			child: ListView.builder(
-				controller: controller,
+				controller: scrollController,
 				padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
 				itemCount: episodes.length,
 				itemBuilder: (context, index) {

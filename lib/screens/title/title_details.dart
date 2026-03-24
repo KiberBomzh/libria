@@ -33,10 +33,15 @@ class TitleDetails extends StatelessWidget {
 					// Описание
 					Container(
 						margin: const EdgeInsets.only(top: 20),
-						padding: const EdgeInsets.all(8),
+						padding: const EdgeInsets.all(12),
 						decoration: BoxDecoration(
 							color: Theme.of(context).colorScheme.surfaceContainer,
+							border: Border.all(
+								width: 1,
+								color: Theme.of(context).colorScheme.secondary,
+							),
 							borderRadius: BorderRadius.circular(12),
+							//border
 						),
 						child: ReadMoreText(description,
 							trimLines: 10,
