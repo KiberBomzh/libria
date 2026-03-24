@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 import 'package:libria/main.dart';
+import 'package:libria/functions/play.dart';
 
 part 'title_state.dart';
 part 'title_details.dart';

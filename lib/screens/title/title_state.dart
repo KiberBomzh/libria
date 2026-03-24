@@ -145,7 +145,7 @@ class _TitleState extends State<TitleScreen> {
 			child: const Icon(Icons.play_arrow),
 			onPressed: () {
 				if (_titleResponse['type']['value'] == 'MOVIE') {
-					play(
+					play(context,
 						hls_480: _titleResponse['episodes'][0]['hls_480'],
 						hls_720: _titleResponse['episodes'][0]['hls_720'],
 						hls_1080: _titleResponse['episodes'][0]['hls_1080'],

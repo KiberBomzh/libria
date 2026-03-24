@@ -28,7 +28,7 @@ class EpisodesList extends StatelessWidget {
 					return EpisodeListItem(
 						ordinal: episodes[index]['ordinal'].toString(),
 						name: episodes[index]['name'],
-						onTap: () => play(
+						onTap: () => play(context,
 							hls_480: episodes[index]['hls_480'],
 							hls_720: episodes[index]['hls_720'],
 							hls_1080: episodes[index]['hls_1080']

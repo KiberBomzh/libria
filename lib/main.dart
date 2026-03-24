@@ -1,10 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:libria/services/anilibria_api.dart';
 import 'package:libria/screens/catalog/catalog.dart';
-
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 
 void main() {
@@ -41,23 +37,5 @@ class MyApp extends StatelessWidget {
 			themeMode: ThemeMode.system,
 			home: Catalog(),
 		);
-	}
-}
-
-
-void play({required String? hls_480, required String? hls_720, required String? hls_1080}) {
-	var link = hls_720!;
-	if (Platform.isAndroid) {
-		final intent = AndroidIntent(
-			action: 'android.intent.action.VIEW',
-			data: link,
-			type: 'video/mp4',
-		);
-		intent.launch();
-	} else {
-		Process.run('mpv', [
-			'--save-position-on-quit',
-			link,
-		]);
 	}
 }
