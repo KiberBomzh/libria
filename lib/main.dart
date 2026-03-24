@@ -26,11 +26,13 @@ class MyApp extends StatelessWidget {
 			title: 'Libria',
 			theme: ThemeData(
 				useMaterial3: true,
-				colorScheme: ColorScheme.fromSeed(
-					seedColor: Colors.blue,
-					brightness: Brightness.dark,
-				),
+				brightness: Brightness.light,
 			),
+			darkTheme: ThemeData(
+				useMaterial3: true,
+				brightness: Brightness.dark,
+			),
+			themeMode: ThemeMode.system,
 			home: Catalog(),
 		);
 	}

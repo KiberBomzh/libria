@@ -18,7 +18,7 @@ class CatalogGridItem extends StatelessWidget {
 		return GestureDetector(
 			onTap: onTap,
 			child: Card(
-				color: Colors.grey[900],
+				color: Theme.of(context).colorScheme.surfaceContainer,
 				elevation: 4,
 				clipBehavior: Clip.antiAlias,
 				shape: RoundedRectangleBorder(

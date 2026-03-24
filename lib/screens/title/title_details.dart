@@ -35,7 +35,7 @@ class TitleDetails extends StatelessWidget {
 						margin: const EdgeInsets.only(top: 20),
 						padding: const EdgeInsets.all(8),
 						decoration: BoxDecoration(
-							color: Colors.grey[900],
+							color: Theme.of(context).colorScheme.surfaceContainer,
 							borderRadius: BorderRadius.circular(12),
 						),
 						child: ReadMoreText(description,

@@ -105,7 +105,7 @@ class _TitleState extends State<TitleScreen> {
 									color: Theme.of(context).colorScheme.secondary,
 								),
 								borderRadius: BorderRadius.circular(12),
-								color: Colors.grey[900],
+								color: Theme.of(context).colorScheme.surfaceContainer,
 							),
 							child: EpisodesList(episodes: _titleResponse['episodes']),
 						),
