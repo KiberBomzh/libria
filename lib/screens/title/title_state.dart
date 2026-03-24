@@ -142,21 +142,58 @@ class _TitleState extends State<TitleScreen> {
 						hls_1080: _titleResponse['episodes'][0]['hls_1080'],
 					);
 				} else {
-					showModalBottomSheet(
-						context: context,
-						isScrollControlled: true,
-						builder: (context) => DraggableScrollableSheet(
-							initialChildSize: 0.8,
-							expand: false,
-							builder: (context, scrollController) => Container(
-								child: Center(
-									child: EpisodesList(episodes: _titleResponse['episodes']),
-								),
-							),
-						),
-					);
+					_buildBottomSheet();
 				}
 			},
+		);
+	}
+
+	void _buildBottomSheet() {
+		showModalBottomSheet(
+			context: context,
+			isScrollControlled: true,
+			backgroundColor: Colors.transparent,
+			builder: (context) => DraggableScrollableSheet(
+				initialChildSize: 0.5,
+				minChildSize: 0.0,
+				maxChildSize: 0.9,
+				snap: true,
+				snapSizes: const [0.5, 0.9],
+				expand: false,
+				builder: (context, scrollController) => Container(
+					decoration: BoxDecoration(
+						color: Theme.of(context).colorScheme.surface,
+						borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+						boxShadow: [
+							BoxShadow(
+								color: Colors.black26,
+								blurRadius: 16,
+								offset: Offset(0, -4),
+							),
+						],
+					),
+					child: Column(
+						children: [
+							Container(
+								width: 40,
+								height: 5,
+								margin: const EdgeInsets.symmetric(vertical: 12),
+								decoration: BoxDecoration(
+									color: Colors.grey[400],
+									borderRadius: BorderRadius.circular(10),
+								),
+							),
+
+							Expanded(
+								child: EpisodesList(
+									episodes: _titleResponse['episodes'],
+									controller: scrollController,
+								),
+							),
+						],
+					),
+				),
+			),
 		);
 	}
 
