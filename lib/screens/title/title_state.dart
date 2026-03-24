@@ -42,7 +42,6 @@ class _TitleState extends State<TitleScreen> {
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text('Тайтл'),
-				centerTitle: true,
 			),
 			body: _buildBody(),
 			floatingActionButton: (_isWideScreen(MediaQuery.of(context).size.width))

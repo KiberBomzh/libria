@@ -58,7 +58,6 @@ class _CatalogState extends State<Catalog> {
 				title: Text(
 					(widget.searchQuery == null) ? 'Каталог' : widget.searchQuery!
 				),
-				centerTitle: true,
 				actions: [
 					IconButton(
 						icon: const Icon(Icons.search),
