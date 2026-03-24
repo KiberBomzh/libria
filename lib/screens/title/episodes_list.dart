@@ -16,8 +16,9 @@ class EpisodesList extends StatelessWidget {
 		ScrollController scrollController = (controller == null) ? ScrollController() : controller!;
 
 		return Scrollbar(
-			thumbVisibility: true,
 			interactive: true,
+			thickness: 10.0,
+			radius: const Radius.circular(12),
 			controller: scrollController,
 			child: ListView.builder(
 				controller: scrollController,

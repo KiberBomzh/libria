@@ -124,7 +124,12 @@ class _CatalogState extends State<Catalog> {
 		return RefreshIndicator(
 			onRefresh: _loadTitles,
 			color: Theme.of(context).colorScheme.primary,
-			child: _buildGridView(),
+			child: Scrollbar(
+				interactive: true,
+				thickness: 6.0,
+				radius: const Radius.circular(12),
+				child: _buildGridView(),
+			),
 		);
 	}
 
