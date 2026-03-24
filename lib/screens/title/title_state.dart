@@ -44,7 +44,7 @@ class _TitleState extends State<TitleScreen> {
 				title: const Text('Тайтл'),
 			),
 			body: _buildBody(),
-			floatingActionButton: (_isWideScreen(MediaQuery.of(context).size.width))
+			floatingActionButton: (_isWideScreen(context))
 				? Container()
 				: Container(
 					margin: EdgeInsets.only(
@@ -86,7 +86,7 @@ class _TitleState extends State<TitleScreen> {
 		}
 
 
-		if (_isWideScreen(MediaQuery.of(context).size.width)) {
+		if (_isWideScreen(context)) {
 			return Row(
 				crossAxisAlignment: CrossAxisAlignment.start,
 				children: [
@@ -160,50 +160,54 @@ class _TitleState extends State<TitleScreen> {
 				snap: true,
 				snapSizes: const [0.5, 0.9],
 				expand: false,
-				builder: (context, scrollController) => Container(
-					decoration: BoxDecoration(
-						color: Theme.of(context).colorScheme.surface,
-						borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-						boxShadow: [
-							BoxShadow(
-								color: Colors.black26,
-								blurRadius: 16,
-								offset: Offset(0, -4),
-							),
-						],
-					),
-					child: Column(
-						children: [
-							Container(
-								width: 40,
-								height: 5,
-								margin: const EdgeInsets.symmetric(vertical: 12),
-								decoration: BoxDecoration(
-									color: Colors.grey[400],
-									borderRadius: BorderRadius.circular(10),
-								),
-							),
+				builder: (context, scrollController) {
+					WidgetsBinding.instance.addPostFrameCallback((_) {
+						if (_isWideScreen(context)) {
+							Navigator.of(context).pop();
+						}
+					});
 
-							Expanded(
-								child: EpisodesList(
-									episodes: _titleResponse['episodes'],
-									controller: scrollController,
+					return Container(
+						decoration: BoxDecoration(
+							color: Theme.of(context).colorScheme.surface,
+							borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+							boxShadow: [
+								BoxShadow(
+									color: Colors.black26,
+									blurRadius: 16,
+									offset: Offset(0, -4),
 								),
-							),
-						],
-					),
-				),
+							],
+						),
+						child: Column(
+							children: [
+								Container(
+									width: 40,
+									height: 5,
+									margin: const EdgeInsets.symmetric(vertical: 12),
+									decoration: BoxDecoration(
+										color: Colors.grey[400],
+										borderRadius: BorderRadius.circular(10),
+									),
+								),
+
+								Expanded(
+									child: EpisodesList(
+										episodes: _titleResponse['episodes'],
+										controller: scrollController,
+									),
+								),
+							],
+						),
+					);
+				}
 			),
 		);
 	}
 
 
 
-	bool _isWideScreen(double screenWidth) {
-		if (screenWidth > 800) {
-			return true;
-		} else {
-			return false;
-		}
+	bool _isWideScreen(BuildContext context) {
+		return MediaQuery.of(context).size.width > 800;
 	}
 }
