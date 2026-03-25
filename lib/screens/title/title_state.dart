@@ -42,6 +42,14 @@ class _TitleState extends State<TitleScreen> {
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text('Тайтл'),
+				actions: [
+					IconButton(
+						icon: const Icon(Icons.launch),
+						onPressed: () =>
+							launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.titleId.toString())),
+						tooltip: "Открыть в браузере",
+					),
+				],
 			),
 			body: _buildBody(),
 			floatingActionButton: (_isWideScreen(context))
