@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:libria/services/anilibria_api.dart';
+import 'package:libria/services/preferences.dart';
 import 'package:libria/screens/catalog/catalog.dart';
 
 
-void main() {
+void main() async {
+	WidgetsFlutterBinding.ensureInitialized();
+	await Preferences.init();
 	runApp(const MyApp());
 }
 

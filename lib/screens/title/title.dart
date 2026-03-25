@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:libria/main.dart';
 import 'package:libria/functions/play.dart';
+import 'package:libria/services/preferences.dart';
 
 part 'title_state.dart';
 part 'title_details.dart';

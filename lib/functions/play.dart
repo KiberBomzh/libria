@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:libria/main.dart';
+import 'package:libria/services/preferences.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
@@ -17,14 +18,18 @@ Future<void> play(BuildContext context, {
 		isAvailable1080: hls_1080 != null,
 	);
 
-	switch (q) {
-		case (480): _playLink(hls_480!);
-		case (720): _playLink(hls_720!);
-		case (1080): _playLink(hls_1080!);
-	}
+	String? link = switch (q) {
+		480 => hls_480,
+		720 => hls_720,
+		1080 => hls_1080,
+		_ => null,
+	};
+
+	await Preferences.setString('last_video_link', link!);
+	playLink(link!);
 }
 
-void _playLink(String link) {
+void playLink(String link) {
 	if (Platform.isAndroid) {
 		final intent = AndroidIntent(
 			action: 'android.intent.action.VIEW',

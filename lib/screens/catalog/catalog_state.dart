@@ -54,6 +54,14 @@ class _CatalogState extends State<Catalog> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
+			floatingActionButtonLocation: ExpandableFab.location,
+			floatingActionButton: Container(
+				margin: EdgeInsets.only(
+					bottom: 20,
+					right: 20,
+				),
+				child: _buildFAB(),
+			),
 			appBar: AppBar(
 				title: Text(
 					(widget.searchQuery == null) ? 'Каталог' : widget.searchQuery!
@@ -121,6 +129,7 @@ class _CatalogState extends State<Catalog> {
 
 
 		// Main
+		ScrollController scrollController = ScrollController();
 		return RefreshIndicator(
 			onRefresh: _loadTitles,
 			color: Theme.of(context).colorScheme.primary,
@@ -128,14 +137,16 @@ class _CatalogState extends State<Catalog> {
 				interactive: true,
 				thickness: 6.0,
 				radius: const Radius.circular(12),
-				child: _buildGridView(),
+				controller: scrollController,
+				child: _buildGridView(scrollController),
 			),
 		);
 	}
 
-	Widget _buildGridView() {
+	Widget _buildGridView(ScrollController scrollController) {
 		return GridView.builder(
 			padding: const EdgeInsets.all(12),
+			controller: scrollController,
 			gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
 				crossAxisCount: _calculateCrossAxisCount(MediaQuery.of(context).size.width),
 				crossAxisSpacing: 12,
@@ -151,6 +162,7 @@ class _CatalogState extends State<Catalog> {
 					titleCoverUrl: img_url,
 					titleName: name,
 					onTap: () {
+						Preferences.setInt('last_title_id', _catalogResponse['data'][index]['id']);
 						Navigator.push(context,
 							MaterialPageRoute(
 								builder: (context) => TitleScreen(titleId: _catalogResponse['data'][index]['id']),
@@ -159,6 +171,68 @@ class _CatalogState extends State<Catalog> {
 					}
 				);
 			}
+		);
+	}
+
+	Widget _buildFAB() {
+		if (Preferences.getString('last_video_link').isEmpty)
+			return Container();
+
+		return ExpandableFab(
+			type: ExpandableFabType.up,
+			distance: 70,
+			overlayStyle: ExpandableFabOverlayStyle(
+				color: Colors.transparent,   // ← это и есть твой "barrier"
+		    ),
+			children: [
+				Row(
+					children: [
+						Container(
+							decoration: BoxDecoration(
+								color: Theme.of(context).colorScheme.primaryContainer,
+								borderRadius: BorderRadius.circular(12),
+							),
+							padding: const EdgeInsets.all(12),
+							child: Text('Последняя серия',
+								style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)
+							),
+						),
+						const SizedBox(width: 10),
+						FloatingActionButton(
+							heroTag: 'fab_last_episode',
+							child: Icon(Icons.play_arrow),
+							onPressed: () => playLink(Preferences.getString('last_video_link')),
+						),
+					],
+				),
+				Row(
+					children: [
+						Container(
+							decoration: BoxDecoration(
+								color: Theme.of(context).colorScheme.primaryContainer,
+								borderRadius: BorderRadius.circular(12),
+							),
+							padding: const EdgeInsets.all(12),
+							child: Text('Последний тайтл',
+								style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer)
+							),
+						),
+						const SizedBox(width: 10),
+						FloatingActionButton(
+							heroTag: 'fab_last_title',
+							child: Icon(Icons.history),
+							onPressed: () {
+								Navigator.push(context,
+									MaterialPageRoute(
+										builder: (context) =>
+											TitleScreen(titleId: Preferences.getInt('last_title_id')),
+									),
+								);
+							},
+						),
+					],
+				),
+			],
 		);
 	}
 
