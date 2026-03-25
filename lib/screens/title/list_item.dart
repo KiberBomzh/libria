@@ -70,3 +70,62 @@ class EpisodeListItem extends StatelessWidget {
 		);
 	}
 }
+
+
+
+class TorrentListItem extends StatelessWidget {
+	final VoidCallback onTap;
+	final VoidCallback onPressedCopyToClipboard;
+	final String label;
+	
+	const TorrentListItem({
+		Key? key,
+		required this.onTap,
+		required this.onPressedCopyToClipboard,
+		required this.label,
+	}) : super(key: key);
+
+
+	@override
+	Widget build(BuildContext context) {
+		return Container(
+			decoration: BoxDecoration(
+				border: Border.all(
+					width: 2,
+					color: Theme.of(context).colorScheme.primary,
+				),
+				borderRadius: BorderRadius.circular(12),
+			),
+			margin: const EdgeInsets.symmetric(vertical: 5),
+			child: Material(
+				color: Colors.transparent,
+				child: InkWell(
+					onTap: onTap,
+					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+					child: Padding(
+						padding: EdgeInsets.symmetric(
+							horizontal: 20,
+							vertical: 10,
+						),
+						child: Row(
+							children: [
+								Expanded(
+									child: Text(label,
+										overflow: TextOverflow.ellipsis,
+										maxLines: 2,
+									),
+								),
+								IconButton(
+									icon: Icon(Icons.assignment),
+									tooltip: 'Скопировать magnet-ссылку',
+									onPressed: onPressedCopyToClipboard,
+								),
+							],
+						),
+					),
+				),
+			),
+		);
+	}
+}

@@ -115,7 +115,10 @@ class _TitleState extends State<TitleScreen> {
 								borderRadius: BorderRadius.circular(12),
 								color: Theme.of(context).colorScheme.surfaceContainer,
 							),
-							child: EpisodesList(episodes: _titleResponse['episodes']),
+							child: EpisodesList(
+								episodes: _titleResponse['episodes'],
+								torrents: _titleResponse['torrents'],
+							),
 						),
 					),
 				],
@@ -151,17 +154,7 @@ class _TitleState extends State<TitleScreen> {
 	Widget _buildFAB() {
 		return FloatingActionButton(
 			child: const Icon(Icons.play_arrow),
-			onPressed: () {
-				if (_titleResponse['type']['value'] == 'MOVIE') {
-					play(context,
-						hls_480: _titleResponse['episodes'][0]['hls_480'],
-						hls_720: _titleResponse['episodes'][0]['hls_720'],
-						hls_1080: _titleResponse['episodes'][0]['hls_1080'],
-					);
-				} else {
-					_buildBottomSheet();
-				}
-			},
+			onPressed: () => _buildBottomSheet(),
 		);
 	}
 
@@ -211,6 +204,7 @@ class _TitleState extends State<TitleScreen> {
 								Expanded(
 									child: EpisodesList(
 										episodes: _titleResponse['episodes'],
+										torrents: _titleResponse['torrents'],
 										controller: scrollController,
 									),
 								),

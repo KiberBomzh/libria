@@ -51,6 +51,12 @@ Future<int?> _showQualityDialog(BuildContext context,
 		context: context,
 		barrierDismissible: true,
 		builder: (context) {
+			WidgetsBinding.instance.addPostFrameCallback((_) {
+				if (MediaQuery.of(context).size.width > 800) {
+					Navigator.of(context).pop();
+				}
+			});
+
 			return SimpleDialog(
 				title: const Text('Выберите качество'),
 				children: [
