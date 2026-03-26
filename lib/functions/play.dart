@@ -7,7 +7,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 
 
-Future<void> play(BuildContext context, {
+Future<bool> play(BuildContext context, {
 	required String? hls_480,
 	required String? hls_720,
 	required String? hls_1080,
@@ -26,10 +26,13 @@ Future<void> play(BuildContext context, {
 		1080 => hls_1080,
 		_ => null,
 	};
+	if (currentTitle.episodeLink == null)
+		return false;
 
 	currentTitle.episodeIndex = episodeIndex;
 	await Preferences.setLastTitle(currentTitle);
 	playLink(currentTitle.episodeLink!);
+	return true;
 }
 
 void playLink(String link) {

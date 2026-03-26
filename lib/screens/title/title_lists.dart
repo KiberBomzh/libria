@@ -1,13 +1,13 @@
 part of 'title.dart';
 
 
-class EpisodesList extends StatelessWidget {
+class TitleLists extends StatefulWidget {
 	final List<dynamic> episodes;
 	final List<dynamic> torrents;
 	final ScrollController? controller;
 	LastTitleInfo currentTitle;
 
-	EpisodesList({
+	TitleLists({
 		Key? key,
 		required this.episodes,
 		required this.torrents,
@@ -16,8 +16,21 @@ class EpisodesList extends StatelessWidget {
 	}) : super(key: key);
 
 	@override
+	State<TitleLists> createState() => _TitleListsState();
+}
+
+class _TitleListsState extends State<TitleLists> {
+	int? lastIndex;
+
+	@override
+	void initState() {
+		super.initState();
+		lastIndex = widget.currentTitle.episodeIndex;
+	}
+
+	@override
 	Widget build(BuildContext context) {
-		ScrollController scrollController = (controller == null) ? ScrollController() : controller!;
+		ScrollController scrollController = widget.controller ?? ScrollController();
 
 		// TODO
 		// При прокрутке со списка торрентов не работает управлениe bottom sheet
@@ -57,18 +70,24 @@ class EpisodesList extends StatelessWidget {
 			child: ListView.builder(
 				controller: scrollController,
 				padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-				itemCount: episodes.length,
+				itemCount: widget.episodes.length,
 				itemBuilder: (context, index) {
 					return EpisodeListItem(
-						ordinal: episodes[index]['ordinal'].toString(),
-						name: episodes[index]['name'],
-						onTap: () => play(context,
-							hls_480: episodes[index]['hls_480'],
-							hls_720: episodes[index]['hls_720'],
-							hls_1080: episodes[index]['hls_1080'],
-							currentTitle: currentTitle,
-							episodeIndex: index,
-						),
+						ordinal: widget.episodes[index]['ordinal'].toString(),
+						name: widget.episodes[index]['name'],
+						currentIndex: index,
+						lastIndex: lastIndex,
+						onTap: () async {
+							bool isSucces = await play(context,
+								hls_480: widget.episodes[index]['hls_480'],
+								hls_720: widget.episodes[index]['hls_720'],
+								hls_1080: widget.episodes[index]['hls_1080'],
+								currentTitle: widget.currentTitle,
+								episodeIndex: index,
+							);
+							if (isSucces)
+								setState(() { lastIndex = index; });
+						},
 					);
 				}
 			),
@@ -82,12 +101,12 @@ class EpisodesList extends StatelessWidget {
 			radius: const Radius.circular(12),
 			child: ListView.builder(
 				padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-				itemCount: torrents.length,
+				itemCount: widget.torrents.length,
 				itemBuilder: (context, index) {
 					return TorrentListItem(
-						label: torrents[index]['label'],
-						onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
-						onTap: () => launchUrl(Uri.parse(torrents[index]['magnet'])),
+						label: widget.torrents[index]['label'],
+						onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: widget.torrents[index]['magnet'])),
+						onTap: () => launchUrl(Uri.parse(widget.torrents[index]['magnet'])),
 					);
 				}
 			),

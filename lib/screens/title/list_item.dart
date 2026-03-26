@@ -6,25 +6,41 @@ class EpisodeListItem extends StatelessWidget {
 
 	final String ordinal;
 	final String? name;
+	final int currentIndex;
+	final int? lastIndex;
 	
 	const EpisodeListItem({
 		Key? key,
 		required this.onTap,
 		required this.ordinal,
+		required this.currentIndex,
+		this.lastIndex,
 		this.name,
 	}) : super(key: key);
 
 
 	@override
 	Widget build(BuildContext context) {
+		BoxDecoration boxDecoration;
+		TextStyle textStyle;
+		if (lastIndex == null) {
+			boxDecoration = _buildDefaultBoxDecoration(context);
+			textStyle = _buildDefaultTextStyle(context);
+		} else {
+			if (currentIndex > lastIndex!) { // Все эпизоды ПОСЛЕ последнего просмотренного
+				boxDecoration = _buildDefaultBoxDecoration(context);
+				textStyle = _buildDefaultTextStyle(context);
+			} else if (currentIndex < lastIndex!) { // Все эпизоды ДО последнего просмотренного
+				boxDecoration = _buildInactiveBoxDecoration(context);
+				textStyle = _buildInactiveTextStyle(context);
+			} else { // Последний просмотренный
+				boxDecoration = _buildActiveBoxDecoration(context);
+				textStyle = _buildActiveTextStyle(context);
+			}
+		}
+
 		return Container(
-			decoration: BoxDecoration(
-				border: Border.all(
-					width: 2,
-					color: Theme.of(context).colorScheme.primary,
-				),
-				borderRadius: BorderRadius.circular(12),
-			),
+			decoration: boxDecoration,
 			margin: const EdgeInsets.symmetric(vertical: 5),
 			child: Material(
 				color: Colors.transparent,
@@ -51,7 +67,7 @@ class EpisodeListItem extends StatelessWidget {
 										borderRadius: BorderRadius.circular(12),
 									),
 									child: Center(
-										child: Text(ordinal),
+										child: Text(ordinal, style: textStyle),
 									),
 								),
 
@@ -59,7 +75,8 @@ class EpisodeListItem extends StatelessWidget {
 
 								Expanded(
 									child: Text(
-										(name == null) ? '' : name.toString()
+										(name == null) ? '' : name.toString(),
+										style: textStyle,
 									),
 								),
 							],
@@ -68,6 +85,48 @@ class EpisodeListItem extends StatelessWidget {
 				),
 			),
 		);
+	}
+
+	BoxDecoration _buildActiveBoxDecoration(BuildContext context) {
+		return BoxDecoration(
+			border: Border.all(
+				width: 2,
+				color: Theme.of(context).colorScheme.primary,
+			),
+			borderRadius: BorderRadius.circular(12),
+		);
+	}
+	BoxDecoration _buildInactiveBoxDecoration(BuildContext context) {
+		return BoxDecoration(
+			border: Border.all(
+				width: 2,
+				color: Theme.of(context).colorScheme.onSurface,
+			),
+			borderRadius: BorderRadius.circular(12),
+		);
+	}
+	BoxDecoration _buildDefaultBoxDecoration(BuildContext context) {
+		return BoxDecoration(
+			border: Border.all(
+				width: 2,
+				color: Theme.of(context).colorScheme.secondary,
+			),
+			borderRadius: BorderRadius.circular(12),
+		);
+	}
+
+	TextStyle _buildActiveTextStyle(BuildContext context) {
+		return TextStyle(
+			fontWeight: FontWeight.bold,
+		);
+	}
+	TextStyle _buildInactiveTextStyle(BuildContext context) {
+		return TextStyle(
+			color: Colors.grey,
+		);
+	}
+	TextStyle _buildDefaultTextStyle(BuildContext context) {
+		return TextStyle();
 	}
 }
 

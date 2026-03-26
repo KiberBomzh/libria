@@ -131,7 +131,7 @@ class _TitleState extends State<TitleScreen> {
 								borderRadius: BorderRadius.circular(12),
 								color: Theme.of(context).colorScheme.surfaceContainer,
 							),
-							child: EpisodesList(
+							child: TitleLists(
 								episodes: _titleResponse['episodes'],
 								torrents: _titleResponse['torrents'],
 								currentTitle: widget.currentTitle,
@@ -219,7 +219,7 @@ class _TitleState extends State<TitleScreen> {
 								),
 
 								Expanded(
-									child: EpisodesList(
+									child: TitleLists(
 										episodes: _titleResponse['episodes'],
 										torrents: _titleResponse['torrents'],
 										currentTitle: widget.currentTitle,

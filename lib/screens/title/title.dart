@@ -13,8 +13,8 @@ import 'package:libria/services/cache_manager.dart';
 
 part 'title_state.dart';
 part 'title_details.dart';
+part 'title_lists.dart';
 part 'list_item.dart';
-part 'episodes_list.dart';
 
 
 class TitleScreen extends StatefulWidget {

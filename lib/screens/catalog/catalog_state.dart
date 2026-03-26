@@ -154,7 +154,19 @@ class _CatalogState extends State<Catalog> {
 					titleCoverUrl: img_url,
 					titleName: name,
 					onTap: () {
-						LastTitleInfo title = LastTitleInfo(titleId: _catalogResponse['data'][index]['id']);
+						int currentTitleId = _catalogResponse['data'][index]['id'];
+						LastTitleInfo? lastTitle = Preferences.getLastTitle();
+						LastTitleInfo title;
+						if (lastTitle == null) {
+							title = LastTitleInfo(titleId: currentTitleId);
+						} else {
+							if (lastTitle!.titleId != currentTitleId) {
+								title = LastTitleInfo(titleId: currentTitleId);
+							} else {
+								title = lastTitle!;
+							}
+						}
+
 						Navigator.push(context,
 							MaterialPageRoute(
 								builder: (context) => TitleScreen(currentTitle: title),
