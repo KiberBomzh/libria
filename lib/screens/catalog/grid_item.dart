@@ -32,31 +32,18 @@ class CatalogGridItem extends StatelessWidget {
 							flex: 16,
 							child: Container(
 								width: double.infinity,
-								child: Image.network( titleCoverUrl,
+								child: CachedNetworkImage(
+									imageUrl: titleCoverUrl,
+									cacheManager: customCacheManager,
 									fit: BoxFit.cover,
-									loadingBuilder: (context, child, loadingProgress) {
-										if (loadingProgress == null) return child;
-
-										return Center(
-											child: CircularProgressIndicator(
-												value: loadingProgress.expectedTotalBytes != null
-													? loadingProgress.cumulativeBytesLoaded /
-													  loadingProgress.expectedTotalBytes!
-													: null,
-											),
-										);
-									},
-									errorBuilder: (context, error, stackTrace) {
-										return Container(
-											color: Colors.grey[300],
-											child: Center(
-												child: Icon( Icons.broken_image,
-													size: 50,
-													color: Colors.grey[600],
-												),
-											),
-										);
-									}
+									placeholder: (context, url) => Container(
+										color: Theme.of(context).colorScheme.surfaceVariant,
+										child: const Center(child: CircularProgressIndicator()),
+									),
+									errorWidget: (context, url, error) => Container(
+										color: Theme.of(context).colorScheme.surfaceVariant,
+										child: const Icon(Icons.broken_image, size: 50),
+									),
 								),
 							),
 						),

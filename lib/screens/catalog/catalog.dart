@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:libria/main.dart';
 import 'package:libria/screens/title/title.dart';
 import 'package:libria/services/preferences.dart';
+import 'package:libria/services/cache_manager.dart';
 import 'package:libria/functions/play.dart';
 
 part 'catalog_state.dart';

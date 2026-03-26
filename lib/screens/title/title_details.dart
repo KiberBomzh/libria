@@ -70,34 +70,18 @@ class TitleDetails extends StatelessWidget {
 							borderRadius: BorderRadius.circular(12),
 						),
 
-						child: Image.network( coverImageUrl,
+						child: CachedNetworkImage(
+							imageUrl: coverImageUrl,
+							cacheManager: customCacheManager,
 							fit: BoxFit.cover,
-
-							loadingBuilder: (context, child, loadingProgress) {
-								if (loadingProgress == null) return child;
-
-								return Center(
-									child: CircularProgressIndicator(
-										value: loadingProgress.expectedTotalBytes != null
-											? loadingProgress.cumulativeBytesLoaded /
-											  loadingProgress.expectedTotalBytes!
-
-											: null
-									),
-								);
-							},
-
-							errorBuilder: (context, error, stackTrace) {
-								return Container(
-									color: Colors.grey[300],
-									child: Center(
-										child: Icon( Icons.broken_image,
-											size: 50,
-											color: Colors.grey[600],
-										),
-									),
-								);
-							},
+							placeholder: (context, url) => Container(
+								color: Theme.of(context).colorScheme.surfaceVariant,
+								child: const Center(child: CircularProgressIndicator()),
+							),
+							errorWidget: (context, url, error) => Container(
+								color: Theme.of(context).colorScheme.surfaceVariant,
+								child: const Icon(Icons.broken_image, size: 50),
+							),
 						),
 					),
 				),
