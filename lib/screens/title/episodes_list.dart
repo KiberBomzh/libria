@@ -82,12 +82,7 @@ class EpisodesList extends StatelessWidget {
 				itemBuilder: (context, index) {
 					return TorrentListItem(
 						label: torrents[index]['label'],
-						onPressedCopyToClipboard: () {
-							Clipboard.setData(ClipboardData(text: torrents[index]['magnet']));
-							ScaffoldMessenger.of(context).showSnackBar(
-								SnackBar(content: Text('Скопировано')),
-							);
-						},
+						onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
 						onTap: () => launchUrl(Uri.parse(torrents[index]['magnet'])),
 					);
 				}
