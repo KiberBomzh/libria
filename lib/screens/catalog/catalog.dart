@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:libria/main.dart';
@@ -17,7 +16,10 @@ part 'search_dialog.dart';
 class Catalog extends StatefulWidget {
 	String? searchQuery;
 
-	Catalog({super.key, this.searchQuery});
+	Catalog({
+		super.key,
+		this.searchQuery,
+	});
 
 	@override
 	State<Catalog> createState() => _CatalogState();

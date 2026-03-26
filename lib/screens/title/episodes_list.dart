@@ -5,11 +5,13 @@ class EpisodesList extends StatelessWidget {
 	final List<dynamic> episodes;
 	final List<dynamic> torrents;
 	final ScrollController? controller;
+	LastTitleInfo currentTitle;
 
-	const EpisodesList({
+	EpisodesList({
 		Key? key,
 		required this.episodes,
 		required this.torrents,
+		required this.currentTitle,
 		this.controller,
 	}) : super(key: key);
 
@@ -63,7 +65,9 @@ class EpisodesList extends StatelessWidget {
 						onTap: () => play(context,
 							hls_480: episodes[index]['hls_480'],
 							hls_720: episodes[index]['hls_720'],
-							hls_1080: episodes[index]['hls_1080']
+							hls_1080: episodes[index]['hls_1080'],
+							currentTitle: currentTitle,
+							episodeIndex: index,
 						),
 					);
 				}

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:libria/services/anilibria_api.dart';
 import 'package:libria/services/preferences.dart';
 import 'package:libria/screens/catalog/catalog.dart';
+import 'package:libria/screens/title/title.dart';
 
 
 void main() async {
@@ -39,7 +40,16 @@ class MyApp extends StatelessWidget {
 				),
 			),
 			themeMode: ThemeMode.system,
-			home: Catalog(),
+			home: _buildHome(),
 		);
+	}
+
+	Widget _buildHome() {
+		LastTitleInfo? title = Preferences.getLastTitle();
+		if (title == null) {
+			return Catalog();
+		} else {
+			return TitleScreen(currentTitle: title);
+		}
 	}
 }

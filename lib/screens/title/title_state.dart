@@ -21,7 +21,7 @@ class _TitleState extends State<TitleScreen> {
 		});
 
 		try {
-			final resp = await libria.fetchTitle(widget.titleId);
+			final resp = await libria.fetchTitle(widget.currentTitle.titleId!);
 			setState(() {
 				_titleResponse = resp;
 				_isLoading = false;
@@ -36,6 +36,17 @@ class _TitleState extends State<TitleScreen> {
 		}
 	}
 
+	void _openSearchDialog() async {
+		final q = await SearchDialog.show(context);
+		if (q != null && q.isNotEmpty) {
+			Navigator.push(context,
+				MaterialPageRoute(
+					builder: (context) => Catalog(searchQuery: q),
+				),
+			);
+		}
+	}
+
 
 	@override
 	Widget build(BuildContext context) {
@@ -46,8 +57,13 @@ class _TitleState extends State<TitleScreen> {
 					IconButton(
 						icon: const Icon(Icons.launch),
 						onPressed: () =>
-							launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.titleId.toString())),
+							launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.currentTitle.titleId.toString())),
 						tooltip: "Открыть в браузере",
+					),
+					IconButton(
+						icon: const Icon(Icons.search),
+						onPressed: _openSearchDialog,
+						tooltip: 'Поиск',
 					),
 				],
 			),
@@ -118,6 +134,7 @@ class _TitleState extends State<TitleScreen> {
 							child: EpisodesList(
 								episodes: _titleResponse['episodes'],
 								torrents: _titleResponse['torrents'],
+								currentTitle: widget.currentTitle,
 							),
 						),
 					),
@@ -205,6 +222,7 @@ class _TitleState extends State<TitleScreen> {
 									child: EpisodesList(
 										episodes: _titleResponse['episodes'],
 										torrents: _titleResponse['torrents'],
+										currentTitle: widget.currentTitle,
 										controller: scrollController,
 									),
 								),

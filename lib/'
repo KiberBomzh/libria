@@ -9,26 +9,20 @@ class Preferences {
 	}
 
 
-	static Future<void> setLastTitle(LastTitleInfo title) async {
-		if (
-			title.titleId == null ||
-			title.episodeIndex == null ||
-			title.episodeLink == null
-		   ) { return; }
-
-		await _prefs?.setInt('last_title_id', title.titleId!);
-		await _prefs?.setInt('last_episode_index', title.episodeIndex!);
-		await _prefs?.setString('last_video_link', title.episodeLink!);
+	static Future<void> setLastTitle(LastTitleInfo title) {
+		await _prefs?.setInt('last_title_id', title.titleId);
+		await _prefs?.setInt('last_episode_index', title.episodeIndex);
+		await _prefs?.setString('last_video_link', title.episodeLink);
 	}
 
 	static LastTitleInfo? getLastTitle() {
 		LastTitleInfo title = LastTitleInfo();
-		title.titleId = _prefs?.getInt('last_title_id');
-		title.episodeIndex = _prefs?.getInt('last_episode_index');
-		title.episodeLink = _prefs?.getString('last_video_link');
+		title.titleId = await _prefs?.getInt('last_title_id');
+		title.episodeLink = await _prefs?.getInt('last_episode_index');
+		title.episodeIndex = await _prefs?.getString('last_video_link');
 		if (
-			title.titleId == null ||
-			title.episodeLink == null ||
+			title.titleId == null &&
+			title.episodeLink == null &&
 			title.episodeIndex == null
 		   ) {
 			return null;

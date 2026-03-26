@@ -10,7 +10,9 @@ import 'package:android_intent_plus/flag.dart';
 Future<void> play(BuildContext context, {
 	required String? hls_480,
 	required String? hls_720,
-	required String? hls_1080
+	required String? hls_1080,
+	required LastTitleInfo currentTitle,
+	required int episodeIndex,
 }) async {
 	int? q = await _showQualityDialog(context,
 		isAvailable480: hls_480 != null,
@@ -18,15 +20,16 @@ Future<void> play(BuildContext context, {
 		isAvailable1080: hls_1080 != null,
 	);
 
-	String? link = switch (q) {
+	currentTitle.episodeLink = switch (q) {
 		480 => hls_480,
 		720 => hls_720,
 		1080 => hls_1080,
 		_ => null,
 	};
 
-	await Preferences.setString('last_video_link', link!);
-	playLink(link!);
+	currentTitle.episodeIndex = episodeIndex;
+	await Preferences.setLastTitle(currentTitle);
+	playLink(currentTitle.episodeLink!);
 }
 
 void playLink(String link) {
@@ -56,12 +59,6 @@ Future<int?> _showQualityDialog(BuildContext context,
 		context: context,
 		barrierDismissible: true,
 		builder: (context) {
-			WidgetsBinding.instance.addPostFrameCallback((_) {
-				if (MediaQuery.of(context).size.width > 800) {
-					Navigator.of(context).pop();
-				}
-			});
-
 			return SimpleDialog(
 				title: const Text('Выберите качество'),
 				children: [

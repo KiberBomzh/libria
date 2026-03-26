@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:libria/main.dart';
+import 'package:libria/screens/catalog/catalog.dart';
 import 'package:libria/functions/play.dart';
 import 'package:libria/services/preferences.dart';
 import 'package:libria/services/cache_manager.dart';
@@ -17,11 +18,11 @@ part 'episodes_list.dart';
 
 
 class TitleScreen extends StatefulWidget {
-	int titleId;
+	LastTitleInfo currentTitle;
 
 	TitleScreen({
 		Key? key,
-		required this.titleId,
+		required this.currentTitle,
 	}) : super(key: key);
 
 
