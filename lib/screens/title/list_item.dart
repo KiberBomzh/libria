@@ -67,7 +67,11 @@ class EpisodeListItem extends StatelessWidget {
 										borderRadius: BorderRadius.circular(12),
 									),
 									child: Center(
-										child: Text(ordinal, style: textStyle),
+										child: (lastIndex != null)
+											? (currentIndex == lastIndex!)
+												? Text('▶', style: textStyle)
+												: Text(ordinal, style: textStyle) 
+											: Text(ordinal, style: textStyle),
 									),
 								),
 
