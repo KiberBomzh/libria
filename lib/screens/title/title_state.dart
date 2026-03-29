@@ -123,6 +123,7 @@ class _TitleState extends State<TitleScreen> {
 						flex: 5,
 						child: Container(
 							margin: const EdgeInsets.only(bottom: 5, right: 5),
+							padding: const EdgeInsets.all(5),
 							decoration: BoxDecoration(
 								border: Border.all(
 									width: 2,
@@ -131,9 +132,8 @@ class _TitleState extends State<TitleScreen> {
 								borderRadius: BorderRadius.circular(12),
 								color: Theme.of(context).colorScheme.surfaceVariant,
 							),
-							child: TitleLists(
+							child: EpisodesList(
 								episodes: _titleResponse['episodes'],
-								torrents: _titleResponse['torrents'],
 								currentTitle: widget.currentTitle,
 							),
 						),
@@ -183,7 +183,7 @@ class _TitleState extends State<TitleScreen> {
 			backgroundColor: Colors.transparent,
 			builder: (context) => DraggableScrollableSheet(
 				initialChildSize: 0.5,
-				minChildSize: 0.0,
+				minChildSize: 0.1,
 				maxChildSize: 0.9,
 				snap: true,
 				snapSizes: const [0.5, 0.9],
@@ -220,9 +220,8 @@ class _TitleState extends State<TitleScreen> {
 								),
 
 								Expanded(
-									child: TitleLists(
+									child: EpisodesList(
 										episodes: _titleResponse['episodes'],
-										torrents: _titleResponse['torrents'],
 										currentTitle: widget.currentTitle,
 										controller: scrollController,
 									),
