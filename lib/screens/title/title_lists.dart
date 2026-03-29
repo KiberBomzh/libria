@@ -170,6 +170,7 @@ class _EpisodesListState extends State<EpisodesList> {
 			currentTitle: widget.currentTitle,
 			episodeIndex: index,
 		);
+		print(isSucces);
 		if (isSucces)
 			setState(() { lastIndex = index; });
 	}

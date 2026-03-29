@@ -20,14 +20,17 @@ Future<bool> play(BuildContext context, {
 		isAvailable1080: hls_1080 != null,
 	);
 
+	final String? lastLink = currentTitle.episodeLink;
 	currentTitle.episodeLink = switch (q) {
 		480 => hls_480,
 		720 => hls_720,
 		1080 => hls_1080,
 		_ => null,
 	};
-	if (currentTitle.episodeLink == null)
+	if (currentTitle.episodeLink == null) {
+		currentTitle.episodeLink = lastLink;
 		return false;
+	}
 
 	currentTitle.episodeIndex = episodeIndex;
 	await Preferences.setLastTitle(currentTitle);
