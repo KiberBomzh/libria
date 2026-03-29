@@ -104,7 +104,7 @@ class EpisodeListItem extends StatelessWidget {
 		return BoxDecoration(
 			border: Border.all(
 				width: 2,
-				color: Theme.of(context).colorScheme.onSurface,
+				color: Theme.of(context).colorScheme.outline,
 			),
 			borderRadius: BorderRadius.circular(12),
 		);
