@@ -47,6 +47,39 @@ class _TitleState extends State<TitleScreen> {
 		}
 	}
 
+	Future<void> _openDownloadDialog(BuildContext context, {required List<dynamic> torrents}) async {
+		return showDialog<void>(
+			context: context,
+			barrierDismissible: true,
+			builder: (context) {
+				return SimpleDialog(
+					// title: const Text('Выберите качество'),
+					children: [
+						SizedBox(
+							height: MediaQuery.of(context).size.height * 0.5,
+							width: MediaQuery.of(context).size.width * 0.8,
+							child: ListView.builder(
+								itemCount: torrents.length,
+								itemBuilder: (context, index) {
+									return SimpleDialogOption(
+										child: TorrentListItem(
+											label: torrents[index]['label'],
+											onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
+											onTap: () {
+												launchUrl(Uri.parse(torrents[index]['magnet']));
+												Navigator.pop(context);
+											},
+										),
+									);
+								}
+							),
+						),
+					],
+				);
+			}
+		);
+	}
+
 
 	@override
 	Widget build(BuildContext context) {
@@ -67,16 +100,46 @@ class _TitleState extends State<TitleScreen> {
 					),
 				],
 			),
-			body: _buildBody(),
-			floatingActionButton: (_isWideScreen(context))
-				? null
-				: Container(
-					margin: EdgeInsets.only(
-						bottom: 20,
-						right: 20,
-					),
-					child: _buildFAB(),
-				),
+			body: (!_isWideScreen(context) && _titleResponse.isNotEmpty)
+				? SlidingUpPanel(
+					minHeight: 120,
+					maxHeight: MediaQuery.of(context).size.height * 0.7,
+
+					borderRadius: BorderRadius.circular(12),
+					color: Theme.of(context).colorScheme.surfaceVariant,
+					backdropEnabled: true,
+
+					panelBuilder: (scrollController) {
+						return Container(
+							margin: const EdgeInsets.only(top: 10),
+							child: Column(
+								children: [
+									Container(
+										width: 40,
+										height: 5,
+										margin: const EdgeInsets.symmetric(vertical: 12),
+										decoration: BoxDecoration(
+											color: Colors.grey[400],
+											borderRadius: BorderRadius.circular(10),
+										),
+									),
+									Expanded(
+										child: EpisodesList(
+											episodes: _titleResponse['episodes'],
+											currentTitle: widget.currentTitle,
+											controller: scrollController,
+											onTapDownload: () =>
+												_openDownloadDialog(context, torrents: _titleResponse['torrents']),
+											isWideScreen: false,
+										),
+									),
+								],
+							),
+						);
+					},
+					body: _buildBody(),
+				)
+				: _buildBody(),
 		);
 	}
 
@@ -123,18 +186,16 @@ class _TitleState extends State<TitleScreen> {
 						flex: 5,
 						child: Container(
 							margin: const EdgeInsets.only(bottom: 5, right: 5),
-							padding: const EdgeInsets.all(5),
 							decoration: BoxDecoration(
-								border: Border.all(
-									width: 2,
-									color: Theme.of(context).colorScheme.secondary,
-								),
 								borderRadius: BorderRadius.circular(12),
 								color: Theme.of(context).colorScheme.surfaceVariant,
 							),
 							child: EpisodesList(
 								episodes: _titleResponse['episodes'],
 								currentTitle: widget.currentTitle,
+								onTapDownload: () =>
+									_openDownloadDialog(context, torrents: _titleResponse['torrents']),
+								isWideScreen: true,
 							),
 						),
 					),
@@ -164,72 +225,6 @@ class _TitleState extends State<TitleScreen> {
 					episodesTotal: (_titleResponse['episodes_total'] != null) ?
 						_titleResponse['episodes_total'].toString() : null
 				),
-			),
-		);
-	}
-
-
-	Widget _buildFAB() {
-		return FloatingActionButton(
-			child: const Icon(Icons.keyboard_arrow_up),
-			onPressed: () => _buildBottomSheet(),
-		);
-	}
-
-	void _buildBottomSheet() {
-		showModalBottomSheet(
-			context: context,
-			isScrollControlled: true,
-			backgroundColor: Colors.transparent,
-			builder: (context) => DraggableScrollableSheet(
-				initialChildSize: 0.5,
-				minChildSize: 0.1,
-				maxChildSize: 0.9,
-				snap: true,
-				snapSizes: const [0.5, 0.9],
-				expand: false,
-				builder: (context, scrollController) {
-					WidgetsBinding.instance.addPostFrameCallback((_) {
-						if (_isWideScreen(context)) {
-							Navigator.of(context).pop();
-						}
-					});
-
-					return Container(
-						decoration: BoxDecoration(
-							color: Theme.of(context).colorScheme.surfaceVariant,
-							borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-							boxShadow: [
-								BoxShadow(
-									color: Colors.black26,
-									blurRadius: 16,
-									offset: Offset(0, -4),
-								),
-							],
-						),
-						child: Column(
-							children: [
-								Container(
-									width: 40,
-									height: 5,
-									margin: const EdgeInsets.symmetric(vertical: 12),
-									decoration: BoxDecoration(
-										color: Colors.grey[400],
-										borderRadius: BorderRadius.circular(10),
-									),
-								),
-
-								Expanded(
-									child: EpisodesList(
-										episodes: _titleResponse['episodes'],
-										currentTitle: widget.currentTitle,
-										controller: scrollController,
-									),
-								),
-							],
-						),
-					);
-				}
 			),
 		);
 	}

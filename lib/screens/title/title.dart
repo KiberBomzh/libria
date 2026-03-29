@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:libria/main.dart';
 import 'package:libria/screens/catalog/catalog.dart';
