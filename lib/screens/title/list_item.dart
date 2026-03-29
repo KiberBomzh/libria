@@ -69,7 +69,7 @@ class EpisodeListItem extends StatelessWidget {
 									child: Center(
 										child: (lastIndex != null)
 											? (currentIndex == lastIndex!)
-												? Text('▶', style: textStyle)
+												? Icon(Icons.play_arrow)
 												: Text(ordinal, style: textStyle) 
 											: Text(ordinal, style: textStyle),
 									),

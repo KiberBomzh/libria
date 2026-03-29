@@ -69,7 +69,7 @@ class _TitleState extends State<TitleScreen> {
 			),
 			body: _buildBody(),
 			floatingActionButton: (_isWideScreen(context))
-				? Container()
+				? null
 				: Container(
 					margin: EdgeInsets.only(
 						bottom: 20,
@@ -129,7 +129,7 @@ class _TitleState extends State<TitleScreen> {
 									color: Theme.of(context).colorScheme.secondary,
 								),
 								borderRadius: BorderRadius.circular(12),
-								color: Theme.of(context).colorScheme.surfaceContainer,
+								color: Theme.of(context).colorScheme.surfaceVariant,
 							),
 							child: TitleLists(
 								episodes: _titleResponse['episodes'],
@@ -168,9 +168,10 @@ class _TitleState extends State<TitleScreen> {
 		);
 	}
 
+
 	Widget _buildFAB() {
 		return FloatingActionButton(
-			child: const Icon(Icons.play_arrow),
+			child: const Icon(Icons.keyboard_arrow_up),
 			onPressed: () => _buildBottomSheet(),
 		);
 	}
@@ -196,7 +197,7 @@ class _TitleState extends State<TitleScreen> {
 
 					return Container(
 						decoration: BoxDecoration(
-							color: Theme.of(context).colorScheme.surface,
+							color: Theme.of(context).colorScheme.surfaceVariant,
 							borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
 							boxShadow: [
 								BoxShadow(
