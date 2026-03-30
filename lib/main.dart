@@ -27,6 +27,10 @@ class MyApp extends StatelessWidget {
 			title: 'Libria',
 			theme: ThemeData(
 				useMaterial3: true,
+				appBarTheme: const AppBarTheme(
+					scrolledUnderElevation: 0.0,
+					color: Colors.transparent,
+				),
 				colorScheme: ColorScheme.fromSeed(
 					brightness: Brightness.light,
 					seedColor: Colors.blue,
@@ -34,6 +38,10 @@ class MyApp extends StatelessWidget {
 			),
 			darkTheme: ThemeData(
 				useMaterial3: true,
+				appBarTheme: const AppBarTheme(
+					scrolledUnderElevation: 0.0,
+					color: Colors.transparent,
+				),
 				colorScheme: ColorScheme.fromSeed(
 					brightness: Brightness.dark,
 					seedColor: Colors.blue,
