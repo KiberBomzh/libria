@@ -17,21 +17,18 @@ class CatalogGridItem extends StatelessWidget {
 	Widget build(BuildContext context) {
 		return GestureDetector(
 			onTap: onTap,
-			child: Card(
-				color: Theme.of(context).colorScheme.surfaceContainer,
-				elevation: 4,
-				clipBehavior: Clip.antiAlias,
-				shape: RoundedRectangleBorder(
-					borderRadius: BorderRadius.circular(12),
-				),
+			child: Container(
 				child: Column(
 					crossAxisAlignment: CrossAxisAlignment.start,
 					children: [
 						// Cover
-						Expanded(
-							flex: 16,
-							child: Container(
-								width: double.infinity,
+						AspectRatio(
+							aspectRatio: 7 / 10,
+							child: Card(
+								clipBehavior: Clip.antiAlias,
+								shape: RoundedRectangleBorder(
+									borderRadius: BorderRadius.circular(12),
+								),
 								child: CachedNetworkImage(
 									imageUrl: titleCoverUrl,
 									cacheManager: customCacheManager,
@@ -50,12 +47,13 @@ class CatalogGridItem extends StatelessWidget {
 
 						// Title
 						Expanded(
-							flex: 4,
 							child: Container(
-								padding: const EdgeInsets.all(8),
 								child: Text( titleName,
 									maxLines: 2,
 									overflow: TextOverflow.ellipsis,
+									style: TextStyle(
+										color: Theme.of(context).colorScheme.onSurface,
+									),
 								),
 							),
 						),
