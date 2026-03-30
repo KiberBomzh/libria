@@ -7,11 +7,13 @@ class _CatalogState extends State<Catalog> {
 	bool _isLoading = false;
 	bool _isError = false;
 	String _errorMessage = '';
+	String? _currentSearchQuery;
 
 
 	@override
 	void initState() {
 		super.initState();
+		_currentSearchQuery = widget.searchQuery;
 		_loadTitles();
 	}
 
@@ -23,7 +25,7 @@ class _CatalogState extends State<Catalog> {
 		});
 
 		try {
-			final resp = await libria.fetchCatalog(widget.searchQuery);
+			final resp = await libria.fetchCatalog(_currentSearchQuery);
 			setState(() {
 				_catalogResponse = resp;
 				_isLoading = false;
@@ -39,13 +41,21 @@ class _CatalogState extends State<Catalog> {
 	}
 
 	void _openSearchDialog() async {
-		final q = await SearchDialog.show(context);
+		final q = await SearchDialog.show(context, query: _currentSearchQuery ?? '');
 		if (q != null && q.isNotEmpty) {
-			Navigator.push(context,
-				MaterialPageRoute(
-					builder: (context) => Catalog(searchQuery: q),
-				),
-			);
+			if (_currentSearchQuery == null) {
+				Navigator.push(context,
+					MaterialPageRoute(
+						builder: (context) => Catalog(searchQuery: q),
+					),
+				);
+			} else {
+				setState(() {
+					_currentSearchQuery = q;
+					_catalogResponse = {};
+				});
+				_loadTitles();
+			}
 		}
 	}
 
@@ -56,7 +66,7 @@ class _CatalogState extends State<Catalog> {
 		return Scaffold(
 			appBar: AppBar(
 				title: Text(
-					(widget.searchQuery == null) ? 'Каталог' : widget.searchQuery!
+					(_currentSearchQuery == null) ? 'Каталог' : _currentSearchQuery!
 				),
 				actions: [
 					IconButton(

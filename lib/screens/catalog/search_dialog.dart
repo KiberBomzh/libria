@@ -2,14 +2,15 @@ part of 'catalog.dart';
 
 
 class SearchDialog {
-	static Future<String?> show(BuildContext context) async {
+	static Future<String?> show(BuildContext context, {String query = ''}) async {
 		final controller = TextEditingController();
-		String searchQuery = '';
+		String searchQuery = query;
 
 		return showDialog<String>(
 			context: context,
 			barrierDismissible: true,
 			builder: (context) {
+				controller.text = query;
 				return AlertDialog(
 					shape: RoundedRectangleBorder(
 						borderRadius: BorderRadius.circular(20),
