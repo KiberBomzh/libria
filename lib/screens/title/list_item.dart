@@ -138,13 +138,13 @@ class EpisodeListItem extends StatelessWidget {
 
 class TorrentListItem extends StatelessWidget {
 	final VoidCallback onTap;
-	final VoidCallback onPressedCopyToClipboard;
+	final VoidCallback onLongTap;
 	final String label;
 	
 	const TorrentListItem({
 		Key? key,
 		required this.onTap,
-		required this.onPressedCopyToClipboard,
+		required this.onLongTap,
 		required this.label,
 	}) : super(key: key);
 
@@ -164,6 +164,7 @@ class TorrentListItem extends StatelessWidget {
 				color: Colors.transparent,
 				child: InkWell(
 					onTap: onTap,
+					onLongPressUp: onLongTap,
 					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
 					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Padding(
@@ -171,20 +172,9 @@ class TorrentListItem extends StatelessWidget {
 							horizontal: 20,
 							vertical: 10,
 						),
-						child: Row(
-							children: [
-								Expanded(
-									child: Text(label,
-										overflow: TextOverflow.ellipsis,
-										maxLines: 2,
-									),
-								),
-								IconButton(
-									icon: Icon(Icons.assignment),
-									tooltip: 'Скопировать magnet-ссылку',
-									onPressed: onPressedCopyToClipboard,
-								),
-							],
+						child: Text(label,
+							overflow: TextOverflow.ellipsis,
+							maxLines: 2,
 						),
 					),
 				),

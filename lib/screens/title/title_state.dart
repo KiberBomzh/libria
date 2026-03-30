@@ -64,7 +64,7 @@ class _TitleState extends State<TitleScreen> {
 									return SimpleDialogOption(
 										child: TorrentListItem(
 											label: torrents[index]['label'],
-											onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
+											onLongTap: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
 											onTap: () {
 												launchUrl(Uri.parse(torrents[index]['magnet']));
 												Navigator.pop(context);
