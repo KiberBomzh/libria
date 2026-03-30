@@ -74,6 +74,15 @@ class _CatalogState extends State<Catalog> {
 						onPressed: _openSearchDialog,
 						tooltip: 'Поиск',
 					),
+					IconButton(
+						icon: const Icon(Icons.settings),
+						onPressed: () => Navigator.push(context,
+							MaterialPageRoute(
+								builder: (context) => SettingsScreen(),
+							),
+						),
+						tooltip: 'Настройки',
+					),
 				],
 			),
 			body: _buildBody(context),

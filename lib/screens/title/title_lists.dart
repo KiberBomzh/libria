@@ -60,6 +60,7 @@ class _EpisodesListState extends State<EpisodesList> {
 
 	Widget _buildEpisodesList() {
 		return ListView.builder(
+			reverse: Preferences.getBool('reverse_episodes_sorting') ?? false,
 			controller: scrollController,
 			itemCount: widget.episodes.length,
 			itemBuilder: (context, index) {
@@ -175,20 +176,3 @@ class _EpisodesListState extends State<EpisodesList> {
 			setState(() { lastIndex = index; });
 	}
 }
-
-
-// class TorrentsList extends StatelessWidget {
-// 	Widget _buildTorrentsList() {
-// 		return ListView.builder(
-// 			itemCount: widget.torrents.length,
-// 			itemBuilder: (context, index) {
-// 				return TorrentListItem(
-// 					label: widget.torrents[index]['label'],
-// 					onPressedCopyToClipboard: () => Clipboard.setData(ClipboardData(text: widget.torrents[index]['magnet'])),
-// 					onTap: () => launchUrl(Uri.parse(widget.torrents[index]['magnet'])),
-// 				);
-// 			}
-// 		);
-// 	}
-// 
-// }

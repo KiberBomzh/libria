@@ -98,6 +98,15 @@ class _TitleState extends State<TitleScreen> {
 						onPressed: _openSearchDialog,
 						tooltip: 'Поиск',
 					),
+					IconButton(
+						icon: const Icon(Icons.settings),
+						onPressed: () => Navigator.push(context,
+							MaterialPageRoute(
+								builder: (context) => SettingsScreen(),
+							),
+						),
+						tooltip: 'Настройки',
+					),
 				],
 			),
 			body: (!_isWideScreen(context) && _titleResponse.isNotEmpty)
