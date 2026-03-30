@@ -103,7 +103,8 @@ class _TitleState extends State<TitleScreen> {
 			body: (!_isWideScreen(context) && _titleResponse.isNotEmpty)
 				? SlidingUpPanel(
 					minHeight: 120,
-					maxHeight: MediaQuery.of(context).size.height * 0.7,
+					maxHeight: MediaQuery.of(context).size.height * 0.9,
+					snapPoint: 0.5,
 
 					borderRadius: BorderRadius.circular(12),
 					color: Theme.of(context).colorScheme.surfaceVariant,
