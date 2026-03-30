@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:libria/services/anilibria_api.dart';
 import 'package:libria/services/preferences.dart';
+import 'package:libria/services/settings_provider.dart';
 import 'package:libria/screens/catalog/catalog.dart';
 import 'package:libria/screens/title/title.dart';
 
@@ -9,7 +12,12 @@ import 'package:libria/screens/title/title.dart';
 void main() async {
 	WidgetsFlutterBinding.ensureInitialized();
 	await Preferences.init();
-	runApp(const MyApp());
+	runApp(
+		ChangeNotifierProvider(
+			create: (_) => SettingsProvider(),
+			child: const MyApp()
+		),
+	);
 }
 
 var base_url = 'https://anilibria.top';
@@ -23,6 +31,11 @@ class MyApp extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
+		final settings = context.watch<SettingsProvider>();
+		final ThemeMode? themeMode = settings.isDarkTheme!
+			? ThemeMode.dark
+			: ThemeMode.light;
+
 		return MaterialApp(
 			title: 'Libria',
 			theme: ThemeData(
@@ -47,7 +60,7 @@ class MyApp extends StatelessWidget {
 					seedColor: Colors.blue,
 				),
 			),
-			themeMode: ThemeMode.system,
+			themeMode: themeMode ?? ThemeMode.system,
 			home: _buildHome(),
 		);
 	}

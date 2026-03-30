@@ -59,8 +59,10 @@ class _EpisodesListState extends State<EpisodesList> {
 	}
 
 	Widget _buildEpisodesList() {
+		final settings = context.watch<SettingsProvider>();
+
 		return ListView.builder(
-			reverse: Preferences.getBool('reverse_episodes_sorting') ?? false,
+			reverse: settings.reverseEpisodesSorting,
 			controller: scrollController,
 			itemCount: widget.episodes.length,
 			itemBuilder: (context, index) {

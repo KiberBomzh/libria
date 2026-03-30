@@ -1,46 +1,35 @@
 import 'package:flutter/material.dart';
 
-import 'package:libria/services/preferences.dart';
+import 'package:provider/provider.dart';
+
+import 'package:libria/services/settings_provider.dart';
 
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
 	SettingsScreen({super.key});
 
 	@override
-	State<SettingsScreen> createState() => _SettingsState();
-}
-
-class _SettingsState extends State<SettingsScreen> {
-	bool _reverseEpisodesSorting = Preferences.getBool('reverse_episodes_sorting') ?? false;
-	bool _isDarkTheme = Preferences.getBool('is_dark_theme') ?? false;
-
-
-	@override
-	Widget build(BuildContext) {
+	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(title: Text('Настройки')),
-			body: _buildBody(),
+			body: _buildBody(context),
 		);
 	}
 
-	Widget _buildBody() {
+	Widget _buildBody(BuildContext context) {
+		final settings = context.watch<SettingsProvider>();
+
 		return ListView(
 			children: [
 				_buildSwitchListItem(
 					text: 'Темная тема',
-					switchValue: _isDarkTheme,
-					onChanged: (v) {
-						setState(() { _isDarkTheme = v; });
-						Preferences.setBool('is_dark_theme', v);
-					},
+					switchValue: settings.isDarkTheme ?? false,
+					onChanged: settings.setDarkTheme,
 				),
 				_buildSwitchListItem(
 					text: 'Обратная сортировка эпизодов',
-					switchValue: _reverseEpisodesSorting,
-					onChanged: (v) {
-						setState(() { _reverseEpisodesSorting = v; });
-						Preferences.setBool('reverse_episodes_sorting', v);
-					},
+					switchValue: settings.reverseEpisodesSorting,
+					onChanged: settings.setReverseEpisodesSorting,
 				),
 			],
 		);
