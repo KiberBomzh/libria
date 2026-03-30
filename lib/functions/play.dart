@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:libria/main.dart';
 import 'package:libria/services/preferences.dart';
 
@@ -14,7 +15,18 @@ Future<bool> play(BuildContext context, {
 	required LastTitleInfo currentTitle,
 	required int episodeIndex,
 }) async {
-	int? q = await _showQualityDialog(context,
+	int? def_q = Preferences.getInt('default_video_quality');
+	if (def_q != null) {
+		if (def_q == 480) {
+			if (hls_480 == null) def_q = null;
+		} else if (def_q == 720) {
+			if (hls_720 == null) def_q = null;
+		} else if (def_q == 1080) {
+			if (hls_1080 == null) def_q = null;
+		}
+	}
+
+	int? q = def_q ?? await showQualityDialog(context,
 		isAvailable480: hls_480 != null,
 		isAvailable720: hls_720 != null,
 		isAvailable1080: hls_1080 != null,
@@ -55,7 +67,7 @@ void playLink(String link) {
 }
 
 
-Future<int?> _showQualityDialog(BuildContext context,
+Future<int?> showQualityDialog(BuildContext context,
 	{
 		required bool isAvailable480,
 		required bool isAvailable720,

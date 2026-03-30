@@ -32,9 +32,11 @@ class MyApp extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		final settings = context.watch<SettingsProvider>();
-		final ThemeMode? themeMode = settings.isDarkTheme!
-			? ThemeMode.dark
-			: ThemeMode.light;
+		final themeMode = (settings.isDarkTheme != null)
+			? settings.isDarkTheme!
+				? ThemeMode.dark
+				: ThemeMode.light
+			: ThemeMode.system;
 
 		return MaterialApp(
 			title: 'Libria',
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
 					seedColor: Colors.blue,
 				),
 			),
-			themeMode: themeMode ?? ThemeMode.system,
+			themeMode: themeMode,
 			home: _buildHome(),
 		);
 	}

@@ -58,6 +58,10 @@ class Preferences {
 	static bool? getBool(String key) {
 		return _prefs?.getBool(key);
 	}
+
+	static Future<void> remove(String key) async {
+		await _prefs?.remove(key);
+	}
 }
 
 

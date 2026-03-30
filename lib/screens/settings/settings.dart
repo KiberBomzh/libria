@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:libria/services/settings_provider.dart';
+import 'package:libria/functions/play.dart';
 
 
 class SettingsScreen extends StatelessWidget {
@@ -21,17 +22,74 @@ class SettingsScreen extends StatelessWidget {
 
 		return ListView(
 			children: [
-				_buildSwitchListItem(
-					text: 'Темная тема',
-					switchValue: settings.isDarkTheme ?? false,
-					onChanged: settings.setDarkTheme,
+				_buildListItem(context,
+					child: _buildSwitchListItem(
+						text: 'Темная тема',
+						switchValue: settings.isDarkTheme ?? false,
+						onChanged: settings.setDarkTheme,
+					),
 				),
-				_buildSwitchListItem(
-					text: 'Обратная сортировка эпизодов',
-					switchValue: settings.reverseEpisodesSorting,
-					onChanged: settings.setReverseEpisodesSorting,
+
+				_buildListItem(context,
+					child: _buildSwitchListItem(
+						text: 'Обратная сортировка эпизодов',
+						switchValue: settings.reverseEpisodesSorting,
+						onChanged: settings.setReverseEpisodesSorting,
+					),
+				),
+
+				_buildListItem(context,
+					onTap: () async {
+						final int? q = await showQualityDialog(context,
+							isAvailable480: true,
+							isAvailable720: true,
+							isAvailable1080: true,
+						);
+						if (q == null)
+							return;
+
+						await settings.setDefaultVideoQuality(q!);
+					},
+					child: Row(
+						children: [
+							Center(
+								child: Text('Качество по умолчанию', overflow: TextOverflow.ellipsis),
+							),
+							Expanded(child: Container()),
+						],
+					),
+				),
+
+				_buildListItem(context,
+					onTap: () => settings.resetToDefault(),
+					child: Row(
+						children: [
+							Center(
+								child: Text('Сбросить к настройкам по умолчанию', overflow: TextOverflow.ellipsis),
+							),
+							Expanded(child: Container()),
+						],
+					),
 				),
 			],
+		);
+	}
+
+	Widget _buildListItem(BuildContext context, {required Widget child, VoidCallback? onTap}) {
+		return Container(
+			height: 50,
+			child: Material(
+				color: Colors.transparent,
+				child: InkWell(
+					onTap: onTap,
+					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+					child: Container(
+						padding: const EdgeInsets.symmetric(horizontal: 10),
+						child: child,
+					),
+				),
+			),
 		);
 	}
 
@@ -40,18 +98,15 @@ class SettingsScreen extends StatelessWidget {
 		required bool switchValue,
 		required ValueChanged<bool> onChanged,
 	}) {
-		return Container(
-			margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-			child: Row(
-				children: [
-					Text(text),
-					Expanded(child: Container()),
-					Switch(
-						value: switchValue,
-						onChanged: onChanged,
-					),
-				],
-			),
+		return Row(
+			children: [
+				Text(text, overflow: TextOverflow.ellipsis),
+				Expanded(child: Container()),
+				Switch(
+					value: switchValue,
+					onChanged: onChanged,
+				),
+			],
 		);
 	}
 }
