@@ -56,8 +56,8 @@ class _TitleState extends State<TitleScreen> {
 					// title: const Text('Выберите качество'),
 					children: [
 						SizedBox(
-							height: MediaQuery.of(context).size.height * 0.5,
-							width: MediaQuery.of(context).size.width * 0.8,
+							height: MediaQuery.of(context).size.height * 0.7,
+							width: MediaQuery.of(context).size.height * 0.5,
 							child: ListView.builder(
 								itemCount: torrents.length,
 								itemBuilder: (context, index) {
