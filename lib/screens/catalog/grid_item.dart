@@ -48,6 +48,7 @@ class CatalogGridItem extends StatelessWidget {
 						// Title
 						Expanded(
 							child: Container(
+								padding: const EdgeInsets.symmetric(horizontal: 10),
 								child: Text( titleName,
 									maxLines: 2,
 									overflow: TextOverflow.ellipsis,
