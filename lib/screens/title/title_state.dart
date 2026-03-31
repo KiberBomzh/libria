@@ -108,139 +108,83 @@ class _TitleState extends State<TitleScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: const Text('Тайтл'),
-				actions: [
-					IconButton(
-						icon: const Icon(Icons.launch),
-						onPressed: () =>
-							launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.currentTitle.titleId.toString())),
-						tooltip: "Открыть в браузере",
-					),
-					IconButton(
-						icon: const Icon(Icons.search),
-						onPressed: _openSearchDialog,
-						tooltip: 'Поиск',
-					),
-					IconButton(
-						icon: const Icon(Icons.settings),
-						onPressed: () => Navigator.push(context,
-							MaterialPageRoute(
-								builder: (context) => SettingsScreen(),
-							),
-						),
-						tooltip: 'Настройки',
-					),
-				],
-			),
-			body: (!_isWideScreen(context) && _titleResponse.isNotEmpty)
-				? SlidingUpPanel(
-					minHeight: 120,
-					maxHeight: MediaQuery.of(context).size.height * 0.9,
-					snapPoint: 0.5,
-
-					borderRadius: BorderRadius.circular(12),
-					color: Theme.of(context).colorScheme.surfaceVariant,
-					backdropEnabled: true,
-
-					panelBuilder: (scrollController) {
-						return Container(
-							margin: const EdgeInsets.only(top: 10),
-							child: Column(
-								children: [
-									Container(
-										width: 40,
-										height: 5,
-										margin: const EdgeInsets.symmetric(vertical: 12),
-										decoration: BoxDecoration(
-											color: Colors.grey[400],
-											borderRadius: BorderRadius.circular(10),
-										),
-									),
-									Expanded(
-										child: EpisodesList(
-											titleName: _titleResponse['name']['main'],
-											episodes: _titleResponse['episodes'],
-											currentTitle: widget.currentTitle,
-											controller: scrollController,
-											onTapDownload: () =>
-												_openDownloadDialog(context, torrents: _titleResponse['torrents']),
-											isWideScreen: false,
-										),
-									),
-								],
-							),
-						);
-					},
-					body: _buildBody(),
-				)
-				: _buildBody(),
-		);
-	}
-
-
-	Widget _buildBody() {
 		if (_isLoading && _titleResponse.isEmpty) {
-			return const Center(
-				child: CircularProgressIndicator(),
-			);
-		}
-
-		if (_isError) {
-			return Center(
-				child: Column(
-					mainAxisAlignment: MainAxisAlignment.center,
-					children: [
-						const Icon( Icons.error_outline,
-							size: 60,
-							color: Colors.red,
-						),
-						const SizedBox(height: 16),
-						Text('Не удалось загрузить тайтл: $_errorMessage'),
-						const SizedBox(height: 16),
-						ElevatedButton(
-							onPressed: _loadTitle,
-							child: const Text('Попробовать снова'),
-						),
-					],
+			return _buildWithAppBar(
+				child: const Center(
+					child: CircularProgressIndicator(),
 				),
 			);
 		}
 
-
-		if (_isWideScreen(context)) {
-			return Row(
-				crossAxisAlignment: CrossAxisAlignment.start,
-				children: [
-					Expanded(
-						flex: 5,
-						child: _buildTitleDetails(),
-					),
-
-					Expanded(
-						flex: 5,
-						child: Container(
-							margin: const EdgeInsets.only(bottom: 5, right: 5),
-							decoration: BoxDecoration(
-								borderRadius: BorderRadius.circular(12),
-								color: Theme.of(context).colorScheme.surfaceVariant,
-							),
-							child: EpisodesList(
-								titleName: _titleResponse['name']['main'],
-								episodes: _titleResponse['episodes'],
-								currentTitle: widget.currentTitle,
-								onTapDownload: () =>
-									_openDownloadDialog(context, torrents: _titleResponse['torrents']),
-								isWideScreen: true,
-							),
+		if (_isError) {
+			return _buildWithAppBar(
+				child: Center(
+					child: Container(
+						margin: const EdgeInsets.all(50),
+						child: Column(
+							mainAxisAlignment: MainAxisAlignment.center,
+							children: [
+								const Icon( Icons.error_outline,
+									size: 60,
+									color: Colors.red,
+								),
+								const SizedBox(height: 16),
+								Text('Не удалось загрузить тайтл: $_errorMessage'),
+								const SizedBox(height: 16),
+								ElevatedButton(
+									onPressed: _loadTitle,
+									child: const Text('Попробовать снова'),
+								),
+							],
 						),
 					),
-				],
+				),
 			);
 		}
 
-		return _buildTitleDetails();
+		if (_isWideScreen(context))
+			return _buildWideScreenBody();
+
+
+		return _buildWithAppBar(
+			child: _buildBodyWithSlidingUpPanel(),
+		);
+	}
+
+	
+	PreferredSizeWidget _buildAppBar() {
+		return AppBar(
+			title: const Text('Тайтл'),
+			actions: [
+				IconButton(
+					icon: const Icon(Icons.launch),
+					tooltip: "Открыть в браузере",
+					onPressed: () =>
+						launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.currentTitle.titleId.toString())),
+				),
+				IconButton(
+					icon: const Icon(Icons.search),
+					tooltip: 'Поиск',
+					onPressed: _openSearchDialog,
+				),
+				IconButton(
+					icon: const Icon(Icons.settings),
+					tooltip: 'Настройки',
+					onPressed: () => Navigator.push(context,
+						MaterialPageRoute(
+							builder: (context) => SettingsScreen(),
+						),
+					),
+				),
+			],
+		);
+	}
+	
+	Widget _buildWithAppBar({ required Widget child }) {
+		return Scaffold(
+			appBar: _buildAppBar(),
+			body: child,
+		);
 	}
 
 	Widget _buildTitleDetails() {
@@ -263,6 +207,94 @@ class _TitleState extends State<TitleScreen> {
 						_titleResponse['episodes_total'].toString() : null
 				),
 			),
+		);
+	}
+
+	Widget _buildWideScreenBody() {
+		return Row(
+			crossAxisAlignment: CrossAxisAlignment.start,
+			children: [
+				Expanded(
+					flex: 1,
+					child: _buildWithAppBar(
+						child: _buildTitleDetails(),
+					),
+				),
+
+				Expanded(
+					flex: 1,
+					child: Container(
+						color: Theme.of(context).colorScheme.surface,
+						child: Container(
+							margin: const EdgeInsets.only(
+								top: 5,
+								bottom: 25,
+								right: 5,
+								left: 5,
+							),
+							decoration: BoxDecoration(
+								color: Theme.of(context).colorScheme.surfaceVariant,
+								border: Border.all(
+									width: 2,
+									color: Theme.of(context).colorScheme.outline,
+								),
+								borderRadius: BorderRadius.circular(12),
+							),
+							child: EpisodesList(
+								titleName: _titleResponse['name']['main'],
+								episodes: _titleResponse['episodes'],
+								currentTitle: widget.currentTitle,
+								onTapDownload: () =>
+									_openDownloadDialog(context, torrents: _titleResponse['torrents']),
+								isWideScreen: true,
+							),
+						),
+					),
+				),
+			],
+		);
+	}
+
+	Widget _buildBodyWithSlidingUpPanel() {
+		return SlidingUpPanel(
+			minHeight: 120,
+			maxHeight: MediaQuery.of(context).size.height * 0.9,
+			snapPoint: 0.5,
+
+			borderRadius: BorderRadius.circular(12),
+			color: Theme.of(context).colorScheme.surfaceVariant,
+			backdropEnabled: true,
+
+			panelBuilder: (scrollController) {
+				return Container(
+					margin: const EdgeInsets.only(top: 10),
+					child: Column(
+						children: [
+							Container(
+								width: 40,
+								height: 5,
+								margin: const EdgeInsets.symmetric(vertical: 12),
+								decoration: BoxDecoration(
+									color: Colors.grey[400],
+									borderRadius: BorderRadius.circular(10),
+								),
+							),
+							Expanded(
+								child: EpisodesList(
+									titleName: _titleResponse['name']['main'],
+									episodes: _titleResponse['episodes'],
+									currentTitle: widget.currentTitle,
+									controller: scrollController,
+									onTapDownload: () =>
+										_openDownloadDialog(context, torrents: _titleResponse['torrents']),
+									isWideScreen: false,
+								),
+							),
+						],
+					),
+				);
+			},
+			body: _buildTitleDetails(),
 		);
 	}
 
