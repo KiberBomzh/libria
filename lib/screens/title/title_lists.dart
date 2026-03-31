@@ -4,6 +4,7 @@ part of 'title.dart';
 class EpisodesList extends StatefulWidget {
 	final VoidCallback onTapDownload;
 
+	final String titleName;
 	final List<dynamic> episodes;
 	final ScrollController? controller;
 	LastTitleInfo currentTitle;
@@ -11,6 +12,7 @@ class EpisodesList extends StatefulWidget {
 
 	EpisodesList({
 		Key? key,
+		required this.titleName,
 		required this.onTapDownload,
 		required this.episodes,
 		required this.currentTitle,
@@ -78,6 +80,9 @@ class _EpisodesListState extends State<EpisodesList> {
 							hls_1080: widget.episodes[index]['hls_1080'],
 							currentTitle: widget.currentTitle,
 							episodeIndex: index,
+							titleName: widget.titleName,
+							episodeName: widget.episodes[index]['name'],
+							episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 						);
 						if (isSucces)
 							setState(() { lastIndex = index; });
@@ -154,7 +159,11 @@ class _EpisodesListState extends State<EpisodesList> {
 						tooltip: 'Играть',
 						onPressed: () {
 							if (lastIndex != null) {
-								playLink(widget.currentTitle.episodeLink!);
+								playLink(widget.currentTitle.episodeLink!,
+									titleName: widget.titleName,
+									episodeName: widget.episodes[lastIndex!]['name'],
+									episodeOrdinal: widget.episodes[lastIndex!]['ordinal'].toString(),
+								);
 							} else {
 								_playEpisode(0);
 							}
@@ -172,6 +181,9 @@ class _EpisodesListState extends State<EpisodesList> {
 			hls_1080: widget.episodes[index]['hls_1080'],
 			currentTitle: widget.currentTitle,
 			episodeIndex: index,
+			titleName: widget.titleName,
+			episodeName: widget.episodes[index]['name'],
+			episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 		);
 		print(isSucces);
 		if (isSucces)

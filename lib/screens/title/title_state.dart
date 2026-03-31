@@ -135,6 +135,7 @@ class _TitleState extends State<TitleScreen> {
 									),
 									Expanded(
 										child: EpisodesList(
+											titleName: _titleResponse['name']['main'],
 											episodes: _titleResponse['episodes'],
 											currentTitle: widget.currentTitle,
 											controller: scrollController,
@@ -201,6 +202,7 @@ class _TitleState extends State<TitleScreen> {
 								color: Theme.of(context).colorScheme.surfaceVariant,
 							),
 							child: EpisodesList(
+								titleName: _titleResponse['name']['main'],
 								episodes: _titleResponse['episodes'],
 								currentTitle: widget.currentTitle,
 								onTapDownload: () =>

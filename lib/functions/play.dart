@@ -14,6 +14,9 @@ Future<bool> play(BuildContext context, {
 	required String? hls_1080,
 	required LastTitleInfo currentTitle,
 	required int episodeIndex,
+	required String titleName,
+	required String? episodeName,
+	required String episodeOrdinal,
 }) async {
 	int? def_q = Preferences.getInt('default_video_quality');
 	if (def_q != null) {
@@ -46,20 +49,33 @@ Future<bool> play(BuildContext context, {
 
 	currentTitle.episodeIndex = episodeIndex;
 	await Preferences.setLastTitle(currentTitle);
-	playLink(currentTitle.episodeLink!);
+	playLink(currentTitle.episodeLink!,
+		titleName: titleName,
+		episodeName: episodeName,
+		episodeOrdinal: episodeOrdinal,
+	);
 	return true;
 }
 
-void playLink(String link) {
+void playLink(String link,
+	{
+		required String titleName,
+		required String? episodeName,
+		required String episodeOrdinal,
+	}
+) {
+	final title = titleName + ' - ' + 'Эпизод ' + episodeOrdinal + '. ' + (episodeName ?? '');
 	if (Platform.isAndroid) {
 		final intent = AndroidIntent(
 			action: 'android.intent.action.VIEW',
 			data: link,
 			type: 'video/mp4',
+			arguments: {'title': title},
 		);
 		intent.launch();
 	} else {
 		Process.run('mpv', [
+			'--title=$title',
 			'--save-position-on-quit',
 			link,
 		]);
