@@ -48,22 +48,47 @@ class _TitleState extends State<TitleScreen> {
 	}
 
 	Future<void> _openDownloadDialog(BuildContext context, {required List<dynamic> torrents}) async {
+		const oneElementHeight = 90;
+		final elementsHeight = oneElementHeight * torrents.length + 50;
+
+		final screenHeight = MediaQuery.of(context).size.height;
+		final maxDialogHeight = screenHeight * 0.7;
+
+		final dialogHeight = (elementsHeight > maxDialogHeight)
+			? maxDialogHeight
+			: elementsHeight;
+		final dialogWidth = dialogHeight * ( 2 / 3 );
+
 		return showDialog<void>(
 			context: context,
 			barrierDismissible: true,
 			builder: (context) {
 				return SimpleDialog(
-					// title: const Text('Выберите качество'),
+					title: Container(
+						child: Column(
+							children: [
+								Text('Выберите торрент',
+									style: Theme.of(context).textTheme.titleLarge,
+								),
+								Text('Долгое нажатие чтоб скопировать magnet-ссылку',
+									style: Theme.of(context).textTheme.titleSmall?.copyWith(
+										color: Colors.grey,
+									),
+								),
+							],
+						),
+					),
 					children: [
 						SizedBox(
-							height: MediaQuery.of(context).size.height * 0.7,
-							width: MediaQuery.of(context).size.height * 0.5,
+							height: dialogHeight.toDouble(),
+							width: dialogWidth,
 							child: ListView.builder(
 								itemCount: torrents.length,
 								itemBuilder: (context, index) {
 									return SimpleDialogOption(
 										child: TorrentListItem(
 											label: torrents[index]['label'],
+											size: torrents[index]['size'],
 											onLongTap: () => Clipboard.setData(ClipboardData(text: torrents[index]['magnet'])),
 											onTap: () {
 												launchUrl(Uri.parse(torrents[index]['magnet']));

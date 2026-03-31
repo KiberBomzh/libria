@@ -140,12 +140,14 @@ class TorrentListItem extends StatelessWidget {
 	final VoidCallback onTap;
 	final VoidCallback onLongTap;
 	final String label;
+	final int size;
 	
 	const TorrentListItem({
 		Key? key,
 		required this.onTap,
 		required this.onLongTap,
 		required this.label,
+		required this.size, // в байтах
 	}) : super(key: key);
 
 
@@ -155,11 +157,12 @@ class TorrentListItem extends StatelessWidget {
 			decoration: BoxDecoration(
 				border: Border.all(
 					width: 2,
-					color: Theme.of(context).colorScheme.primary,
+					color: Theme.of(context).colorScheme.outline,
 				),
 				borderRadius: BorderRadius.circular(12),
 			),
 			margin: const EdgeInsets.symmetric(vertical: 5),
+			height: 80,
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(
@@ -167,14 +170,27 @@ class TorrentListItem extends StatelessWidget {
 					onLongPressUp: onLongTap,
 					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
 					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
-					child: Padding(
-						padding: EdgeInsets.symmetric(
-							horizontal: 20,
-							vertical: 10,
-						),
-						child: Text(label,
-							overflow: TextOverflow.ellipsis,
-							maxLines: 2,
+					child: Container(
+						padding: const EdgeInsets.all(10),
+						child: Column(
+							crossAxisAlignment: CrossAxisAlignment.start,
+							children: [
+								Text(label,
+									overflow: TextOverflow.ellipsis,
+									maxLines: 2,
+									style: Theme.of(context).textTheme.bodyMedium,
+								),
+								Expanded(child: Container()),
+								Row(
+									children: [
+										Expanded(child: Container()),
+										Text('Размер: ' + (((size / (1024 * 1024 * 1024)) * 10).round() / 10).toString() + ' GiB',
+											textAlign: TextAlign.right,
+											style: Theme.of(context).textTheme.bodySmall,
+										),
+									],
+								)
+							],
 						),
 					),
 				),
