@@ -143,11 +143,17 @@ class _TitleState extends State<TitleScreen> {
 		}
 
 		if (_isWideScreen(context))
-			return _buildWideScreenBody();
+			return SafeArea(
+				bottom: true,
+				child: _buildWideScreenBody(),
+			);
 
 
-		return _buildWithAppBar(
-			child: _buildBodyWithSlidingUpPanel(),
+		return SafeArea(
+			bottom: true,
+			child: _buildWithAppBar(
+				child: _buildBodyWithSlidingUpPanel(),
+			),
 		);
 	}
 
@@ -228,7 +234,7 @@ class _TitleState extends State<TitleScreen> {
 						child: Container(
 							margin: const EdgeInsets.only(
 								top: 5,
-								bottom: 25,
+								bottom: 20,
 								right: 5,
 								left: 5,
 							),
