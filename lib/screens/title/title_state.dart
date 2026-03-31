@@ -151,8 +151,14 @@ class _TitleState extends State<TitleScreen> {
 
 		return SafeArea(
 			bottom: true,
-			child: _buildWithAppBar(
-				child: _buildBodyWithSlidingUpPanel(),
+			child: Scaffold(
+				appBar: _buildAppBar(),
+				body: Stack(
+					children: [
+						_buildTitleDetails(),
+						_buildSlidingUpPanel(),
+					],
+				),
 			),
 		);
 	}
@@ -194,15 +200,9 @@ class _TitleState extends State<TitleScreen> {
 	}
 
 	Widget _buildTitleDetails() {
-		ScrollController scrollController = ScrollController();
-
-		return Scrollbar(
-			interactive: true,
-			thickness: 4.0,
-			radius: const Radius.circular(12),
-			controller: scrollController,
-			child: SingleChildScrollView(
-				controller: scrollController,
+		return SingleChildScrollView(
+			child: Container(
+				padding: (!_isWideScreen(context)) ? const EdgeInsets.only(bottom: 135) : null,
 				child: TitleDetails(
 					nameRu: _titleResponse['name']['main'],
 					nameEn: _titleResponse['name']['english'],
@@ -210,7 +210,7 @@ class _TitleState extends State<TitleScreen> {
 					description: _titleResponse['description'],
 					type: _titleResponse['type']['description'],
 					episodesTotal: (_titleResponse['episodes_total'] != null) ?
-						_titleResponse['episodes_total'].toString() : null
+						_titleResponse['episodes_total'].toString() : null,
 				),
 			),
 		);
@@ -261,7 +261,7 @@ class _TitleState extends State<TitleScreen> {
 		);
 	}
 
-	Widget _buildBodyWithSlidingUpPanel() {
+	Widget _buildSlidingUpPanel() {
 		return SlidingUpPanel(
 			minHeight: 120,
 			maxHeight: MediaQuery.of(context).size.height * 0.9,
@@ -300,7 +300,6 @@ class _TitleState extends State<TitleScreen> {
 					),
 				);
 			},
-			body: _buildTitleDetails(),
 		);
 	}
 
