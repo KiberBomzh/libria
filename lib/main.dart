@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
 				),
 				colorScheme: ColorScheme.fromSeed(
 					brightness: Brightness.light,
-					seedColor: Colors.blue,
+					seedColor: settings.colorAccent,
 				),
 			),
 			darkTheme: ThemeData(
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
 				),
 				colorScheme: ColorScheme.fromSeed(
 					brightness: Brightness.dark,
-					seedColor: Colors.blue,
+					seedColor: settings.colorAccent,
 				),
 			),
 			themeMode: themeMode,

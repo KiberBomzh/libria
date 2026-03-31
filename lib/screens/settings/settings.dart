@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:libria/services/settings_provider.dart';
 import 'package:libria/functions/play.dart';
 
+import 'package:libria/screens/settings/color_picker_dialog.dart';
+
 
 class SettingsScreen extends StatelessWidget {
 	SettingsScreen({super.key});
@@ -27,6 +29,24 @@ class SettingsScreen extends StatelessWidget {
 						text: 'Темная тема',
 						switchValue: settings.isDarkTheme ?? false,
 						onChanged: settings.setDarkTheme,
+					),
+				),
+
+				_buildListItem(context,
+					onTap: () => showDialog<void>(
+						context: context,
+						builder: (context) => ColorPickerDialog(
+							initialColor: settings.colorAccent,
+							onColorSelected: settings.setColorAccent,
+						),
+					),
+					child: Row(
+						children: [
+							Center(
+								child: Text('Цветовой акцент приложения', overflow: TextOverflow.ellipsis),
+							),
+							Expanded(child: Container()),
+						],
 					),
 				),
 
