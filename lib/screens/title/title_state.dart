@@ -7,6 +7,8 @@ class _TitleState extends State<TitleScreen> {
 	bool _isError = false;
 	String _errorMessage = '';
 
+	bool _isBottomSheetClosed = true;
+
 
 	@override
 	void initState() {
@@ -149,16 +151,16 @@ class _TitleState extends State<TitleScreen> {
 			);
 
 
-		return SafeArea(
-			bottom: true,
-			child: Scaffold(
-				appBar: _buildAppBar(),
-				body: Stack(
-					children: [
-						_buildTitleDetails(),
-						_buildSlidingUpPanel(),
-					],
-				),
+		return Scaffold(
+			appBar: _buildAppBar(),
+			body: Stack(
+				children: [
+					_buildTitleDetails(),
+					SafeArea(
+						bottom: _isBottomSheetClosed,
+						child: _buildSlidingUpPanel(),
+					),
+				],
 			),
 		);
 	}
@@ -270,6 +272,9 @@ class _TitleState extends State<TitleScreen> {
 			borderRadius: BorderRadius.circular(12),
 			color: Theme.of(context).colorScheme.surfaceVariant,
 			backdropEnabled: true,
+
+			onPanelClosed: () => setState(() { _isBottomSheetClosed = true; }),
+			onPanelOpened: () => setState(() { _isBottomSheetClosed = false; }),
 
 			panelBuilder: (scrollController) {
 				return Container(
