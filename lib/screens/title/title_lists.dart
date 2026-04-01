@@ -87,6 +87,22 @@ class _EpisodesListState extends State<EpisodesList> {
 						if (isSucces)
 							setState(() { lastIndex = index; });
 					},
+					onTapDownload: () async {
+						String? link = await askQuality(context,
+							hls_480: widget.episodes[index]['hls_480'],
+							hls_720: widget.episodes[index]['hls_720'],
+							hls_1080: widget.episodes[index]['hls_1080'],
+						);
+						if (link == null)
+							return;
+
+						SharePlus.instance.share(
+							ShareParams(
+								text: link,
+								title: widget.titleName + ' - ' + 'Эпизод ' + widget.episodes[index]['ordinal'].toString(),
+							)
+						);
+					},
 				);
 			}
 		);

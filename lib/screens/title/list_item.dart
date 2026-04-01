@@ -3,6 +3,7 @@ part of 'title.dart';
 
 class EpisodeListItem extends StatelessWidget {
 	final VoidCallback onTap;
+	final VoidCallback onTapDownload;
 
 	final String ordinal;
 	final String? name;
@@ -12,6 +13,7 @@ class EpisodeListItem extends StatelessWidget {
 	const EpisodeListItem({
 		Key? key,
 		required this.onTap,
+		required this.onTapDownload,
 		required this.ordinal,
 		required this.currentIndex,
 		this.lastIndex,
@@ -82,6 +84,14 @@ class EpisodeListItem extends StatelessWidget {
 										(name == null) ? '' : name.toString(),
 										style: textStyle,
 									),
+								),
+
+								SizedBox(width: 16),
+
+								IconButton(
+									icon: Icon(Icons.download),
+									tooltip: 'Скачать',
+									onPressed: onTapDownload,
 								),
 							],
 						),

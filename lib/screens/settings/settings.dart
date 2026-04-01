@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:libria/services/settings_provider.dart';
-import 'package:libria/functions/play.dart';
+import 'package:libria/functions/ask_quality.dart';
 
 import 'package:libria/screens/settings/color_picker_dialog.dart';
 
