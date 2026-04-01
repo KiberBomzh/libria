@@ -62,12 +62,16 @@ class _EpisodesListState extends State<EpisodesList> {
 
 	Widget _buildEpisodesList() {
 		final settings = context.watch<SettingsProvider>();
+		final bool isReverse = settings.reverseEpisodesSorting;
 
 		return ListView.builder(
-			reverse: settings.reverseEpisodesSorting,
 			controller: scrollController,
 			itemCount: widget.episodes.length,
 			itemBuilder: (context, index) {
+				index = (isReverse)
+					? _getReversedIndex(widget.episodes.length, index)
+					: index;
+
 				return EpisodeListItem(
 					ordinal: widget.episodes[index]['ordinal'].toString(),
 					name: widget.episodes[index]['name'],
@@ -205,4 +209,7 @@ class _EpisodesListState extends State<EpisodesList> {
 		if (isSucces)
 			setState(() { lastIndex = index; });
 	}
+
+
+	int _getReversedIndex(int length, int index ) { return length - 1 - index; }
 }
