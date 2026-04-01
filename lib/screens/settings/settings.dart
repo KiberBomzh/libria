@@ -25,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
 		return ListView(
 			children: [
 				_buildListItem(context,
-					child: _buildSwitchListItem(
+					child: _buildSwitchListItem(context,
 						text: 'Темная тема',
 						switchValue: settings.isDarkTheme ?? false,
 						onChanged: settings.setDarkTheme,
@@ -43,7 +43,7 @@ class SettingsScreen extends StatelessWidget {
 					child: Row(
 						children: [
 							Center(
-								child: Text('Цветовой акцент приложения', overflow: TextOverflow.ellipsis),
+								child: _buildText(context, 'Цветовой акцент приложения'),
 							),
 							Expanded(child: Container()),
 						],
@@ -51,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
 				),
 
 				_buildListItem(context,
-					child: _buildSwitchListItem(
+					child: _buildSwitchListItem(context,
 						text: 'Обратная сортировка эпизодов',
 						switchValue: settings.reverseEpisodesSorting,
 						onChanged: settings.setReverseEpisodesSorting,
@@ -73,7 +73,7 @@ class SettingsScreen extends StatelessWidget {
 					child: Row(
 						children: [
 							Center(
-								child: Text('Качество по умолчанию', overflow: TextOverflow.ellipsis),
+								child: _buildText(context, 'Качество по умолчанию'),
 							),
 							Expanded(child: Container()),
 						],
@@ -85,7 +85,7 @@ class SettingsScreen extends StatelessWidget {
 					child: Row(
 						children: [
 							Center(
-								child: Text('Сбросить к настройкам по умолчанию', overflow: TextOverflow.ellipsis),
+								child: _buildText(context, 'Сбросить к настройкам по умолчанию'),
 							),
 							Expanded(child: Container()),
 						],
@@ -97,7 +97,7 @@ class SettingsScreen extends StatelessWidget {
 
 	Widget _buildListItem(BuildContext context, {required Widget child, VoidCallback? onTap}) {
 		return Container(
-			height: 50,
+			height: 70,
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(
@@ -105,7 +105,7 @@ class SettingsScreen extends StatelessWidget {
 					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
 					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Container(
-						padding: const EdgeInsets.symmetric(horizontal: 10),
+						padding: const EdgeInsets.symmetric(horizontal: 15),
 						child: child,
 					),
 				),
@@ -113,20 +113,28 @@ class SettingsScreen extends StatelessWidget {
 		);
 	}
 
-	Widget _buildSwitchListItem({
+	Widget _buildSwitchListItem(BuildContext context,
+	{
 		required String text,
 		required bool switchValue,
 		required ValueChanged<bool> onChanged,
 	}) {
 		return Row(
 			children: [
-				Text(text, overflow: TextOverflow.ellipsis),
+				_buildText(context, text),
 				Expanded(child: Container()),
 				Switch(
 					value: switchValue,
 					onChanged: onChanged,
 				),
 			],
+		);
+	}
+
+	Widget _buildText(BuildContext context, String text) {
+		return Text(text,
+			overflow: TextOverflow.ellipsis,
+			style: Theme.of(context).textTheme.bodyLarge,
 		);
 	}
 }
