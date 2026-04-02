@@ -38,17 +38,6 @@ class _TitleState extends State<TitleScreen> {
 		}
 	}
 
-	void _openSearchDialog() async {
-		final q = await SearchDialog.show(context);
-		if (q != null && q.isNotEmpty) {
-			Navigator.push(context,
-				MaterialPageRoute(
-					builder: (context) => Catalog(searchQuery: q),
-				),
-			);
-		}
-	}
-
 	Future<void> _openDownloadDialog(BuildContext context, {required List<dynamic> torrents}) async {
 		const oneElementHeight = 90;
 		final elementsHeight = oneElementHeight * torrents.length + 50;
@@ -177,9 +166,13 @@ class _TitleState extends State<TitleScreen> {
 						launchUrl(Uri.parse(base_url + '/anime/releases/release/' + widget.currentTitle.titleId.toString())),
 				),
 				IconButton(
-					icon: const Icon(Icons.search),
-					tooltip: 'Поиск',
-					onPressed: _openSearchDialog,
+					icon: const Icon(Icons.grid_view),
+					tooltip: 'Каталог',
+					onPressed: () => Navigator.push(context,
+						MaterialPageRoute(
+							builder: (context) => Catalog(),
+						),
+					),
 				),
 				IconButton(
 					icon: const Icon(Icons.settings),
