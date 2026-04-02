@@ -11,7 +11,6 @@ import 'package:libria/screens/settings/settings.dart';
 
 part 'catalog_state.dart';
 part 'grid_item.dart';
-part 'search_dialog.dart';
 
 
 class Catalog extends StatefulWidget {

@@ -7,13 +7,17 @@ class _CatalogState extends State<Catalog> {
 	bool _isLoading = false;
 	bool _isError = false;
 	String _errorMessage = '';
-	String? _currentSearchQuery;
+	String _currentSearchQuery = '';
+
+	final TextEditingController _textController = TextEditingController();
 
 
 	@override
 	void initState() {
 		super.initState();
-		_currentSearchQuery = widget.searchQuery;
+		_currentSearchQuery = widget.searchQuery ?? '';
+
+		_textController.text = _currentSearchQuery;
 		_loadTitles();
 	}
 
@@ -40,39 +44,22 @@ class _CatalogState extends State<Catalog> {
 		}
 	}
 
-	void _openSearchDialog() async {
-		final q = await SearchDialog.show(context, query: _currentSearchQuery ?? '');
-		if (q != null && q.isNotEmpty) {
-			if (_currentSearchQuery == null) {
-				Navigator.push(context,
-					MaterialPageRoute(
-						builder: (context) => Catalog(searchQuery: q),
-					),
-				);
-			} else {
-				setState(() {
-					_currentSearchQuery = q;
-					_catalogResponse = {};
-				});
-				_loadTitles();
-			}
-		}
-	}
-
 
 
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: Text(
-					(_currentSearchQuery == null) ? 'Каталог' : _currentSearchQuery!
+				centerTitle: true,
+				title: Padding(
+					padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+					child: _buildSearchTextField(),
 				),
-				actions: [
+				actions: [ // Добавить кнопку вызова slidingUpPanel с фильтрами
 					IconButton(
-						icon: const Icon(Icons.search),
-						onPressed: _openSearchDialog,
-						tooltip: 'Поиск',
+						icon: const Icon(Icons.filter_alt),
+						onPressed: () {},
+						tooltip: 'Фильтры',
 					),
 					IconButton(
 						icon: const Icon(Icons.settings),
@@ -98,23 +85,26 @@ class _CatalogState extends State<Catalog> {
 
 		if (_isError) {
 			return Center(
-				child: Column(
-					mainAxisAlignment: MainAxisAlignment.center,
-					children: [
-						const Icon( Icons.error_outline,
-							size: 60,
-							color: Colors.red,
-						),
-						const SizedBox(height: 16),
-						Text( 'Ошибка загрузки: $_errorMessage', 
-							textAlign: TextAlign.center,
-						),
-						const SizedBox(height: 16),
-						ElevatedButton(
-							onPressed: _loadTitles,
-							child: const Text('Попробовать снова'),	
-						),
-					],
+				child: Container(
+					margin: const EdgeInsets.all(50),
+					child: Column(
+						mainAxisAlignment: MainAxisAlignment.center,
+						children: [
+							const Icon( Icons.error_outline,
+								size: 60,
+								color: Colors.red,
+							),
+							const SizedBox(height: 16),
+							Text( 'Ошибка загрузки: $_errorMessage', 
+								textAlign: TextAlign.center,
+							),
+							const SizedBox(height: 16),
+							ElevatedButton(
+								onPressed: _loadTitles,
+								child: const Text('Попробовать снова'),	
+							),
+						],
+					),
 				),
 			);
 		}
@@ -125,7 +115,7 @@ class _CatalogState extends State<Catalog> {
 					mainAxisAlignment: MainAxisAlignment.center,
 					children: [
 						Icon( Icons.info,
-							size: 60,
+							size: 50,
 						),
 						const SizedBox(height: 16),
 
@@ -194,6 +184,62 @@ class _CatalogState extends State<Catalog> {
 					}
 				);
 			}
+		);
+	}
+
+	Widget _buildSearchTextField() {
+		return TextField(
+			controller: _textController,
+			autofocus: false,
+			decoration: InputDecoration(
+				hintText: 'Каталог',
+				prefixIcon: const Icon(Icons.search, color: Colors.grey),
+				suffixIcon: ValueListenableBuilder<TextEditingValue>(
+					valueListenable: _textController,
+					builder: (context, value, _) {
+						return value.text.isNotEmpty
+							? IconButton(
+								icon: const Icon(Icons.clear, color: Colors.grey),
+								onPressed: () {
+									_textController.clear();
+									_currentSearchQuery = '';
+								},
+							)
+							: const SizedBox.shrink();
+					},
+				),
+				border: OutlineInputBorder(
+					borderRadius: BorderRadius.circular(12),
+					borderSide: BorderSide(color: Colors.grey.shade300),
+				),
+				focusedBorder: OutlineInputBorder(
+					borderRadius: BorderRadius.circular(12),
+					borderSide: BorderSide(
+						color: Theme.of(context).colorScheme.primary,
+						width: 2,
+					),
+				),
+			),
+			onChanged: (value) {
+				setState(() {
+					_currentSearchQuery = value;
+				});
+			},
+			onSubmitted: (value) {
+				if (widget.searchQuery != null) {
+					setState(() {
+						_currentSearchQuery = value;
+						_catalogResponse = {};
+					});
+					_loadTitles();
+				} else {
+					Navigator.push(context,
+						MaterialPageRoute(
+							builder: (context) => Catalog(searchQuery: value),
+						),
+					);
+				}
+			},
 		);
 	}
 
