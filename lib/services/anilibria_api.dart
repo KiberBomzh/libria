@@ -16,12 +16,32 @@ class Anilibria {
 		));
 	
 
-	Future<Map<String, dynamic>> fetchCatalog(String? query) async {
-		final response = await this._dio.get(
-			'/anime/catalog/releases',
+	Future<Map<String, dynamic>> fetchCatalog(Map<String, dynamic> params) async {
+		String? query = params['query'];
+		String? sorting = switch (params['sorting']) {
+			(Sorting.FreshDesc) => 'FRESH_AT_DESC',
+			(Sorting.FreshAsc) => 'FRESH_AT_ASC',
+			(Sorting.RatingDesc) => 'RATING_DESC',
+			(Sorting.RatingAsc) => 'RATING_ASC',
+			(Sorting.YearDesc) => 'YEAR_DESC',
+			(Sorting.YearAsc) => 'YEAR_ASC',
+			_ => null,
+		};
+		List<int>? genres = params['genres'];
+		List<String>? types = params['types'];
+		List<String>? seasons = params['seasons'];
+		List<String>? age_ratings = params['age_ratings'];
+		List<String>? publish_statuses = params['publish_statuses'];
+		final response = await this._dio.get('/anime/catalog/releases',
 			queryParameters: {
 				'limit': 25,
 				'f[search]': query,
+				'f[sorting]': sorting,
+				'f[genres]': genres,
+				'f[types]': types,
+				'f[seasons]': seasons,
+				'f[age_ratings]': age_ratings,
+				'f[publish_statuses]': publish_statuses,
 			},
 		);
 
@@ -35,4 +55,14 @@ class Anilibria {
 
 		return response.data;
 	}
+}
+
+
+enum Sorting {
+	FreshDesc,
+	FreshAsc,
+	RatingDesc,
+	RatingAsc,
+	YearDesc,
+	YearAsc
 }

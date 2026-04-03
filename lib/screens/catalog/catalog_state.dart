@@ -7,7 +7,7 @@ class _CatalogState extends State<Catalog> {
 	bool _isLoading = false;
 	bool _isError = false;
 	String _errorMessage = '';
-	String _currentSearchQuery = '';
+	Map<String, dynamic> _currentSearchParameters = {};
 
 	final TextEditingController _textController = TextEditingController();
 
@@ -15,9 +15,9 @@ class _CatalogState extends State<Catalog> {
 	@override
 	void initState() {
 		super.initState();
-		_currentSearchQuery = widget.searchQuery ?? '';
+		_currentSearchParameters = widget.searchParameters ?? {};
 
-		_textController.text = _currentSearchQuery;
+		_textController.text = _currentSearchParameters['query'] ?? '';
 		_loadTitles();
 	}
 
@@ -29,7 +29,7 @@ class _CatalogState extends State<Catalog> {
 		});
 
 		try {
-			final resp = await libria.fetchCatalog(_currentSearchQuery);
+			final resp = await libria.fetchCatalog(_currentSearchParameters);
 			setState(() {
 				_catalogResponse = resp;
 				_isLoading = false;
@@ -58,7 +58,7 @@ class _CatalogState extends State<Catalog> {
 				actions: [ // Добавить кнопку вызова slidingUpPanel с фильтрами
 					IconButton(
 						icon: const Icon(Icons.filter_alt),
-						onPressed: () {},
+						onPressed: () => _buildFilterBottomSheet(),
 						tooltip: 'Фильтры',
 					),
 					IconButton(
@@ -202,7 +202,7 @@ class _CatalogState extends State<Catalog> {
 								icon: const Icon(Icons.clear, color: Colors.grey),
 								onPressed: () {
 									_textController.clear();
-									_currentSearchQuery = '';
+									_currentSearchParameters['query'] = '';
 								},
 							)
 							: const SizedBox.shrink();
@@ -222,24 +222,65 @@ class _CatalogState extends State<Catalog> {
 			),
 			onChanged: (value) {
 				setState(() {
-					_currentSearchQuery = value;
+					_currentSearchParameters['query'] = value;
 				});
 			},
 			onSubmitted: (value) {
-				if (widget.searchQuery != null) {
+				if (widget.searchParameters != null) {
 					setState(() {
-						_currentSearchQuery = value;
+						_currentSearchParameters['query'] = value;
 						_catalogResponse = {};
 					});
 					_loadTitles();
 				} else {
+					_textController.clear();
+					_currentSearchParameters['query'] = null;
 					Navigator.push(context,
 						MaterialPageRoute(
-							builder: (context) => Catalog(searchQuery: value),
+							builder: (context) => Catalog(searchParameters: {'query': value}),
 						),
 					);
 				}
 			},
+		);
+	}
+
+	void _buildFilterBottomSheet() {
+		showModalBottomSheet<void> (
+			context: context,
+			builder: (context) {
+				final screenHeight = MediaQuery.of(context).size.height;
+
+				return Container(
+					height: double.infinity,
+					width: double.infinity,
+					padding: const EdgeInsets.all(10),
+					decoration: BoxDecoration(
+						color: Theme.of(context).colorScheme.surfaceVariant,
+						borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+					),
+					child: Filters(
+						parameters: _currentSearchParameters,
+						onCancel: () {},
+						onDone: (params) {
+							Navigator.pop(context);
+							if (widget.searchParameters != null) {
+								setState(() {
+									_currentSearchParameters.addAll(params);
+									_catalogResponse = {};
+								});
+								_loadTitles();
+							} else {
+								Navigator.push(context,
+									MaterialPageRoute(
+										builder: (context) => Catalog(searchParameters: params),
+									),
+								);
+							}
+						},
+					),
+				);
+			}
 		);
 	}
 
