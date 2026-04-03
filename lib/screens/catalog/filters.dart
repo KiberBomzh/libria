@@ -18,7 +18,7 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-	final Map<String, dynamic> _allGenres;
+	// final Map<String, dynamic> _allGenres;
 	Sorting _currentSorting = Sorting.FreshDesc;
 	List<String> _genres = [];
 	List<String> _types = [];
@@ -30,6 +30,7 @@ class _FiltersState extends State<Filters> {
 	void initState() {
 		super.initState();
 		_getLists();
+		// _loadAllGenres();
 	}
 
 	void _getLists() {
@@ -42,6 +43,8 @@ class _FiltersState extends State<Filters> {
 			_publishStatuses = widget.parameters['publish_statuses'] ?? [];
 		});
 	}
+
+	// Future<void> _loadAllGenres() { }
 
 	@override
 	Widget build(BuildContext context) {

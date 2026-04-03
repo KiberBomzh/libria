@@ -51,11 +51,8 @@ class _CatalogState extends State<Catalog> {
 		return Scaffold(
 			appBar: AppBar(
 				centerTitle: true,
-				title: Padding(
-					padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-					child: _buildSearchTextField(),
-				),
-				actions: [ // Добавить кнопку вызова slidingUpPanel с фильтрами
+				title: _buildSearchTextField(),
+				actions: [
 					IconButton(
 						icon: const Icon(Icons.filter_alt),
 						onPressed: () => _buildFilterBottomSheet(),
@@ -192,6 +189,8 @@ class _CatalogState extends State<Catalog> {
 			controller: _textController,
 			autofocus: false,
 			decoration: InputDecoration(
+				constraints: BoxConstraints(maxHeight: 40),
+				contentPadding: const EdgeInsets.all(5),
 				hintText: 'Каталог',
 				prefixIcon: const Icon(Icons.search, color: Colors.grey),
 				suffixIcon: ValueListenableBuilder<TextEditingValue>(
