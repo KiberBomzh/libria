@@ -18,12 +18,29 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
+	final Map<String, dynamic> _allGenres;
 	Sorting _currentSorting = Sorting.FreshDesc;
+	List<String> _genres = [];
+	List<String> _types = [];
+	List<String> _seasons = [];
+	List<String> _ageRatings = [];
+	List<String> _publishStatuses = [];
 
 	@override
 	void initState() {
 		super.initState();
-		_currentSorting = widget.parameters['sorting'] ?? Sorting.FreshDesc;
+		_getLists();
+	}
+
+	void _getLists() {
+		setState(() {
+			_currentSorting = widget.parameters['sorting'] ?? Sorting.FreshDesc;
+			_genres = widget.parameters['genres'] ?? [];
+			_types = widget.parameters['types'] ?? [];
+			_seasons = widget.parameters['seasons'] ?? [];
+			_ageRatings = widget.parameters['age_ratings'] ?? [];
+			_publishStatuses = widget.parameters['publish_statuses'] ?? [];
+		});
 	}
 
 	@override
@@ -34,6 +51,58 @@ class _FiltersState extends State<Filters> {
 					child: ListView(
 						children: [
 							_buildSortTile(),
+
+
+							_buildTileWithChips(
+								title: 'Типы',
+								options: ['ТВ', 'ONA', 'WEB', 'OVA', 'OAD', 'Фильм', 'Дорама', 'Спешл'],
+								values: {
+									'ТВ': 'TV', 
+									'ONA': 'ONA',
+									'WEB': 'WEB',
+									'OVA': 'OVA',
+									'OAD': 'OAD',
+									'Фильм': 'MOVIE',
+									'Дорама': 'DORAMA',
+									'Спешл': 'SPECIAL'
+								},
+								selected: _types,
+							),
+
+							_buildTileWithChips(
+								title: 'Сезоны',
+								options: ['Зима', 'Весна', 'Лето', 'Осень'],
+								values: {
+									'Зима': 'winter',
+									'Весна': 'spring',
+									'Лето': 'summer',
+									'Осень': 'autumn'
+								},
+								selected: _seasons,
+							),
+
+							_buildTileWithChips(
+								title: 'Возрастные рейтинги',
+								options: ['R0+', 'R6+', 'R12+', 'R16+', 'R18+'],
+								values: {
+									'R0+': 'R0_PLUS',
+									'R6+': 'R6_PLUS',
+									'R12+': 'R12_PLUS',
+									'R16+': 'R16_PLUS',
+									'R18+': 'R18_PLUS'
+								},
+								selected: _ageRatings,
+							),
+
+							_buildTileWithChips(
+								title: 'Статусы',
+								options: ['Онгоинг', 'Завершено'],
+								values: {
+									'Онгоинг': 'IS_ONGOING',
+									'Завершено': 'IS_NOT_ONGOING'
+								},
+								selected: _publishStatuses,
+							),
 						]
 					),
 				),
@@ -41,6 +110,25 @@ class _FiltersState extends State<Filters> {
 					color: Theme.of(context).colorScheme.outline,
 				),
 				_buildBottomButtons(),
+			],
+		);
+	}
+
+	Widget _buildTileWithChips({
+		required String title,
+		required List<String> options,
+		required Map<String, String> values,
+		required List<String> selected
+	}) {
+		return ExpansionTile(
+			title: Text(title),
+			children: [
+				_buildFilterChips(
+					options: options,
+					values: values,
+					selected: selected
+				),
+				SizedBox(height: 10),
 			],
 		);
 	}
@@ -68,6 +156,10 @@ class _FiltersState extends State<Filters> {
 					style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
 					onPressed: () => widget.onDone({
 						'sorting': _currentSorting,
+						'types': _types,
+						'seasons': _seasons,
+						'age_ratings': _ageRatings,
+						'publish_statuses': _publishStatuses,
 					}),
 				),
 			]
@@ -95,23 +187,35 @@ class _FiltersState extends State<Filters> {
 		);
 	}
 
-	Widget _buildSortingItem({
-		required String text,
-		bool? isDownward,
+	Widget _buildFilterChips({
+		required List<String> options,
+		required Map<String, String> values,
+		required List<String> selected
 	}) {
-		return Row(
-			children: [
-				Text(text),
-				Spacer(),
+		return Wrap(
+			spacing: 8,
+			runSpacing: 12,
+			children: options.map((option) {
+				final bool isSelected = selected.contains(values[option]);
 
-				if (isDownward != null)
-					Icon((isDownward!) ? Icons.arrow_downward : Icons.arrow_upward,
-						color: Theme.of(context).colorScheme.primary,
-						size: 20,
-					),
-			],
+				return FilterChip(
+					label: Text(option),
+					backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+					selected: isSelected,
+					onSelected: (bool value) {
+						setState(() {
+							if (value) {
+								selected.add(values[option]!);
+							} else {
+								selected.remove(values[option]);
+							}
+						});
+					},
+				);
+			}).toList(),
 		);
 	}
+
 
 	Widget _buildSortTile() {
 		return ExpansionTile(
@@ -178,6 +282,24 @@ class _FiltersState extends State<Filters> {
 					}),
 				),
 			]
+		);
+	}
+
+	Widget _buildSortingItem({
+		required String text,
+		bool? isDownward,
+	}) {
+		return Row(
+			children: [
+				Text(text),
+				Spacer(),
+
+				if (isDownward != null)
+					Icon((isDownward!) ? Icons.arrow_downward : Icons.arrow_upward,
+						color: Theme.of(context).colorScheme.primary,
+						size: 20,
+					),
+			],
 		);
 	}
 }

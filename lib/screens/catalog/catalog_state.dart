@@ -260,7 +260,7 @@ class _CatalogState extends State<Catalog> {
 					width: double.infinity,
 					padding: const EdgeInsets.all(10),
 					decoration: BoxDecoration(
-						color: Theme.of(context).colorScheme.surfaceVariant,
+						color: Theme.of(context).colorScheme.surface,
 						borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
 					),
 					child: Filters(
