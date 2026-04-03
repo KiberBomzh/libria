@@ -5,7 +5,7 @@ class TitleDetails extends StatelessWidget {
 	final String? nameRu;
 	final String? nameEn;
 	final String coverImageUrl;
-	final String description;
+	final String? description;
 	final String? type;
 	final String? episodesTotal;
 
@@ -31,26 +31,27 @@ class TitleDetails extends StatelessWidget {
 					_buildHead(context),
 
 					// Описание
-					Container(
-						margin: const EdgeInsets.only(top: 20),
-						padding: const EdgeInsets.all(12),
-						decoration: BoxDecoration(
-							color: Theme.of(context).colorScheme.surfaceContainer,
-							border: Border.all(
-								width: 1,
-								color: Theme.of(context).colorScheme.secondary,
+					if (description != null)
+						Container(
+							margin: const EdgeInsets.only(top: 20),
+							padding: const EdgeInsets.all(12),
+							decoration: BoxDecoration(
+								color: Theme.of(context).colorScheme.surfaceContainer,
+								border: Border.all(
+									width: 1,
+									color: Theme.of(context).colorScheme.secondary,
+								),
+								borderRadius: BorderRadius.circular(12),
 							),
-							borderRadius: BorderRadius.circular(12),
+							child: ReadMoreText(description!,
+								trimLines: 10,
+								style: Theme.of(context).textTheme.bodyLarge,
+								colorClickableText: Theme.of(context).colorScheme.primary,
+								trimMode: TrimMode.Line,
+								trimCollapsedText: 'Развернуть',
+								trimExpandedText: ' Свернуть',
+							),
 						),
-						child: ReadMoreText(description,
-							trimLines: 10,
-							style: Theme.of(context).textTheme.bodyLarge,
-							colorClickableText: Theme.of(context).colorScheme.primary,
-							trimMode: TrimMode.Line,
-							trimCollapsedText: 'Развернуть',
-							trimExpandedText: ' Свернуть',
-						),
-					),
 				],
 			),
 		);
