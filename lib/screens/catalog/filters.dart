@@ -18,9 +18,13 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-	// final Map<String, dynamic> _allGenres;
+	List<dynamic> _allGenres = [];
+	bool _isLoading = false;
+	bool _isError = false;
+	String _errorMessage = '';
+
 	Sorting _currentSorting = Sorting.FreshDesc;
-	List<String> _genres = [];
+	List<int> _genres = [];
 	List<String> _types = [];
 	List<String> _seasons = [];
 	List<String> _ageRatings = [];
@@ -30,7 +34,7 @@ class _FiltersState extends State<Filters> {
 	void initState() {
 		super.initState();
 		_getLists();
-		// _loadAllGenres();
+		_loadAllGenres();
 	}
 
 	void _getLists() {
@@ -44,7 +48,27 @@ class _FiltersState extends State<Filters> {
 		});
 	}
 
-	// Future<void> _loadAllGenres() { }
+	Future<void> _loadAllGenres() async {
+		setState(() {
+			_isLoading = true;
+			_isError = false;
+		});
+
+		try {
+			final resp = await libria.fetchAllGenres();
+			setState(() {
+				_allGenres = resp;
+				_isLoading = false;
+			});
+		} catch(e) {
+			setState(() {
+				_isError = true;
+				_errorMessage = e.toString();
+
+				_isLoading = false;
+			});
+		}
+	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -55,6 +79,8 @@ class _FiltersState extends State<Filters> {
 						children: [
 							_buildSortTile(),
 
+							
+							_buildGenresTile(),
 
 							_buildTileWithChips(
 								title: 'Типы',
@@ -117,6 +143,41 @@ class _FiltersState extends State<Filters> {
 		);
 	}
 
+	Widget _buildWithLoadingCheck({required Widget child}) {
+		if (_isLoading && _allGenres.isEmpty)
+			return const Center(
+				child: CircularProgressIndicator()
+			);
+
+		if (_isError)
+			return Center(
+				child: Container(
+					margin: const EdgeInsets.all(20),
+					child: Column(
+						mainAxisAlignment: MainAxisAlignment.center,
+						children: [
+							const Icon( Icons.error_outline,
+								size: 60,
+								color: Colors.red,
+							),
+							const SizedBox(height: 16),
+							Text( 'Ошибка загрузки: $_errorMessage', 
+								textAlign: TextAlign.center,
+							),
+							const SizedBox(height: 16),
+							ElevatedButton(
+								onPressed: _loadAllGenres,
+								child: const Text('Попробовать снова'),	
+							),
+						],
+					),
+				),
+			);
+
+
+		return child;
+	}
+
 	Widget _buildTileWithChips({
 		required String title,
 		required List<String> options,
@@ -159,6 +220,7 @@ class _FiltersState extends State<Filters> {
 					style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
 					onPressed: () => widget.onDone({
 						'sorting': _currentSorting,
+						'genres': _genres,
 						'types': _types,
 						'seasons': _seasons,
 						'age_ratings': _ageRatings,
@@ -197,7 +259,7 @@ class _FiltersState extends State<Filters> {
 	}) {
 		return Wrap(
 			spacing: 8,
-			runSpacing: 12,
+			runSpacing: 10,
 			children: options.map((option) {
 				final bool isSelected = selected.contains(values[option]);
 
@@ -303,6 +365,45 @@ class _FiltersState extends State<Filters> {
 						size: 20,
 					),
 			],
+		);
+	}
+
+
+	Widget _buildGenresTile() {
+		return ExpansionTile(
+			title: Text('Жанры'),
+			children: [
+				_buildWithLoadingCheck(
+					child: _buildGenres()
+				),
+
+				SizedBox(height: 10),
+			],
+		);
+	}
+
+	Widget _buildGenres() {
+		return Wrap(
+			spacing: 8,
+			runSpacing: 10,
+			children: _allGenres.map((genre) {
+				final bool isSelected = _genres.contains(genre['id']);
+
+				return FilterChip(
+					label: Text(genre['name']),
+					backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+					selected: isSelected,
+					onSelected: (bool value) {
+						setState(() {
+							if (value) {
+								_genres.add(genre['id']);
+							} else {
+								_genres.remove(genre['id']);
+							}
+						});
+					},
+				);
+			}).toList(),
 		);
 	}
 }

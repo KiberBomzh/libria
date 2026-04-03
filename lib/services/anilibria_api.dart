@@ -55,6 +55,11 @@ class Anilibria {
 
 		return response.data;
 	}
+
+	Future<List<dynamic>> fetchAllGenres() async {
+		final response = await this._dio.get('/anime/genres');
+		return response.data;
+	}
 }
 
 
