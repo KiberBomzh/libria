@@ -226,6 +226,10 @@ class _CatalogState extends State<Catalog> {
 				});
 			},
 			onSubmitted: (value) {
+				setState(() {
+					_currentSearchParameters = {};
+				});
+
 				if (widget.searchParameters != null) {
 					setState(() {
 						_currentSearchParameters['query'] = value;
@@ -263,10 +267,12 @@ class _CatalogState extends State<Catalog> {
 						parameters: _currentSearchParameters,
 						onCancel: () {},
 						onDone: (params) {
+							_textController.clear();
 							Navigator.pop(context);
+
 							if (widget.searchParameters != null) {
 								setState(() {
-									_currentSearchParameters.addAll(params);
+									_currentSearchParameters = params;
 									_catalogResponse = {};
 								});
 								_loadTitles();
