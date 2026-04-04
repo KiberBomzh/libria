@@ -111,11 +111,6 @@ class _CatalogState extends State<Catalog> {
 				title: _buildSearchTextField(),
 				actions: [
 					IconButton(
-						icon: const Icon(Icons.filter_alt),
-						onPressed: () => _buildFilterBottomSheet(),
-						tooltip: 'Фильтры',
-					),
-					IconButton(
 						icon: const Icon(Icons.settings),
 						onPressed: () => Navigator.push(context,
 							MaterialPageRoute(
@@ -126,6 +121,7 @@ class _CatalogState extends State<Catalog> {
 					),
 				],
 			),
+			floatingActionButton: _buildFAB(),
 			body: _buildBody(context),
 		);
 	}
@@ -380,6 +376,17 @@ class _CatalogState extends State<Catalog> {
 					),
 				);
 			}
+		);
+	}
+
+	Widget _buildFAB() {
+		return Padding(
+			padding: const EdgeInsets.only(right: 20, bottom: 20),
+			child: FloatingActionButton(
+				child: const Icon(Icons.filter_alt),
+				onPressed: () => _buildFilterBottomSheet(),
+				tooltip: 'Фильтры',
+			),
 		);
 	}
 
