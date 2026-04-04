@@ -27,12 +27,16 @@ class Anilibria {
 			(Sorting.YearAsc) => 'YEAR_ASC',
 			_ => null,
 		};
-		List<int>? genres = params['genres'];
-		List<String>? types = params['types'];
-		List<String>? seasons = params['seasons'];
-		List<String>? age_ratings = params['age_ratings'];
-		List<String>? publish_statuses = params['publish_statuses'];
+
+		String? genres = params['genres']?.join(',');
+		String? types = params['types']?.join(',');
+		String? seasons = params['seasons']?.join(',');
+		String? age_ratings = params['age_ratings']?.join(',');
+		String? publish_statuses = params['publish_statuses']?.join(',');
+
 		int? page = params['page'];
+
+
 		final response = await this._dio.get('/anime/catalog/releases',
 			queryParameters: {
 				'limit': 25,
