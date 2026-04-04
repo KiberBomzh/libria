@@ -200,32 +200,40 @@ class _FiltersState extends State<Filters> {
 	Widget _buildBottomButtons() {
 		return Row(
 			children: [
-				TextButton(
-					child: Padding(
-						padding: const EdgeInsets.all(15),
-						child: Text('Отмена'),
+				Padding(
+					padding: const EdgeInsets.only(top: 10, left: 10),
+					child: TextButton(
+						child: Padding(
+							padding: const EdgeInsets.all(10),
+							child: Text('Отмена'),
+						),
+						onPressed: widget.onCancel,
 					),
-					onPressed: widget.onCancel,
 				),
+
 
 				Spacer(),
 
-				TextButton(
-					child: Padding(
-						padding: const EdgeInsets.all(15),
-						child: Text('Применить',
-							style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+
+				Padding(
+					padding: const EdgeInsets.only(top: 10, right: 10),
+					child: TextButton(
+						child: Padding(
+							padding: const EdgeInsets.all(10),
+							child: Text('Применить',
+								style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+							),
 						),
+						style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+						onPressed: () => widget.onDone({
+							'sorting': _currentSorting,
+							'genres': _genres,
+							'types': _types,
+							'seasons': _seasons,
+							'age_ratings': _ageRatings,
+							'publish_statuses': _publishStatuses,
+						}),
 					),
-					style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
-					onPressed: () => widget.onDone({
-						'sorting': _currentSorting,
-						'genres': _genres,
-						'types': _types,
-						'seasons': _seasons,
-						'age_ratings': _ageRatings,
-						'publish_statuses': _publishStatuses,
-					}),
 				),
 			]
 		);

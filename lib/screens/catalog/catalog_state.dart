@@ -354,7 +354,7 @@ class _CatalogState extends State<Catalog> {
 					),
 					child: Filters(
 						parameters: _currentSearchParameters,
-						onCancel: () {},
+						onCancel: () => Navigator.pop(context),
 						onDone: (params) {
 							_textController.clear();
 							Navigator.pop(context);
