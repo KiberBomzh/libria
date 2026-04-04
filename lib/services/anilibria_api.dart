@@ -32,6 +32,7 @@ class Anilibria {
 		List<String>? seasons = params['seasons'];
 		List<String>? age_ratings = params['age_ratings'];
 		List<String>? publish_statuses = params['publish_statuses'];
+		int? page = params['page'];
 		final response = await this._dio.get('/anime/catalog/releases',
 			queryParameters: {
 				'limit': 25,
@@ -42,6 +43,7 @@ class Anilibria {
 				'f[seasons]': seasons,
 				'f[age_ratings]': age_ratings,
 				'f[publish_statuses]': publish_statuses,
+				'page': page,
 			},
 		);
 

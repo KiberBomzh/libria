@@ -10,6 +10,13 @@ class _CatalogState extends State<Catalog> {
 	Map<String, dynamic> _currentSearchParameters = {};
 
 	final TextEditingController _textController = TextEditingController();
+	final ScrollController _scrollController = ScrollController();
+
+
+	bool _isLoadingNextPage = false;
+	bool _isErrorLoadingNextPage = false;
+	int _currentPage = 0;
+	int _totalPages = 0;
 
 
 	@override
@@ -18,7 +25,24 @@ class _CatalogState extends State<Catalog> {
 		_currentSearchParameters = widget.searchParameters ?? {};
 
 		_textController.text = _currentSearchParameters['query'] ?? '';
+		_scrollController.addListener(_onScroll);
 		_loadTitles();
+	}
+
+	@override
+	void dispose() {
+		_scrollController.removeListener(_onScroll);
+		_scrollController.dispose();
+		_textController.dispose();
+		super.dispose();
+	}
+
+	void _onScroll() {
+		if (_isLoading || _isLoadingNextPage || _currentPage >= _totalPages)
+			return;
+
+		if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200)
+			_loadNextPage();
 	}
 
 
@@ -33,6 +57,9 @@ class _CatalogState extends State<Catalog> {
 			setState(() {
 				_catalogResponse = resp;
 				_isLoading = false;
+
+				_currentPage = resp['meta']['pagination']['current_page'];
+				_totalPages = resp['meta']['pagination']['total_pages'];
 			});
 		} catch(e) {
 			setState(() {
@@ -40,6 +67,36 @@ class _CatalogState extends State<Catalog> {
 				_errorMessage = e.toString();
 				
 				_isLoading = false;
+			});
+		}
+	}
+
+	Future<void> _loadNextPage() async {
+		if (_currentPage >= _totalPages)
+			return;
+
+		setState(() {
+			_isLoadingNextPage = true;
+			_isErrorLoadingNextPage = false;
+			_currentPage += 1;
+		});
+
+		try {
+			_currentSearchParameters['page'] = _currentPage;
+			final resp = await libria.fetchCatalog(_currentSearchParameters);
+			setState(() {
+				_catalogResponse['data'].addAll(resp['data']);
+				_isLoadingNextPage = false;
+
+				_currentPage = resp['meta']['pagination']['current_page'];
+				_totalPages = resp['meta']['pagination']['total_pages'];
+			});
+		} catch(e) {
+			setState(() {
+				_isErrorLoadingNextPage = true;
+				_errorMessage = e.toString();
+
+				_isLoadingNextPage = false;
 			});
 		}
 	}
@@ -127,7 +184,6 @@ class _CatalogState extends State<Catalog> {
 
 
 		// Main
-		ScrollController scrollController = ScrollController();
 		return RefreshIndicator(
 			onRefresh: _loadTitles,
 			color: Theme.of(context).colorScheme.primary,
@@ -135,24 +191,27 @@ class _CatalogState extends State<Catalog> {
 				interactive: true,
 				thickness: 6.0,
 				radius: const Radius.circular(12),
-				controller: scrollController,
-				child: _buildGridView(scrollController),
+				controller: _scrollController,
+				child: _buildGridView()
 			),
 		);
 	}
 
-	Widget _buildGridView(ScrollController scrollController) {
+	Widget _buildGridView() {
 		return GridView.builder(
 			padding: const EdgeInsets.all(12),
-			controller: scrollController,
+			controller: _scrollController,
 			gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
 				crossAxisCount: _calculateCrossAxisCount(MediaQuery.of(context).size.width),
 				crossAxisSpacing: 12,
 				mainAxisSpacing: 12,
 				childAspectRatio: 0.6,
 			),
-			itemCount: _catalogResponse['data'].length,
+			itemCount: _catalogResponse['data'].length + ((_currentPage < _totalPages) ? 1 : 0),
 			itemBuilder: (context, index) {
+				if (index == _catalogResponse['data'].length)
+					return _buildNextPageLoader();
+
 				final name = _catalogResponse['data'][index]['name']['main'];
 				final img_url = base_url + _catalogResponse['data'][index]['poster']['optimized']['preview'];
 
@@ -182,6 +241,41 @@ class _CatalogState extends State<Catalog> {
 				);
 			}
 		);
+	}
+
+	Widget _buildNextPageLoader() {
+		if (_isLoadingNextPage) {
+			return const Center(
+				child: CircularProgressIndicator(),
+			);
+		}
+
+		if (_isErrorLoadingNextPage) {
+			return Center(
+				child: Container(
+					child: Column(
+						mainAxisAlignment: MainAxisAlignment.center,
+						children: [
+							const Icon( Icons.error_outline,
+								size: 40,
+								color: Colors.red,
+							),
+							const SizedBox(height: 16),
+							Text( 'Ошибка загрузки: $_errorMessage', 
+								textAlign: TextAlign.center,
+							),
+							const SizedBox(height: 16),
+							ElevatedButton(
+								onPressed: _loadNextPage,
+								child: const Text('Попробовать снова'),	
+							),
+						],
+					),
+				),
+			);
+		}
+
+		return SizedBox();
 	}
 
 	Widget _buildSearchTextField() {
