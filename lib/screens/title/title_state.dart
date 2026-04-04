@@ -201,11 +201,13 @@ class _TitleState extends State<TitleScreen> {
 				child: TitleDetails(
 					nameRu: _titleResponse['name']['main'],
 					nameEn: _titleResponse['name']['english'],
-					coverImageUrl: base_url + _titleResponse['poster']['optimized']['src'],
+					coverImageUrl: base_url + _titleResponse['poster']['src'],
 					description: _titleResponse['description'],
 					type: _titleResponse['type']['description'],
+					isOngoing: _titleResponse['is_ongoing'],
 					episodesTotal: (_titleResponse['episodes_total'] != null) ?
 						_titleResponse['episodes_total'].toString() : null,
+					genres: _titleResponse['genres'],
 				),
 			),
 		);

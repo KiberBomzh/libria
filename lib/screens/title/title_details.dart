@@ -7,7 +7,9 @@ class TitleDetails extends StatelessWidget {
 	final String coverImageUrl;
 	final String? description;
 	final String? type;
+	final bool? isOngoing;
 	final String? episodesTotal;
+	final List<dynamic>? genres;
 
 	TitleDetails({
 		Key? key,
@@ -16,7 +18,9 @@ class TitleDetails extends StatelessWidget {
 		required this.coverImageUrl,
 		required this.description,
 		required this.type,
+		required this.isOngoing,
 		required this.episodesTotal,
+		required this.genres,
 	}) : super(key: key);
 
 
@@ -29,6 +33,11 @@ class TitleDetails extends StatelessWidget {
 				children: [
 					// Обложка тайтла и название
 					_buildHead(context),
+
+					// Жанры
+					Center(
+						child: _buildGenres(context),
+					),
 
 					// Описание
 					if (description != null)
@@ -57,21 +66,47 @@ class TitleDetails extends StatelessWidget {
 		);
 	}
 
+	Widget _buildGenres(BuildContext context) {
+		if (genres == null)
+			return Container();
+
+		return Container(
+			margin: const EdgeInsets.only(top: 10),
+			padding: const EdgeInsets.symmetric(horizontal: 15),
+			child: Wrap(
+				spacing: 8,
+				runSpacing: 10,
+				children: genres!.map((v) {
+					return FilterChip(
+						label: Text(v['name']),
+						onSelected: (_) => Navigator.push(context,
+							MaterialPageRoute(
+								builder: (context) => Catalog(searchParameters: { 'genres': <int>[ v['id'].toInt() ] })
+							),
+						),
+					);
+				}).toList(),
+			),
+		);
+	}
+
 
 	Widget _buildHead(BuildContext context) {
+		String? ongoing;
+		if (isOngoing != null)
+			ongoing = (isOngoing!) ? 'Онгоинг' : 'Завершено';
+
 		return Row(
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
 				Expanded(
-					flex: 4,
-					child: Card(
-						clipBehavior: Clip.antiAlias,
-						shape: RoundedRectangleBorder(
-							borderRadius: BorderRadius.circular(12),
-						),
-
-						child: AspectRatio(
-							aspectRatio: 7 / 10,
+					child: AspectRatio(
+						aspectRatio: 7 / 10,
+						child: Card(
+							clipBehavior: Clip.antiAlias,
+							shape: RoundedRectangleBorder(
+								borderRadius: BorderRadius.circular(12),
+							),
 							child: CachedNetworkImage(
 								imageUrl: coverImageUrl,
 								cacheManager: customCacheManager,
@@ -92,7 +127,6 @@ class TitleDetails extends StatelessWidget {
 
 				// Доп инфа
 				Expanded(
-					flex: 3,
 					child: Column(
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
@@ -109,6 +143,11 @@ class TitleDetails extends StatelessWidget {
 							_buildHeadInfoContainer(context,
 								description: 'Тип',
 								value: type
+							),
+
+							_buildHeadInfoContainer(context,
+								description: 'Статус',
+								value: ongoing
 							),
 
 							_buildHeadInfoContainer(context,
