@@ -62,6 +62,12 @@ class Anilibria {
 		return response.data;
 	}
 
+	Future<List<dynamic>> fetchFranchise(int id) async {
+		final response = await this._dio.get( '/anime/franchises/release/$id');
+
+		return response.data;
+	}
+
 	Future<List<dynamic>> fetchAllGenres() async {
 		final response = await this._dio.get('/anime/genres');
 		return response.data;

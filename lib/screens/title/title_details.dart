@@ -2,6 +2,7 @@ part of 'title.dart';
 
 
 class TitleDetails extends StatelessWidget {
+	final int titleId;
 	final String? nameRu;
 	final String? nameEn;
 	final String coverImageUrl;
@@ -13,6 +14,7 @@ class TitleDetails extends StatelessWidget {
 
 	TitleDetails({
 		Key? key,
+		required this.titleId,
 		required this.nameRu,
 		required this.nameEn,
 		required this.coverImageUrl,
@@ -61,6 +63,12 @@ class TitleDetails extends StatelessWidget {
 								trimExpandedText: ' Свернуть',
 							),
 						),
+
+					// Связанное
+					Franchise(
+						titleId: titleId,
+						isPreview: true,
+					),
 				],
 			),
 		);

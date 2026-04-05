@@ -158,6 +158,10 @@ class _TitleState extends State<TitleScreen> {
 	PreferredSizeWidget _buildAppBar() {
 		return AppBar(
 			title: const Text('Тайтл'),
+			systemOverlayStyle: SystemUiOverlayStyle(
+				systemNavigationBarColor: Colors.blue,
+				systemNavigationBarContrastEnforced: true,
+			),
 			actions: [
 				IconButton(
 					icon: const Icon(Icons.launch),
@@ -199,6 +203,7 @@ class _TitleState extends State<TitleScreen> {
 			child: Container(
 				padding: (!_isWideScreen(context)) ? const EdgeInsets.only(bottom: 135) : null,
 				child: TitleDetails(
+					titleId: _titleResponse['id'],
 					nameRu: _titleResponse['name']['main'],
 					nameEn: _titleResponse['name']['english'],
 					coverImageUrl: base_url + _titleResponse['poster']['src'],

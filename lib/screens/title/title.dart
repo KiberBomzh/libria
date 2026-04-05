@@ -21,6 +21,7 @@ part 'title_state.dart';
 part 'title_details.dart';
 part 'title_lists.dart';
 part 'list_item.dart';
+part 'franchise.dart';
 
 
 class TitleScreen extends StatefulWidget {
