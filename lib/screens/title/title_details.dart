@@ -37,32 +37,11 @@ class TitleDetails extends StatelessWidget {
 					_buildHead(context),
 
 					// Жанры
-					Center(
-						child: _buildGenres(context),
-					),
+					_buildGenres(context),
 
 					// Описание
 					if (description != null)
-						Container(
-							margin: const EdgeInsets.only(top: 20),
-							padding: const EdgeInsets.all(12),
-							decoration: BoxDecoration(
-								color: Theme.of(context).colorScheme.surfaceContainer,
-								border: Border.all(
-									width: 1,
-									color: Theme.of(context).colorScheme.secondary,
-								),
-								borderRadius: BorderRadius.circular(12),
-							),
-							child: ReadMoreText(description!,
-								trimLines: 10,
-								style: Theme.of(context).textTheme.bodyLarge,
-								colorClickableText: Theme.of(context).colorScheme.primary,
-								trimMode: TrimMode.Line,
-								trimCollapsedText: 'Развернуть',
-								trimExpandedText: ' Свернуть',
-							),
-						),
+						_buildDescription(context),
 
 					// Связанное
 					Franchise(
@@ -78,22 +57,72 @@ class TitleDetails extends StatelessWidget {
 		if (genres == null)
 			return Container();
 
-		return Container(
-			margin: const EdgeInsets.only(top: 10),
+		return Padding(
 			padding: const EdgeInsets.symmetric(horizontal: 15),
-			child: Wrap(
-				spacing: 8,
-				runSpacing: 10,
-				children: genres!.map((v) {
-					return FilterChip(
-						label: Text(v['name']),
-						onSelected: (_) => Navigator.push(context,
-							MaterialPageRoute(
-								builder: (context) => Catalog(searchParameters: { 'genres': <int>[ v['id'].toInt() ] })
+			child: Column(
+				crossAxisAlignment: .start,
+				children: [
+					const SizedBox(height: 10),
+					Text('Жанры',
+						style: Theme.of(context).textTheme.titleLarge,
+					),
+					Divider(),
+					Container(
+						decoration: BoxDecoration(
+							color: Theme.of(context).colorScheme.surfaceContainer,
+							borderRadius: .circular(8),
+						),
+						width: double.infinity,
+						padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+						child: Center(
+							child: Wrap(
+								spacing: 8,
+								runSpacing: 10,
+								children: genres!.map((v) {
+									return FilterChip(
+										label: Text(v['name']),
+										onSelected: (_) => Navigator.push(context,
+											MaterialPageRoute(
+												builder: (context) => Catalog(searchParameters: { 'genres': <int>[ v['id'].toInt() ] })
+											),
+										),
+									);
+								}).toList(),
 							),
 						),
-					);
-				}).toList(),
+					),
+				],
+			),
+		);
+	}
+
+	Widget _buildDescription(BuildContext context) {
+		return Padding(
+			padding: const EdgeInsets.symmetric(horizontal: 15),
+			child: Column(
+				crossAxisAlignment: .start,
+				children: [
+					const SizedBox(height: 20),
+					Text('Описание',
+						style: Theme.of(context).textTheme.titleLarge,
+					),
+					Divider(),
+					Container(
+						padding: const EdgeInsets.all(12),
+						decoration: BoxDecoration(
+							color: Theme.of(context).colorScheme.surfaceContainer,
+							borderRadius: BorderRadius.circular(12),
+						),
+						child: ReadMoreText(description!,
+							trimLines: 10,
+							style: Theme.of(context).textTheme.bodyLarge,
+							colorClickableText: Theme.of(context).colorScheme.primary,
+							trimMode: TrimMode.Line,
+							trimCollapsedText: 'Развернуть',
+							trimExpandedText: ' Свернуть',
+						),
+					),
+				],
 			),
 		);
 	}

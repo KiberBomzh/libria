@@ -159,7 +159,8 @@ class _TitleState extends State<TitleScreen> {
 		return AppBar(
 			title: const Text('Тайтл'),
 			systemOverlayStyle: SystemUiOverlayStyle(
-				systemNavigationBarColor: Colors.blue,
+				systemNavigationBarColor: Colors.black,
+				systemNavigationBarIconBrightness: Brightness.light, // Цвет иконок (light/dark)
 				systemNavigationBarContrastEnforced: true,
 			),
 			actions: [
