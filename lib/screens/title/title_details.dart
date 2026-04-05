@@ -81,6 +81,7 @@ class TitleDetails extends StatelessWidget {
 								children: genres!.map((v) {
 									return FilterChip(
 										label: Text(v['name']),
+										backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
 										onSelected: (_) => Navigator.push(context,
 											MaterialPageRoute(
 												builder: (context) => Catalog(searchParameters: { 'genres': <int>[ v['id'].toInt() ] })
