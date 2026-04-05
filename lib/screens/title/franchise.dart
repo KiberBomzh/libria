@@ -173,10 +173,10 @@ class _FranchiseState extends State<Franchise> {
 		required VoidCallback onTap,
 		required String imageUrl,
 		required String titleName,
-		required String titleNameEn,
+		required String? titleNameEn,
 		required String? titleType,
 		required int titleId,
-		required bool isOngoing,
+		required bool? isOngoing,
 	}) {
 		return Container(
 			height: 250,
@@ -237,17 +237,19 @@ class _FranchiseState extends State<Franchise> {
 											),
 
 
-											const SizedBox(height: 20),
-											Text('Название на английском',
-												overflow: TextOverflow.ellipsis,
-												maxLines: 1,
-												style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-											),
-											const SizedBox(height: 1),
-											Text(titleNameEn,
-												overflow: TextOverflow.ellipsis,
-												maxLines: 2,
-											),
+											if (titleNameEn != null) ...[
+												const SizedBox(height: 20),
+												Text('Название на английском',
+													overflow: TextOverflow.ellipsis,
+													maxLines: 1,
+													style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
+												),
+												const SizedBox(height: 1),
+												Text(titleNameEn,
+													overflow: TextOverflow.ellipsis,
+													maxLines: 2,
+												),
+											],
 
 
 											if (titleType != null) ...[
@@ -265,18 +267,20 @@ class _FranchiseState extends State<Franchise> {
 											],
 
 
-											const SizedBox(height: 10),
-											Text('Статус',
-												overflow: TextOverflow.ellipsis,
-												maxLines: 1,
-												style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
-											),
-											const SizedBox(height: 1),
-											Text((isOngoing) ? 'Онгоинг' : 'Завершено',
-												overflow: TextOverflow.ellipsis,
-												maxLines: 2,
-											),
-										]
+											if (isOngoing != null) ...[
+												const SizedBox(height: 10),
+												Text('Статус',
+													overflow: TextOverflow.ellipsis,
+													maxLines: 1,
+													style: Theme.of(context).textTheme.bodySmall?.copyWith( color: Colors.grey ),
+												),
+												const SizedBox(height: 1),
+												Text((isOngoing) ? 'Онгоинг' : 'Завершено',
+													overflow: TextOverflow.ellipsis,
+													maxLines: 2,
+												),
+											],
+										],
 									),
 								),
 							],
