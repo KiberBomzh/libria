@@ -342,8 +342,6 @@ class _CatalogState extends State<Catalog> {
 		showModalBottomSheet<void> (
 			context: context,
 			builder: (context) {
-				final screenHeight = MediaQuery.of(context).size.height;
-
 				return Container(
 					height: double.infinity,
 					width: double.infinity,
