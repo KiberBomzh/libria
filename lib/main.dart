@@ -22,6 +22,7 @@ void main() async {
 
 var base_url = 'https://anilibria.top';
 var libria = Anilibria(base_url + '/api/v1');
+double safe_area_padding = 0;
 
 
 
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
+		safe_area_padding = MediaQuery.of(context).padding.bottom;
+
 		final settings = context.watch<SettingsProvider>();
 		final themeMode = (settings.isDarkTheme != null)
 			? settings.isDarkTheme!
@@ -38,32 +41,36 @@ class MyApp extends StatelessWidget {
 				: ThemeMode.light
 			: ThemeMode.system;
 
-		return MaterialApp(
-			title: 'Libria',
-			theme: ThemeData(
-				useMaterial3: true,
-				appBarTheme: const AppBarTheme(
-					scrolledUnderElevation: 0.0,
-					color: Colors.transparent,
+		return SafeArea(
+			top: true,
+			bottom: true,
+			child: MaterialApp(
+				title: 'Libria',
+				theme: ThemeData(
+					useMaterial3: true,
+					appBarTheme: const AppBarTheme(
+						scrolledUnderElevation: 0.0,
+						color: Colors.transparent,
+					),
+					colorScheme: ColorScheme.fromSeed(
+						brightness: Brightness.light,
+						seedColor: settings.colorAccent,
+					),
 				),
-				colorScheme: ColorScheme.fromSeed(
-					brightness: Brightness.light,
-					seedColor: settings.colorAccent,
+				darkTheme: ThemeData(
+					useMaterial3: true,
+					appBarTheme: const AppBarTheme(
+						scrolledUnderElevation: 0.0,
+						color: Colors.transparent,
+					),
+					colorScheme: ColorScheme.fromSeed(
+						brightness: Brightness.dark,
+						seedColor: settings.colorAccent,
+					),
 				),
+				themeMode: themeMode,
+				home: _buildHome(),
 			),
-			darkTheme: ThemeData(
-				useMaterial3: true,
-				appBarTheme: const AppBarTheme(
-					scrolledUnderElevation: 0.0,
-					color: Colors.transparent,
-				),
-				colorScheme: ColorScheme.fromSeed(
-					brightness: Brightness.dark,
-					seedColor: settings.colorAccent,
-				),
-			),
-			themeMode: themeMode,
-			home: _buildHome(),
 		);
 	}
 

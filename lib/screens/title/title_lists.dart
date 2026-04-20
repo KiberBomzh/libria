@@ -53,7 +53,13 @@ class _EpisodesListState extends State<EpisodesList> {
 				radius: const Radius.circular(12),
 				controller: scrollController,
 				child: Container(
-					padding: const EdgeInsets.symmetric(horizontal: 15),
+					padding: EdgeInsets.only(
+						bottom: (!widget.isWideScreen)
+							? safe_area_padding
+							: 0,
+						left: 15,
+						right: 15,
+					),
 					child: _buildEpisodesList(),
 				),
 			),
