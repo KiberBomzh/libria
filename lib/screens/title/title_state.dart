@@ -7,10 +7,14 @@ class _TitleState extends State<TitleScreen> {
 	bool _isError = false;
 	String _errorMessage = '';
 
+	late PanelController _bottomSheetController;
+	bool _isBottomSheetOpen = false;
+
 
 	@override
 	void initState() {
 		super.initState();
+		_bottomSheetController = PanelController();
 		_loadTitle();
 	}
 
@@ -135,13 +139,21 @@ class _TitleState extends State<TitleScreen> {
 			return _buildWideScreenBody();
 
 
-		return Scaffold(
-			appBar: _buildAppBar(),
-			body: Stack(
-				children: [
-					_buildTitleDetails(),
-					_buildSlidingUpPanel(),
-				],
+		return PopScope(
+			canPop: !_isBottomSheetOpen,
+			onPopInvokedWithResult: (didPop, result) {
+				if (!didPop && _bottomSheetController.isAttached && _bottomSheetController.panelPosition > 0.0) {
+					_bottomSheetController.close();
+				}
+			},
+			child: Scaffold(
+				appBar: _buildAppBar(),
+				body: Stack(
+					children: [
+						_buildTitleDetails(),
+						_buildSlidingUpPanel(),
+					],
+				),
 			),
 		);
 	}
@@ -265,7 +277,13 @@ class _TitleState extends State<TitleScreen> {
 			borderRadius: BorderRadius.circular(12),
 			color: Theme.of(context).colorScheme.surfaceVariant,
 			backdropEnabled: true,
+			
+			onPanelSlide: (_isBottomSheetOpen)
+				? null
+				: (position) => setState(() => _isBottomSheetOpen = (position > 0)),
+			onPanelClosed: () => setState(() => _isBottomSheetOpen = false),
 
+			controller: _bottomSheetController,
 			panelBuilder: (scrollController) {
 				return Container(
 					margin: const EdgeInsets.only(top: 10),
