@@ -9,8 +9,10 @@ class _CatalogState extends State<Catalog> {
 	String _errorMessage = '';
 	Map<String, dynamic> _currentSearchParameters = {};
 
-	final TextEditingController _textController = TextEditingController();
-	final ScrollController _scrollController = ScrollController();
+	late TextEditingController _textController;
+	late ScrollController _scrollController;
+
+	late FocusNode _focusNode;
 
 
 	bool _isLoadingNextPage = false;
@@ -24,8 +26,15 @@ class _CatalogState extends State<Catalog> {
 		super.initState();
 		_currentSearchParameters = widget.searchParameters ?? {};
 
+		_textController = TextEditingController();
 		_textController.text = _currentSearchParameters['query'] ?? '';
+
+		_scrollController = ScrollController();
 		_scrollController.addListener(_onScroll);
+
+		_focusNode = FocusNode();
+
+
 		_loadTitles();
 	}
 
@@ -33,6 +42,7 @@ class _CatalogState extends State<Catalog> {
 	void dispose() {
 		_scrollController.removeListener(_onScroll);
 		_scrollController.dispose();
+		_focusNode.dispose();
 		_textController.dispose();
 		super.dispose();
 	}
@@ -105,24 +115,31 @@ class _CatalogState extends State<Catalog> {
 
 	@override
 	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				centerTitle: true,
-				title: _buildSearchTextField(),
-				actions: [
-					IconButton(
-						icon: const Icon(Icons.settings),
-						onPressed: () => Navigator.push(context,
-							MaterialPageRoute(
-								builder: (context) => SettingsScreen(),
+		return PopScope(
+			canPop: !_focusNode.hasFocus,
+			onPopInvokedWithResult: (didPop, result) {
+				if (_focusNode.hasFocus)
+					setState(() => _focusNode.unfocus());
+			},
+			child: Scaffold(
+				appBar: AppBar(
+					centerTitle: true,
+					title: _buildSearchTextField(),
+					actions: [
+						IconButton(
+							icon: const Icon(Icons.settings),
+							onPressed: () => Navigator.push(context,
+								MaterialPageRoute(
+									builder: (context) => SettingsScreen(),
+								),
 							),
+							tooltip: 'Настройки',
 						),
-						tooltip: 'Настройки',
-					),
-				],
+					],
+				),
+				floatingActionButton: _buildFAB(),
+				body: _buildBody(context),
 			),
-			floatingActionButton: _buildFAB(),
-			body: _buildBody(context),
 		);
 	}
 
@@ -277,6 +294,7 @@ class _CatalogState extends State<Catalog> {
 	Widget _buildSearchTextField() {
 		return TextField(
 			controller: _textController,
+			focusNode: _focusNode,
 			autofocus: false,
 			decoration: InputDecoration(
 				constraints: BoxConstraints(maxHeight: 40),
