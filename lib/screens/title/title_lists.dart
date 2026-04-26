@@ -38,7 +38,7 @@ class _EpisodesListState extends State<EpisodesList> {
 
 	@override
 	Widget build(BuildContext context) {
-		const double barHeight = 80.0;
+		const double barHeight = 85.0;
 
 		return Scaffold(
 			backgroundColor: Colors.transparent,
@@ -121,6 +121,10 @@ class _EpisodesListState extends State<EpisodesList> {
 	Widget _buildBar(double height) {
 		return Container(
 			height: height,
+			decoration: BoxDecoration(
+				color: Theme.of(context).colorScheme.surfaceVariant,
+				borderRadius: .vertical(top: .circular(10)),
+			),
 			child: Row(
 				children: [
 					Container(
