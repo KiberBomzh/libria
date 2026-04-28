@@ -142,7 +142,7 @@ class _TitleState extends State<TitleScreen> {
 		return PopScope(
 			canPop: !_isBottomSheetOpen,
 			onPopInvokedWithResult: (didPop, result) {
-				if (!didPop && _bottomSheetController.isAttached && _bottomSheetController.panelPosition > 0.0) {
+				if (_isBottomSheetOpen) {
 					_bottomSheetController.close();
 				}
 			},
@@ -224,6 +224,8 @@ class _TitleState extends State<TitleScreen> {
 	}
 
 	Widget _buildWideScreenBody() {
+		_isBottomSheetOpen = false;
+
 		return Row(
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
