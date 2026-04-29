@@ -16,12 +16,14 @@ class PlayerScreen extends StatefulWidget {
 	LastTitleInfo title;
 	final List<dynamic> episodes;
 	final int index;
+	final int? quality;
 
 	PlayerScreen({
 		super.key,
 		required this.title,
 		required this.episodes,
 		required this.index,
+		this.quality,
 	});
 
 

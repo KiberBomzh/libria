@@ -196,6 +196,7 @@ class _EpisodesListState extends State<EpisodesList> {
 												title: widget.currentTitle,
 												episodes: widget.episodes,
 												index: lastIndex!,
+												quality: settings.defaultVideoQuality,
 											)
 										),
 									);
@@ -220,6 +221,7 @@ class _EpisodesListState extends State<EpisodesList> {
 						title: widget.currentTitle,
 						episodes: widget.episodes,
 						index: index,
+						quality: settings.defaultVideoQuality,
 					),
 				),
 			);

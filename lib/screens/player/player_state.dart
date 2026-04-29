@@ -45,9 +45,82 @@ class _PlayerState extends State<PlayerScreen> {
 		super.initState();
 		defaultEnterNativeFullscreen();
 
+		_loadQuality();
 		_loadPlaylist();
 		_openPlayer();
+		_subscribeOnStreams();
 
+		_currentIndex = widget.index;
+		widget.title.episodeIndex = widget.index;
+		Preferences.setLastTitle(widget.title);
+		_loadEpisodeName();
+		_setLastLink();
+	}
+
+	@override
+	void dispose() {
+		_player.dispose();
+
+		_loadingTimer?.cancel();
+		_showControlsTimer?.cancel();
+
+		_playingSubscription.cancel();
+		_bufferingSubscription.cancel();
+		_completedSubscription.cancel();
+		_durationSubscription.cancel();
+		_positionSubscription.cancel();
+		defaultExitNativeFullscreen();
+		super.dispose();
+	}
+
+	void _loadQuality() {
+		if (widget.quality == null)
+			return;
+
+		final q = widget.quality!;
+		if (q == 480) {
+			_quality = VideoQuality.hls_480;
+		} else if (q == 720) {
+			_quality = VideoQuality.hls_720;
+		} else if (q == 1080) {
+			_quality = VideoQuality.hls_1080;
+		}
+	}
+
+	void _loadPlaylist() {
+		final List<Media> links = [];
+		for (int i = 0; i < widget.episodes.length; i++) {
+			final link = _getLink(i);
+			links.add(Media(link));
+		}
+		_playlist = Playlist(links, index: widget.index);
+	}
+
+	void _openPlayer() async {
+		if (widget.title.episodeIndex == widget.index && 
+			widget.title.episodePosition != null) {
+			await _player.open(_playlist, play: false);
+			setState(() => _isLoading = true);
+			while (_duration.inSeconds < 5) {
+				print('opening');
+				await Future.delayed(Duration(seconds: 1));
+			}
+
+			_player.seek(Duration(seconds: widget.title.episodePosition!));
+			setState(() => _isLoading = true);
+			while (_position != widget.title.episodePosition) {
+				print('seeking');
+				await Future.delayed(Duration(seconds: 1));
+			}
+
+			setState(() => _isLoading = true);
+			_player.play();
+		} else {
+			await _player.open(_playlist);
+		}
+	}
+
+	void _subscribeOnStreams() {
 		_bufferingSubscription = _player.stream.buffering.listen((buffering) {
 			setState(() => _isLoading = true);
 		});
@@ -86,62 +159,6 @@ class _PlayerState extends State<PlayerScreen> {
 				Preferences.setLastTitle(widget.title);
 			}
 		});
-
-
-		_currentIndex = widget.index;
-		widget.title.episodeIndex = widget.index;
-		Preferences.setLastTitle(widget.title);
-		_loadEpisodeName();
-		_setLastLink();
-	}
-
-	@override
-	void dispose() {
-		_player.dispose();
-
-		_loadingTimer?.cancel();
-		_showControlsTimer?.cancel();
-
-		_playingSubscription.cancel();
-		_bufferingSubscription.cancel();
-		_completedSubscription.cancel();
-		_durationSubscription.cancel();
-		_positionSubscription.cancel();
-		defaultExitNativeFullscreen();
-		super.dispose();
-	}
-
-	void _loadPlaylist() {
-		final List<Media> links = [];
-		for (int i = 0; i < widget.episodes.length; i++) {
-			final link = _getLink(i);
-			links.add(Media(link));
-		}
-		_playlist = Playlist(links, index: widget.index);
-	}
-
-	void _openPlayer() async {
-		if (widget.title.episodeIndex == widget.index && 
-			widget.title.episodePosition != null) {
-			await _player.open(_playlist, play: false);
-			setState(() => _isLoading = true);
-			while (_duration.inSeconds < 5) {
-				print('opening');
-				await Future.delayed(Duration(seconds: 1));
-			}
-
-			_player.seek(Duration(seconds: widget.title.episodePosition!));
-			setState(() => _isLoading = true);
-			while (_position != widget.title.episodePosition) {
-				print('seeking');
-				await Future.delayed(Duration(seconds: 1));
-			}
-
-			setState(() => _isLoading = true);
-			_player.play();
-		} else {
-			await _player.open(_playlist);
-		}
 	}
 
 	void _loadEpisodeName() => setState(() {
