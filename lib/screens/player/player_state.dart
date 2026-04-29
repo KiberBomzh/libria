@@ -18,8 +18,6 @@ class _PlayerState extends State<PlayerScreen> {
 	bool _showControls = false;
 	Timer? _showControlsTimer;
 
-	bool _isPlaying = false;
-	bool _isBuffering = false;
 	bool _isLoading = true;
 
 	VideoQuality _quality = DEFAULT_QUALITY;
@@ -43,15 +41,14 @@ class _PlayerState extends State<PlayerScreen> {
 		_openPlayer();
 
 		_player.stream.buffering.listen((buffering) {
-			_isBuffering = buffering;
-			_updateIsLoading();
-		});
-		_player.stream.playing.listen((playing) {
-			_isPlaying = playing;
-			_updateIsLoading();
+			setState(() => _isLoading = true);
 		});
 		_player.stream.duration.listen((duration) => _duration = duration);
 		_player.stream.position.listen((Duration position) {
+			if (_isLoading && _position != 0)
+				setState(() => _isLoading = false);
+
+
 			final inSeconds = position.inSeconds;
 			_position = inSeconds;
 			_checkPosition();
@@ -82,14 +79,6 @@ class _PlayerState extends State<PlayerScreen> {
 		super.dispose();
 	}
 
-	void _updateIsLoading() => setState(() {
-		if (!_isPlaying && _isBuffering) {
-			_isLoading = true;
-		} else {
-			_isLoading = false;
-		}
-	});
-
 	void _loadPlaylist() {
 		final List<Media> links = [];
 		for (int i = 0; i < widget.episodes.length; i++) {
@@ -102,20 +91,21 @@ class _PlayerState extends State<PlayerScreen> {
 	void _openPlayer() async {
 		if (widget.title.episodeIndex == widget.index && 
 			widget.title.episodePosition != null) {
-			setState(() => _isLoading = true);
 			await _player.open(_playlist, play: false);
+			setState(() => _isLoading = true);
 			while (_duration.inSeconds < 5) {
 				print('opening');
 				await Future.delayed(Duration(seconds: 1));
 			}
 
-			setState(() => _isLoading = true);
 			_player.seek(Duration(seconds: widget.title.episodePosition!));
+			setState(() => _isLoading = true);
 			while (_position != widget.title.episodePosition) {
 				print('seeking');
 				await Future.delayed(Duration(seconds: 1));
 			}
 
+			setState(() => _isLoading = true);
 			_player.play();
 		} else {
 			await _player.open(_playlist);
