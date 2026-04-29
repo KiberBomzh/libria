@@ -81,6 +81,14 @@ class SettingsScreen extends StatelessWidget {
 				),
 
 				_buildListItem(context,
+					child: _buildSwitchListItem(context,
+						text: 'Использовать внешний плеер',
+						switchValue: settings.useExternalPlayer,
+						onChanged: settings.setUseExternalPlayer,
+					),
+				),
+
+				_buildListItem(context,
 					onTap: () => settings.resetToDefault(),
 					child: Row(
 						children: [

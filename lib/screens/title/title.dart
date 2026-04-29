@@ -16,6 +16,7 @@ import 'package:libria/services/settings_provider.dart';
 import 'package:libria/services/cache_manager.dart';
 import 'package:libria/screens/catalog/catalog.dart';
 import 'package:libria/screens/settings/settings.dart';
+import 'package:libria/screens/player/player.dart';
 
 part 'title_state.dart';
 part 'title_details.dart';

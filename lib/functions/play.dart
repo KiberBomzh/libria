@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 import 'package:libria/main.dart';
 import 'package:libria/services/preferences.dart';
+import 'package:libria/services/settings_provider.dart';
 import 'package:libria/functions/ask_quality.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
+import 'package:provider/provider.dart';
 
 
 Future<bool> play(BuildContext context, {
@@ -38,6 +40,7 @@ Future<bool> play(BuildContext context, {
 		episodeName: episodeName,
 		episodeOrdinal: episodeOrdinal,
 	);
+
 	return true;
 }
 

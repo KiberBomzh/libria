@@ -19,6 +19,9 @@ class Preferences {
 		await _prefs?.setInt('last_title_id', title.titleId!);
 		await _prefs?.setInt('last_episode_index', title.episodeIndex!);
 		await _prefs?.setString('last_video_link', title.episodeLink!);
+
+		if (title.episodePosition != null)
+			await _prefs?.setInt('last_episode_position', title.episodePosition!);
 	}
 
 	static LastTitleInfo? getLastTitle() {
@@ -26,6 +29,7 @@ class Preferences {
 		title.titleId = _prefs?.getInt('last_title_id');
 		title.episodeIndex = _prefs?.getInt('last_episode_index');
 		title.episodeLink = _prefs?.getString('last_video_link');
+		title.episodePosition = _prefs?.getInt('last_episode_position');
 		if (
 			title.titleId == null ||
 			title.episodeLink == null ||
@@ -69,10 +73,12 @@ class LastTitleInfo {
 	int? titleId;
 	String? episodeLink;
 	int? episodeIndex;
+	int? episodePosition; // in seconds
 
 	LastTitleInfo({
 		this.titleId,
 		this.episodeIndex,
 		this.episodeLink,
+		this.episodePosition,
 	});
 }

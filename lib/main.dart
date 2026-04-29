@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:media_kit/media_kit.dart';
 
 import 'package:libria/services/anilibria_api.dart';
 import 'package:libria/services/preferences.dart';
@@ -11,6 +12,7 @@ import 'package:libria/screens/title/title.dart';
 
 void main() async {
 	WidgetsFlutterBinding.ensureInitialized();
+	MediaKit.ensureInitialized();
 	await Preferences.init();
 	runApp(
 		ChangeNotifierProvider(

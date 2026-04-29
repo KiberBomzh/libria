@@ -20,6 +20,12 @@ class EpisodesList extends StatefulWidget {
 		this.controller,
 	}) : super(key: key);
 
+	void loadCurrentTitle() {
+		final t = Preferences.getLastTitle();
+		if (t != null)
+			currentTitle = t;
+	}
+
 	@override
 	State<EpisodesList> createState() => _EpisodesListState();
 }
@@ -27,6 +33,7 @@ class EpisodesList extends StatefulWidget {
 class _EpisodesListState extends State<EpisodesList> {
 	int? lastIndex;
 	ScrollController scrollController = ScrollController();
+	late SettingsProvider settings;
 
 	@override
 	void initState() {
@@ -38,6 +45,7 @@ class _EpisodesListState extends State<EpisodesList> {
 
 	@override
 	Widget build(BuildContext context) {
+		settings = context.watch<SettingsProvider>();
 		const double barHeight = 85.0;
 
 		return Scaffold(
@@ -67,7 +75,6 @@ class _EpisodesListState extends State<EpisodesList> {
 	}
 
 	Widget _buildEpisodesList() {
-		final settings = context.watch<SettingsProvider>();
 		final bool isReverse = settings.reverseEpisodesSorting;
 
 		return ListView.builder(
@@ -83,20 +90,7 @@ class _EpisodesListState extends State<EpisodesList> {
 					name: widget.episodes[index]['name'],
 					currentIndex: index,
 					lastIndex: lastIndex,
-					onTap: () async {
-						bool isSucces = await play(context,
-							hls_480: widget.episodes[index]['hls_480'],
-							hls_720: widget.episodes[index]['hls_720'],
-							hls_1080: widget.episodes[index]['hls_1080'],
-							currentTitle: widget.currentTitle,
-							episodeIndex: index,
-							titleName: widget.titleName,
-							episodeName: widget.episodes[index]['name'],
-							episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
-						);
-						if (isSucces)
-							setState(() { lastIndex = index; });
-					},
+					onTap: () => _playEpisode(index),
 					onTapDownload: () async {
 						String? link = await askQuality(context,
 							hls_480: widget.episodes[index]['hls_480'],
@@ -189,11 +183,23 @@ class _EpisodesListState extends State<EpisodesList> {
 						tooltip: 'Играть',
 						onPressed: () {
 							if (lastIndex != null) {
-								playLink(widget.currentTitle.episodeLink!,
-									titleName: widget.titleName,
-									episodeName: widget.episodes[lastIndex!]['name'],
-									episodeOrdinal: widget.episodes[lastIndex!]['ordinal'].toString(),
-								);
+								if (settings.useExternalPlayer) {
+									playLink(widget.currentTitle.episodeLink!,
+										titleName: widget.titleName,
+										episodeName: widget.episodes[lastIndex!]['name'],
+										episodeOrdinal: widget.episodes[lastIndex!]['ordinal'].toString(),
+									);
+								} else {
+									Navigator.push(context,
+										MaterialPageRoute(
+											builder: (context) => PlayerScreen(
+												title: widget.currentTitle,
+												episodes: widget.episodes,
+												index: lastIndex!,
+											)
+										),
+									);
+								}
 							} else {
 								_playEpisode(0);
 							}
@@ -205,6 +211,24 @@ class _EpisodesListState extends State<EpisodesList> {
 	}
 
 	void _playEpisode(int index) async {
+		if (settings.useExternalPlayer) {
+			await _playInExternalPlayer(index);
+		} else {
+			await Navigator.push(context,
+				MaterialPageRoute(
+					builder: (context) => PlayerScreen(
+						title: widget.currentTitle,
+						episodes: widget.episodes,
+						index: index,
+					),
+				),
+			);
+			widget.loadCurrentTitle();
+			setState(() => lastIndex = widget.currentTitle.episodeIndex);
+		}
+	}
+
+	Future<void> _playInExternalPlayer(int index) async {
 		bool isSucces = await play(context,
 			hls_480: widget.episodes[index]['hls_480'],
 			hls_720: widget.episodes[index]['hls_720'],
@@ -215,7 +239,7 @@ class _EpisodesListState extends State<EpisodesList> {
 			episodeName: widget.episodes[index]['name'],
 			episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 		);
-		print(isSucces);
+
 		if (isSucces)
 			setState(() { lastIndex = index; });
 	}
