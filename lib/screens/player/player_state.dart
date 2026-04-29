@@ -4,7 +4,13 @@ part of 'player.dart';
 enum VideoQuality {
 	hls_480,
 	hls_720,
-	hls_1080,
+	hls_1080;
+
+	String to_string() => switch (this) {
+		(VideoQuality.hls_480) => '480p',
+		(VideoQuality.hls_720) => '720p',
+		(VideoQuality.hls_1080) => '1080p',
+	};
 }
 
 const VideoQuality DEFAULT_QUALITY = VideoQuality.hls_1080;
@@ -23,6 +29,7 @@ class _PlayerState extends State<PlayerScreen> {
 
 	VideoQuality _quality = DEFAULT_QUALITY;
 
+	late Map<String, dynamic> _currentEpisode;
 	late String _currentEpisodeName;
 	late int _currentIndex;
 	int _lastSecond = 0;
@@ -45,14 +52,17 @@ class _PlayerState extends State<PlayerScreen> {
 		super.initState();
 		defaultEnterNativeFullscreen();
 
+		_currentIndex = widget.index;
+		widget.title.episodeIndex = widget.index;
+		Preferences.setLastTitle(widget.title);
+
+		_currentEpisode = widget.episodes[_currentIndex];
+
 		_loadQuality();
 		_loadPlaylist();
 		_openPlayer();
 		_subscribeOnStreams();
 
-		_currentIndex = widget.index;
-		widget.title.episodeIndex = widget.index;
-		Preferences.setLastTitle(widget.title);
 		_loadEpisodeName();
 		_setLastLink();
 	}
@@ -102,14 +112,12 @@ class _PlayerState extends State<PlayerScreen> {
 			await _player.open(_playlist, play: false);
 			setState(() => _isLoading = true);
 			while (_duration.inSeconds < 5) {
-				print('opening');
 				await Future.delayed(Duration(seconds: 1));
 			}
 
 			_player.seek(Duration(seconds: widget.title.episodePosition!));
 			setState(() => _isLoading = true);
 			while (_position != widget.title.episodePosition) {
-				print('seeking');
 				await Future.delayed(Duration(seconds: 1));
 			}
 
@@ -162,9 +170,8 @@ class _PlayerState extends State<PlayerScreen> {
 	}
 
 	void _loadEpisodeName() => setState(() {
-		final episode = widget.episodes[_currentIndex];
-		final ordinal = episode['ordinal'];
-		final name = episode['name'];
+		final ordinal = _currentEpisode['ordinal'];
+		final name = _currentEpisode['name'];
 
 		if (name != null)
 			_currentEpisodeName = "Эпизод $ordinal. $name";
@@ -222,14 +229,13 @@ class _PlayerState extends State<PlayerScreen> {
 	}
 
 	void _skip() {
-		final episode = widget.episodes[_currentIndex];
 		if (_inOpening) {
-			final end = episode['opening']['stop'];
+			final end = _currentEpisode['opening']['stop'];
 			if (end != null) {
 				_player.seek(Duration(seconds: end! + 1));
 			}
 		} else if (_inEnding) {
-			final end = episode['ending']['stop'];
+			final end = _currentEpisode['ending']['stop'];
 			if (end != null) {
 				_player.seek(Duration(seconds: end! + 1));
 			}
@@ -237,13 +243,12 @@ class _PlayerState extends State<PlayerScreen> {
 	}
 
 	void _checkPosition() {
-		final episode = widget.episodes[_currentIndex];
 		if (_position == 0)
 			return;
 
 		// Opening
-		final opening_start = episode['opening']['start'];
-		final opening_end = episode['opening']['stop'];
+		final opening_start = _currentEpisode['opening']['start'];
+		final opening_end = _currentEpisode['opening']['stop'];
 		if (opening_start != null && opening_end != null) {
 			setState(() {
 				if (opening_start! <= _position && opening_end >= _position) {
@@ -256,8 +261,8 @@ class _PlayerState extends State<PlayerScreen> {
 
 
 		// Ending
-		final ending_start = episode['ending']['start'];
-		final ending_end = episode['ending']['stop'];
+		final ending_start = _currentEpisode['ending']['start'];
+		final ending_end = _currentEpisode['ending']['stop'];
 		if (ending_start != null && ending_end != null) {
 			setState(() {
 				if (ending_start! <= _position && ending_end >= _position) {
@@ -267,6 +272,13 @@ class _PlayerState extends State<PlayerScreen> {
 				}
 			});
 		}
+	}
+
+	void _changeQuality(VideoQuality newQuality) {
+		setState(() => _quality = newQuality);
+		_loadPlaylist();
+		_openPlayer();
+		_setLastLink();
 	}
 
 	@override
@@ -364,6 +376,58 @@ class _PlayerState extends State<PlayerScreen> {
 				const SizedBox(width: 10),
 
 				Text(_currentEpisodeName),
+				Spacer(),
+
+				MenuAnchor(
+					builder: (context, controller, child) {
+						return TextButton(
+							child: Row(
+								children: [
+									Icon(Icons.high_quality),
+									const SizedBox(width: 5),
+									Text(_quality.to_string())
+								],
+							),
+							onPressed: () {
+								if (controller.isOpen) {
+									controller.close();
+								} else {
+									controller.open();
+								}
+							},
+							style: TextButton.styleFrom(foregroundColor: Colors.white),
+						);
+					},
+					menuChildren: [
+						if (_currentEpisode['hls_480'] != null)
+							MenuItemButton(
+								child: Padding(
+									padding: const EdgeInsets.symmetric(horizontal: 10),
+									child: Text('480p'),
+								),
+								onPressed: () => _changeQuality(VideoQuality.hls_480),
+							),
+
+						if  (_currentEpisode['hls_720'] != null)
+							MenuItemButton(
+								child: Padding(
+									padding: const EdgeInsets.symmetric(horizontal: 10),
+									child: Text('720p'),
+								),
+								onPressed: () => _changeQuality(VideoQuality.hls_720),
+							),
+
+						if (_currentEpisode['hls_1080'] != null)
+							MenuItemButton(
+								child: Padding(
+									padding: const EdgeInsets.symmetric(horizontal: 10),
+									child: Text('1080p'),
+								),
+								onPressed: () => _changeQuality(VideoQuality.hls_1080),
+							),
+					],
+				),
+				const SizedBox(width: 10),
 			],
 		);
 	}
