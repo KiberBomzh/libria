@@ -137,6 +137,7 @@ class _PlayerState extends State<PlayerScreen> {
 				_currentIndex++;
 				widget.title.episodeIndex = _currentIndex;
 				Preferences.setLastTitle(widget.title);
+				_currentEpisode = widget.episodes[_currentIndex];
 				_loadEpisodeName();
 				_setLastLink();
 			}
@@ -450,6 +451,7 @@ class _PlayerState extends State<PlayerScreen> {
 							_currentIndex--;
 							widget.title.episodeIndex = _currentIndex;
 							await Preferences.setLastTitle(widget.title);
+							_currentEpisode = widget.episodes[_currentIndex];
 							_loadEpisodeName();
 							_setLastLink();
 						}
@@ -474,6 +476,7 @@ class _PlayerState extends State<PlayerScreen> {
 							_currentIndex++;
 							widget.title.episodeIndex = _currentIndex;
 							await Preferences.setLastTitle(widget.title);
+							_currentEpisode = widget.episodes[_currentIndex];
 							_loadEpisodeName();
 							_setLastLink();
 						}
