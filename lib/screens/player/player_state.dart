@@ -30,6 +30,9 @@ class _PlayerState extends State<PlayerScreen> {
 	Duration _duration = Duration(seconds: 0);
 	int _position = 0;
 
+	bool _inOpening = false;
+	bool _inEnding = false;
+
 
 	@override
 	void initState() {
@@ -51,6 +54,7 @@ class _PlayerState extends State<PlayerScreen> {
 		_player.stream.position.listen((Duration position) {
 			final inSeconds = position.inSeconds;
 			_position = inSeconds;
+			_checkPosition();
 
 			if (inSeconds < 5)
 				return;
@@ -178,6 +182,54 @@ class _PlayerState extends State<PlayerScreen> {
 		return '';
 	}
 
+	void _skip() {
+		final episode = widget.episodes[_currentIndex];
+		if (_inOpening) {
+			final end = episode['opening']['stop'];
+			if (end != null) {
+				_player.seek(Duration(seconds: end! + 1));
+			}
+		} else if (_inEnding) {
+			final end = episode['ending']['stop'];
+			if (end != null) {
+				_player.seek(Duration(seconds: end!));
+			}
+		}
+	}
+
+	void _checkPosition() {
+		final episode = widget.episodes[_currentIndex];
+		if (_position == 0)
+			return;
+
+		// Opening
+		final opening_start = episode['opening']['start'];
+		final opening_end = episode['opening']['stop'];
+		if (opening_start != null && opening_end != null) {
+			setState(() {
+				if (opening_start! <= _position && opening_end >= _position) {
+					_inOpening = true;
+				} else {
+					_inOpening = false;
+				}
+			});
+		}
+
+
+		// Ending
+		final ending_start = episode['ending']['start'];
+		final ending_end = episode['ending']['stop'];
+		if (ending_start != null && ending_end != null) {
+			setState(() {
+				if (ending_start! <= _position && ending_end >= _position) {
+					_inEnding = true;
+				} else {
+					_inEnding = false;
+				}
+			});
+		}
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		if (_controller == null)
@@ -216,6 +268,22 @@ class _PlayerState extends State<PlayerScreen> {
 						if (_isLoading)
 							Center(
 								child: CircularProgressIndicator()
+							),
+
+						if (_inOpening || _inEnding)
+							Align(
+								alignment: .bottomRight,
+								child: Container(
+									margin: const EdgeInsets.only(bottom: 35, right: 20),
+									decoration: BoxDecoration(
+										color: Colors.black.withOpacity(0.5),
+										borderRadius: .circular(5),
+									),
+									child: TextButton(
+										child: Text('Пропустить'),
+										onPressed: _skip,
+									),
+								),
 							),
 					],
 				),
@@ -263,7 +331,7 @@ class _PlayerState extends State<PlayerScreen> {
 				Spacer(flex: 2),
 				IconButton(
 					icon: Icon(Icons.skip_previous,
-						size: 50,
+						size: 40,
 						color: (_currentIndex > 0)
 							? Colors.white
 							: Colors.grey,
@@ -287,7 +355,7 @@ class _PlayerState extends State<PlayerScreen> {
 
 				IconButton(
 					icon: Icon(Icons.skip_next,
-					size: 50,
+					size: 40,
 					color: (_currentIndex < widget.episodes.length - 1)
 							? Colors.white
 							: Colors.grey,
