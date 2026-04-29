@@ -19,6 +19,7 @@ class _PlayerState extends State<PlayerScreen> {
 	Timer? _showControlsTimer;
 
 	bool _isLoading = true;
+	Timer? _loadingTimer;
 
 	VideoQuality _quality = DEFAULT_QUALITY;
 
@@ -27,9 +28,16 @@ class _PlayerState extends State<PlayerScreen> {
 	int _lastSecond = 0;
 	Duration _duration = Duration(seconds: 0);
 	int _position = 0;
+	bool _isPlaying = false;
 
 	bool _inOpening = false;
 	bool _inEnding = false;
+
+	late StreamSubscription _playingSubscription;
+	late StreamSubscription _bufferingSubscription;
+	late StreamSubscription _completedSubscription;
+	late StreamSubscription _durationSubscription;
+	late StreamSubscription _positionSubscription;
 
 
 	@override
@@ -40,13 +48,30 @@ class _PlayerState extends State<PlayerScreen> {
 		_loadPlaylist();
 		_openPlayer();
 
-		_player.stream.buffering.listen((buffering) {
+		_bufferingSubscription = _player.stream.buffering.listen((buffering) {
 			setState(() => _isLoading = true);
 		});
-		_player.stream.duration.listen((duration) => _duration = duration);
-		_player.stream.position.listen((Duration position) {
+		_completedSubscription = _player.stream.completed.listen((isCompleted) {
+			if (isCompleted) {
+				_currentIndex++;
+				widget.title.episodeIndex = _currentIndex;
+				Preferences.setLastTitle(widget.title);
+				_loadEpisodeName();
+				_setLastLink();
+			}
+		});
+		_playingSubscription = _player.stream.playing.listen((playing) => _isPlaying = playing);
+		_durationSubscription = _player.stream.duration.listen((duration) => _duration = duration);
+		_positionSubscription = _player.stream.position.listen((Duration position) {
 			if (_isLoading && _position != 0)
 				setState(() => _isLoading = false);
+
+			_loadingTimer?.cancel();
+			if (_isPlaying)
+				_loadingTimer = Timer(Duration(milliseconds: 300), () {
+					if (_isPlaying)
+						setState(() => _isLoading = true);
+				});
 
 
 			final inSeconds = position.inSeconds;
@@ -74,7 +99,14 @@ class _PlayerState extends State<PlayerScreen> {
 	void dispose() {
 		_player.dispose();
 
+		_loadingTimer?.cancel();
 		_showControlsTimer?.cancel();
+
+		_playingSubscription.cancel();
+		_bufferingSubscription.cancel();
+		_completedSubscription.cancel();
+		_durationSubscription.cancel();
+		_positionSubscription.cancel();
 		defaultExitNativeFullscreen();
 		super.dispose();
 	}
@@ -182,7 +214,7 @@ class _PlayerState extends State<PlayerScreen> {
 		} else if (_inEnding) {
 			final end = episode['ending']['stop'];
 			if (end != null) {
-				_player.seek(Duration(seconds: end!));
+				_player.seek(Duration(seconds: end! + 1));
 			}
 		}
 	}
@@ -291,7 +323,7 @@ class _PlayerState extends State<PlayerScreen> {
 				Column(
 					mainAxisAlignment: .center,
 					children: [
-						const SizedBox(height: 20),
+						const SizedBox(height: 10),
 						_buildTop(state),
 
 						Spacer(),
