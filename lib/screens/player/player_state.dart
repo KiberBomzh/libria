@@ -295,20 +295,25 @@ class _PlayerState extends State<PlayerScreen> {
 		if (!_showControls)
 			return SizedBox();
 
-		return Column(
-			mainAxisAlignment: .center,
+		return Stack(
 			children: [
-				const SizedBox(height: 20),
-				_buildTop(state),
+				Container(color: Colors.black.withOpacity(0.5)),
+				Column(
+					mainAxisAlignment: .center,
+					children: [
+						const SizedBox(height: 20),
+						_buildTop(state),
 
-				Spacer(),
-				Expanded(
-					child: _buildCenter(state),
+						Spacer(),
+						Expanded(
+							child: _buildCenter(state),
+						),
+						Spacer(),
+
+						_buildBottom(state),
+						const SizedBox(height: 20),
+					],
 				),
-				Spacer(),
-
-				_buildBottom(state),
-				const SizedBox(height: 20),
 			],
 		);
 	}
