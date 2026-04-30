@@ -22,6 +22,40 @@ const VideoQuality DEFAULT_QUALITY = VideoQuality.hls_1080;
 
 
 class _PlayerState extends State<PlayerScreen> {
+	late final BetterPlayerController _controller;
+
+	@override
+	void initState() {
+		final source = BetterPlayerDataSource(
+			BetterPlayerDataSourceType.network,
+			widget.episodes[widget.index]['hls_720'],
+		);
+		_controller = BetterPlayerController(
+			const BetterPlayerConfiguration(
+				autoPlay: true,
+				fit: .contain,
+			),
+			betterPlayerDataSource: source,
+		);
+
+		super.initState();
+	}
+
+	@override
+	void dispose() {
+		_controller.dispose();
+		super.dispose();
+	}
+
+	@override
+	Widget build(BuildContext context) {
+		return Scaffold(
+			backgroundColor: Colors.black,
+			body: BetterPlayer(controller: _controller),
+		);
+	}
+}
+/*
 	late final _player = Player();
 	late final _controller = VideoController(_player);
 	late Playlist _playlist;
@@ -611,4 +645,4 @@ class _PlayerState extends State<PlayerScreen> {
 			],
 		);
 	}
-}
+}*/
