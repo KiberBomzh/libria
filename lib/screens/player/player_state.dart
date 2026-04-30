@@ -53,8 +53,6 @@ class _PlayerState extends State<PlayerScreen> {
 		defaultEnterNativeFullscreen();
 
 		_currentIndex = widget.index;
-		widget.title.episodeIndex = widget.index;
-		Preferences.setLastTitle(widget.title);
 
 		_currentEpisode = widget.episodes[_currentIndex];
 
@@ -65,6 +63,9 @@ class _PlayerState extends State<PlayerScreen> {
 
 		_loadEpisodeName();
 		_setLastLink();
+
+		widget.title.episodeIndex = widget.index;
+		Preferences.setLastTitle(widget.title);
 	}
 
 	@override
@@ -160,7 +161,7 @@ class _PlayerState extends State<PlayerScreen> {
 			_position = inSeconds;
 			_checkPosition();
 
-			if (inSeconds < 5)
+			if (inSeconds < 1)
 				return;
 
 			if (inSeconds != widget.title.episodePosition) {
