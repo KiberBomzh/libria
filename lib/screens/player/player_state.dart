@@ -135,12 +135,16 @@ class _PlayerState extends State<PlayerScreen> {
 		});
 		_completedSubscription = _player.stream.completed.listen((isCompleted) {
 			if (isCompleted) {
-				_currentIndex++;
-				widget.title.episodeIndex = _currentIndex;
-				Preferences.setLastTitle(widget.title);
-				_currentEpisode = widget.episodes[_currentIndex];
-				_loadEpisodeName();
-				_setLastLink();
+				if (_currentIndex < widget.episodes.length - 1) {
+					_currentIndex++;
+					widget.title.episodeIndex = _currentIndex;
+					Preferences.setLastTitle(widget.title);
+					_currentEpisode = widget.episodes[_currentIndex];
+					_loadEpisodeName();
+					_setLastLink();
+				} else {
+					Navigator.of(context).pop();
+				}
 			}
 		});
 		_playingSubscription = _player.stream.playing.listen((playing) => _isPlaying = playing);
