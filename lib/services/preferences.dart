@@ -22,6 +22,8 @@ class Preferences {
 
 		if (title.episodePosition != null)
 			await _prefs?.setInt('last_episode_position', title.episodePosition!);
+		else
+			await _prefs?.remove('last_episode_position');
 	}
 
 	static LastTitleInfo? getLastTitle() {
