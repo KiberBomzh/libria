@@ -13,6 +13,11 @@ enum VideoQuality {
 	};
 }
 
+enum DoubleTapDirection {
+	forward,
+	backward;
+}
+
 const VideoQuality DEFAULT_QUALITY = VideoQuality.hls_1080;
 
 
@@ -47,6 +52,11 @@ class _PlayerState extends State<PlayerScreen> {
 	late StreamSubscription _positionSubscription;
 
 
+	bool _wasDoubleTap = false;
+	Timer? _doubleTapTimer;
+	DoubleTapDirection _doubleTapDirection = DoubleTapDirection.forward;
+
+
 	@override
 	void initState() {
 		super.initState();
@@ -73,6 +83,7 @@ class _PlayerState extends State<PlayerScreen> {
 		_player.dispose();
 
 		_loadingTimer?.cancel();
+		_doubleTapTimer?.cancel();
 		_showControlsTimer?.cancel();
 
 		_playingSubscription.cancel();
@@ -287,6 +298,25 @@ class _PlayerState extends State<PlayerScreen> {
 		_setLastLink();
 	}
 
+	String _getPositionAsString() {
+		final duration = _duration.inSeconds;
+		final position = _position;
+
+		final durationMinutes = (duration / 60).floor();
+		final durationSeconds = duration % 60;
+
+		final positionMinutes = (position / 60).floor();
+		final positionSeconds = position % 60;
+
+
+		final positionMinutesStr = (positionMinutes < 10) ? '0$positionMinutes' : positionMinutes.toString();
+		final positionSecondsStr = (positionSeconds < 10) ? '0$positionSeconds' : positionSeconds.toString();
+		final durationMinutesStr = (durationMinutes < 10) ? '0$durationMinutes' : durationMinutes.toString();
+		final durationSecondsStr = (durationSeconds < 10) ? '0$durationSeconds' : durationSeconds.toString();
+
+		return positionMinutesStr + ':' + positionSecondsStr + ' / ' + durationMinutesStr + ':' + durationSecondsStr;
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		if (_controller == null)
@@ -298,20 +328,60 @@ class _PlayerState extends State<PlayerScreen> {
 			seekBarHeight: 4,
 			seekBarContainerHeight: 20,
 		);
+		const doubleTapDuration = Duration(milliseconds: 500);
 
 
 		return Scaffold(
 			backgroundColor: Colors.black,
 			body: GestureDetector(
-				onTap: () => setState(() {
-					_showControls = !_showControls;
-					_showControlsTimer?.cancel();
-					if (_showControls) {
-						_showControlsTimer = Timer(Duration(seconds: 5), (){
-							setState(() => _showControls = false);
-						});
+				onTap: (!_wasDoubleTap)
+					? () => setState(() {
+						_showControls = !_showControls;
+						_showControlsTimer?.cancel();
+						if (_showControls) {
+							_showControlsTimer = Timer(Duration(seconds: 5), (){
+								setState(() => _showControls = false);
+							});
+						}
+					})
+					: null,
+				onDoubleTapDown: (!_wasDoubleTap)
+					? (details) {
+						final screenWidth = MediaQuery.of(context).size.width;
+						const shiftSeconds = 5;
+
+						setState(() => _wasDoubleTap = true);
+						_doubleTapTimer = Timer(doubleTapDuration, () => setState(() => _wasDoubleTap = false));
+
+						_showControlsTimer?.cancel();
+						setState(() => _showControls = false);
+
+						if (details.globalPosition.dx < screenWidth / 2) {
+							setState(() => _doubleTapDirection = DoubleTapDirection.backward);
+							_player.seek(Duration(seconds: (_position - shiftSeconds).clamp(0, _duration.inSeconds)));
+						} else {
+							setState(() => _doubleTapDirection = DoubleTapDirection.forward);
+							_player.seek(Duration(seconds: (_position + shiftSeconds).clamp(0, _duration.inSeconds)));
+						}
 					}
-				}),
+					: null,
+				onTapDown: (_wasDoubleTap)
+					? (details) {
+						final screenWidth = MediaQuery.of(context).size.width;
+						const shiftSeconds = 5;
+
+						_doubleTapTimer?.cancel();
+						_doubleTapTimer = Timer(doubleTapDuration, () => setState(() => _wasDoubleTap = false));
+
+						if (details.globalPosition.dx < screenWidth / 2) {
+							setState(() => _doubleTapDirection = DoubleTapDirection.backward);
+							_player.seek(Duration(seconds: (_position - shiftSeconds).clamp(0, _duration.inSeconds)));
+						} else {
+							setState(() => _doubleTapDirection = DoubleTapDirection.forward);
+							_player.seek(Duration(seconds: (_position + shiftSeconds).clamp(0, _duration.inSeconds)));
+						}
+					}
+					: null,
 				child: Stack(
 					children: [
 						MaterialVideoControlsTheme(
@@ -322,6 +392,43 @@ class _PlayerState extends State<PlayerScreen> {
 								controls: _buildControls,
 							),
 						),
+
+						if (_wasDoubleTap)
+							Center(
+								child: Container(
+									padding: EdgeInsets.all(12),
+									decoration: BoxDecoration(
+										color: Colors.black54,
+										borderRadius: .circular(8),
+									),
+									child: Column(
+										mainAxisSize: .min,
+										children: [
+											Row(
+												mainAxisSize: .min,
+												children: [
+													Icon((_doubleTapDirection == DoubleTapDirection.forward)
+														? Icons.fast_forward
+														: Icons.fast_rewind,
+														color: Colors.white
+													),
+													SizedBox(width: 8),
+													Text((_doubleTapDirection == DoubleTapDirection.forward)
+														? '+5'
+														: '-5',
+														style: TextStyle(color: Colors.white)
+													),
+												],
+											),
+
+											Text(_getPositionAsString(),
+												style: TextStyle(color: Colors.white)
+											),
+										],
+									),
+								),
+							),
+
 						if (_isLoading)
 							Center(
 								child: CircularProgressIndicator()
