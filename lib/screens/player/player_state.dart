@@ -38,12 +38,25 @@ class _PlayerState extends State<PlayerScreen> {
 			betterPlayerDataSource: source,
 		);
 
+		SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+		SystemChrome.setPreferredOrientations([
+			DeviceOrientation.landscapeLeft,
+			DeviceOrientation.landscapeRight,
+		]);
+
 		super.initState();
 	}
 
 	@override
 	void dispose() {
 		_controller.dispose();
+		SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+		SystemChrome.setPreferredOrientations([
+			DeviceOrientation.landscapeLeft,
+			DeviceOrientation.landscapeRight,
+			DeviceOrientation.portraitUp,
+			DeviceOrientation.portraitDown,
+		]);
 		super.dispose();
 	}
 
