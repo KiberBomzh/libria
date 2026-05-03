@@ -24,17 +24,42 @@ const VideoQuality DEFAULT_QUALITY = VideoQuality.hls_1080;
 class _PlayerState extends State<PlayerScreen> {
 	late final BetterPlayerController _controller;
 
+
+	bool _showControls = false;
+	Timer? _showControlsTimer;
+
+	VideoQuality _quality = DEFAULT_QUALITY;
+
+	late Map<String, dynamic> _currentEpisode;
+	late String _currentEpisodeName;
+	late int _currentIndex;
+
 	@override
 	void initState() {
+		_currentIndex = widget.index;
+
+		_currentEpisode = widget.episodes[_currentIndex];
+
+		_loadQuality();
+
+		_loadEpisodeName();
+		_setLastLink();
+
+
 		final source = BetterPlayerDataSource(
 			BetterPlayerDataSourceType.network,
 			widget.episodes[widget.index]['hls_720'],
 		);
-		_controller = BetterPlayerController(
-			const BetterPlayerConfiguration(
-				autoPlay: true,
-				fit: .contain,
-			),
+		final controlsConfig = BetterPlayerControlsConfiguration(
+			playerTheme: BetterPlayerTheme.custom,
+			customControlsBuilder: _buildControls,
+		);
+		final config = BetterPlayerConfiguration(
+			autoPlay: true,
+			fit: .contain,
+			controlsConfiguration: controlsConfig,
+		);
+		_controller = BetterPlayerController(config,
 			betterPlayerDataSource: source,
 		);
 
@@ -44,12 +69,18 @@ class _PlayerState extends State<PlayerScreen> {
 			DeviceOrientation.landscapeRight,
 		]);
 
+
+		widget.title.episodeIndex = widget.index;
+		Preferences.setLastTitle(widget.title);
 		super.initState();
 	}
 
 	@override
 	void dispose() {
 		_controller.dispose();
+
+		_showControlsTimer?.cancel();
+
 		SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 		SystemChrome.setPreferredOrientations([
 			DeviceOrientation.landscapeLeft,
@@ -57,7 +88,97 @@ class _PlayerState extends State<PlayerScreen> {
 			DeviceOrientation.portraitUp,
 			DeviceOrientation.portraitDown,
 		]);
+
 		super.dispose();
+	}
+
+	void _loadQuality() {
+		if (widget.quality == null)
+			return;
+
+		final q = widget.quality!;
+		if (q == 480) {
+			_quality = VideoQuality.hls_480;
+		} else if (q == 720) {
+			_quality = VideoQuality.hls_720;
+		} else if (q == 1080) {
+			_quality = VideoQuality.hls_1080;
+		}
+	}
+
+	void _loadEpisodeName() => setState(() {
+		final ordinal = _currentEpisode['ordinal'];
+		final name = _currentEpisode['name'];
+
+		if (name != null)
+			_currentEpisodeName = "Эпизод $ordinal. $name";
+		else
+			_currentEpisodeName = "Эпизод $ordinal";
+	});
+
+	void _setLastLink() {
+		final link = _getLink(_currentIndex);
+		widget.title.episodeLink = link;
+		Preferences.setLastTitle(widget.title);
+	}
+
+
+	String _getLink(int index) {
+		String? link;
+		VideoQuality q = _quality;
+		int counter = 0;
+		while (link == null) {
+			counter++;
+			if (counter > 10) {
+				break;
+			}
+			switch (q) {
+				case (VideoQuality.hls_480):
+					link = widget.episodes[index]['hls_480'];
+					if (link == null) {
+						q = VideoQuality.hls_1080;
+					} else {
+						return link!;
+					}
+					break;
+
+				case (VideoQuality.hls_720):
+					final link = widget.episodes[index]['hls_720'];
+					if (link == null) {
+						q = VideoQuality.hls_480;
+					} else {
+						return link!;
+					}
+					break;
+
+				case (VideoQuality.hls_1080):
+					final link = widget.episodes[index]['hls_1080'];
+					if (link == null) {
+						q = VideoQuality.hls_720;
+					} else {
+						return link!;
+					}
+					break;
+			}
+		}
+
+		return '';
+	}
+
+	String _getPositionAsString(int duration, int position) {
+		final durationMinutes = (duration / 60).floor();
+		final durationSeconds = duration % 60;
+
+		final positionMinutes = (position / 60).floor();
+		final positionSeconds = position % 60;
+
+
+		final positionMinutesStr = (positionMinutes < 10) ? '0$positionMinutes' : positionMinutes.toString();
+		final positionSecondsStr = (positionSeconds < 10) ? '0$positionSeconds' : positionSeconds.toString();
+		final durationMinutesStr = (durationMinutes < 10) ? '0$durationMinutes' : durationMinutes.toString();
+		final durationSecondsStr = (durationSeconds < 10) ? '0$durationSeconds' : durationSeconds.toString();
+
+		return positionMinutesStr + ':' + positionSecondsStr + ' / ' + durationMinutesStr + ':' + durationSecondsStr;
 	}
 
 	@override
@@ -66,6 +187,14 @@ class _PlayerState extends State<PlayerScreen> {
 			backgroundColor: Colors.black,
 			body: BetterPlayer(controller: _controller),
 		);
+	}
+
+	Widget _buildControls(
+		BetterPlayerController controller,
+		void onPlayerVisibilityChanged(bool visibility),
+		BetterPlayerControlsConfiguration controllsConfiguration
+	) {
+		return Center(child: Text('sl'));
 	}
 }
 /*
