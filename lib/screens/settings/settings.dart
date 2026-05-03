@@ -33,6 +33,14 @@ class SettingsScreen extends StatelessWidget {
 				),
 
 				_buildListItem(context,
+					child: _buildSwitchListItem(context,
+						text: 'Amoled',
+						switchValue: settings.isAmoled,
+						onChanged: settings.setAmoled,
+					),
+				),
+
+				_buildListItem(context,
 					onTap: () => showDialog<void>(
 						context: context,
 						builder: (context) => ColorPickerDialog(

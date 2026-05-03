@@ -8,11 +8,13 @@ import 'package:libria/screens/settings/color_picker_dialog.dart';
 
 class SettingsProvider extends ChangeNotifier {
 	bool? _isDarkTheme;
+	bool _isAmoled = false;
 	ColorItem _colorAccent = ColorItem('blue', Colors.blue);
 	bool _reverseEpisodesSorting = false;
 	int? _defaultVideoQuality;
 
 	bool? get isDarkTheme => _isDarkTheme;
+	bool get isAmoled => _isAmoled;
 	Color get colorAccent => _colorAccent.color;
 	bool get reverseEpisodesSorting => _reverseEpisodesSorting;
 	int? get defaultVideoQuality => _defaultVideoQuality;
@@ -24,6 +26,7 @@ class SettingsProvider extends ChangeNotifier {
 
 	void _loadAllSettings() {
 		_isDarkTheme = Preferences.getBool('is_dark_theme');
+		_isAmoled = Preferences.getBool('is_amoled') ?? false;
 		_colorAccent = ColorItem.fromString(Preferences.getString('color_accent') ?? 'blue');
 		_reverseEpisodesSorting = Preferences.getBool('reverse_episodes_sorting') ?? false;
 		_defaultVideoQuality = Preferences.getInt('default_video_quality');
@@ -34,6 +37,13 @@ class SettingsProvider extends ChangeNotifier {
 	Future<void> setDarkTheme(bool value) async {
 		_isDarkTheme = value;
 		await Preferences.setBool('is_dark_theme', value);
+
+		notifyListeners();
+	}
+
+	Future<void> setAmoled(bool value) async {
+		_isAmoled = value;
+		await Preferences.setBool('is_amoled', value);
 
 		notifyListeners();
 	}
@@ -63,6 +73,9 @@ class SettingsProvider extends ChangeNotifier {
 	Future<void> resetToDefault() async {
 		_isDarkTheme = null;
 		await Preferences.remove('is_dark_theme');
+
+		_isAmoled = false;
+		await Preferences.remove('is_amoled');
 
 		_colorAccent = ColorItem('blue', Colors.blue);
 		await Preferences.remove('color_accent');

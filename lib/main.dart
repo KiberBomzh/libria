@@ -41,6 +41,20 @@ class MyApp extends StatelessWidget {
 				: ThemeMode.light
 			: ThemeMode.system;
 
+
+		final lightTheme = ColorScheme.fromSeed(
+			brightness: Brightness.light,
+			seedColor: settings.colorAccent,
+		);
+
+		final darkTheme = ColorScheme.fromSeed(
+			brightness: Brightness.dark,
+			seedColor: settings.colorAccent,
+		);
+
+		final amoledTheme = darkTheme.copyWith(surface: Colors.black);
+
+
 		return SafeArea(
 			top: true,
 			bottom: true,
@@ -52,10 +66,7 @@ class MyApp extends StatelessWidget {
 						scrolledUnderElevation: 0.0,
 						color: Colors.transparent,
 					),
-					colorScheme: ColorScheme.fromSeed(
-						brightness: Brightness.light,
-						seedColor: settings.colorAccent,
-					),
+					colorScheme: lightTheme,
 				),
 				darkTheme: ThemeData(
 					useMaterial3: true,
@@ -63,10 +74,9 @@ class MyApp extends StatelessWidget {
 						scrolledUnderElevation: 0.0,
 						color: Colors.transparent,
 					),
-					colorScheme: ColorScheme.fromSeed(
-						brightness: Brightness.dark,
-						seedColor: settings.colorAccent,
-					),
+					colorScheme: settings.isAmoled
+						? amoledTheme
+						: darkTheme,
 				),
 				themeMode: themeMode,
 				home: _buildHome(),
