@@ -1,11 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-
-import 'package:libria/main.dart';
 import 'package:libria/services/preferences.dart';
-
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 
 Future<String?> askQuality(BuildContext context,

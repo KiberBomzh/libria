@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:libria/services/preferences.dart';
 import 'package:libria/screens/settings/color_picker_dialog.dart';
 

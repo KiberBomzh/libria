@@ -1,6 +1,7 @@
 part of 'title.dart';
 
 
+// ignore: must_be_immutable
 class EpisodesList extends StatefulWidget {
 	final VoidCallback onTapDownload;
 
@@ -11,14 +12,14 @@ class EpisodesList extends StatefulWidget {
 	final bool isWideScreen;
 
 	EpisodesList({
-		Key? key,
+		super.key,
 		required this.titleName,
 		required this.onTapDownload,
 		required this.episodes,
 		required this.currentTitle,
 		required this.isWideScreen,
 		this.controller,
-	}) : super(key: key);
+	});
 
 	@override
 	State<EpisodesList> createState() => _EpisodesListState();
@@ -122,7 +123,7 @@ class _EpisodesListState extends State<EpisodesList> {
 		return Container(
 			height: height,
 			decoration: BoxDecoration(
-				color: Theme.of(context).colorScheme.surfaceVariant,
+				color: Theme.of(context).colorScheme.surfaceContainerHighest,
 				borderRadius: .vertical(top: .circular(10)),
 			),
 			child: Row(
@@ -215,7 +216,6 @@ class _EpisodesListState extends State<EpisodesList> {
 			episodeName: widget.episodes[index]['name'],
 			episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 		);
-		print(isSucces);
 		if (isSucces)
 			setState(() { lastIndex = index; });
 	}

@@ -5,7 +5,7 @@ class Franchise extends StatefulWidget {
 	final int titleId;
 	final bool isPreview;
 
-	Franchise({
+	const Franchise({
 		super.key,
 		required this.titleId,
 		required this.isPreview,
@@ -107,64 +107,60 @@ class _FranchiseState extends State<Franchise> {
 			appBar: AppBar(
 				title: Text('Связанное'),
 			),
-			body: Container(
-				child: ListView.builder(
-					itemCount: _franchiseResponse.length,
-					itemBuilder: (context, index) {
-						final releases =
-							[..._franchiseResponse[index]['franchise_releases']]
-								..sort((a, b) => (a['sort_order'] as int).compareTo(b['sort_order'] as int));
-
-						return ExpansionTile(
-							title: Container(
-								child: Column(
-									crossAxisAlignment: .start,
-									children: [
-										Text(_franchiseResponse[index]['name'],
-											style: Theme.of(context).textTheme.titleMedium,
-										),
-										Text(_franchiseResponse[index]['name_english'],
-											style: Theme.of(context).textTheme.bodyMedium?.copyWith( color: Colors.grey ),
-										),
-									]
+			body: ListView.builder(
+				itemCount: _franchiseResponse.length,
+				itemBuilder: (context, index) {
+					final releases =
+						[..._franchiseResponse[index]['franchise_releases']]
+							..sort((a, b) => (a['sort_order'] as int).compareTo(b['sort_order'] as int));
+			
+					return ExpansionTile(
+						title: Column(
+							crossAxisAlignment: .start,
+							children: [
+								Text(_franchiseResponse[index]['name'],
+									style: Theme.of(context).textTheme.titleMedium,
 								),
-							),
-							initiallyExpanded: (index == 0) ? true : false,
-							children: releases.map<Widget>((v) {
-								final release = v['release'];
-
-								return _buildTitleItem(
-									onTap: () {
-										int currentTitleId = release['id'];
-										LastTitleInfo? lastTitle = Preferences.getLastTitle();
-										LastTitleInfo title;
-										if (lastTitle == null) {
+								Text(_franchiseResponse[index]['name_english'],
+									style: Theme.of(context).textTheme.bodyMedium?.copyWith( color: Colors.grey ),
+								),
+							]
+						),
+						initiallyExpanded: (index == 0) ? true : false,
+						children: releases.map<Widget>((v) {
+							final release = v['release'];
+			
+							return _buildTitleItem(
+								onTap: () {
+									int currentTitleId = release['id'];
+									LastTitleInfo? lastTitle = Preferences.getLastTitle();
+									LastTitleInfo title;
+									if (lastTitle == null) {
+										title = LastTitleInfo(titleId: currentTitleId);
+									} else {
+										if (lastTitle.titleId != currentTitleId) {
 											title = LastTitleInfo(titleId: currentTitleId);
 										} else {
-											if (lastTitle!.titleId != currentTitleId) {
-												title = LastTitleInfo(titleId: currentTitleId);
-											} else {
-												title = lastTitle!;
-											}
+											title = lastTitle;
 										}
-
-										Navigator.push(context,
-											MaterialPageRoute(
-												builder: (context) => TitleScreen(currentTitle: title),
-											),
-										);
-									},
-									imageUrl: base_url + release['poster']['optimized']['src'],
-									titleName: release['name']['main'],
-									titleNameEn: release['name']['english'],
-									titleType: release['type']['description'],
-									titleId: release['id'],
-									isOngoing: release['is_ongoing'],
-								);
-							}).toList(),
-						);
-					}
-				),
+									}
+			
+									Navigator.push(context,
+										MaterialPageRoute(
+											builder: (context) => TitleScreen(currentTitle: title),
+										),
+									);
+								},
+								imageUrl: base_url + release['poster']['optimized']['src'],
+								titleName: release['name']['main'],
+								titleNameEn: release['name']['english'],
+								titleType: release['type']['description'],
+								titleId: release['id'],
+								isOngoing: release['is_ongoing'],
+							);
+						}).toList(),
+					);
+				}
 			),
 		);
 	}
@@ -183,15 +179,13 @@ class _FranchiseState extends State<Franchise> {
 			decoration: BoxDecoration(
 				borderRadius: .circular(15),
 				color: (titleId == widget.titleId)
-					? Theme.of(context).colorScheme.surfaceVariant
+					? Theme.of(context).colorScheme.surfaceContainerHighest
 					: Colors.transparent,
 			),
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(
 					onTap: onTap,
-					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Padding(
 						padding: EdgeInsets.symmetric(
 							horizontal: 20,
@@ -212,11 +206,11 @@ class _FranchiseState extends State<Franchise> {
 											cacheManager: customCacheManager,
 											fit: .cover,
 											placeholder: (context, url) => Container(
-												color: Theme.of(context).colorScheme.surfaceVariant,
+												color: Theme.of(context).colorScheme.surfaceContainerHighest,
 												child: const Center(child: CircularProgressIndicator()),
 											),
 											errorWidget: (context, url, error) => Container(
-												color: Theme.of(context).colorScheme.surfaceVariant,
+												color: Theme.of(context).colorScheme.surfaceContainerHighest,
 												child: const Icon(Icons.broken_image, size: 50),
 											),
 										),
@@ -326,7 +320,7 @@ class _FranchiseState extends State<Franchise> {
 						decoration: BoxDecoration(
 							borderRadius: .circular(10),
 							color: (release['id'] == widget.titleId)
-								? Theme.of(context).colorScheme.surfaceVariant
+								? Theme.of(context).colorScheme.surfaceContainerHighest
 								: Colors.transparent,
 						),
 						child: CatalogGridItem(
@@ -339,10 +333,10 @@ class _FranchiseState extends State<Franchise> {
 								if (lastTitle == null) {
 									title = LastTitleInfo(titleId: currentTitleId);
 								} else {
-									if (lastTitle!.titleId != currentTitleId) {
+									if (lastTitle.titleId != currentTitleId) {
 										title = LastTitleInfo(titleId: currentTitleId);
 									} else {
-										title = lastTitle!;
+										title = lastTitle;
 									}
 								}
 

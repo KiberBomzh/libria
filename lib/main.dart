@@ -52,7 +52,11 @@ class MyApp extends StatelessWidget {
 			seedColor: settings.colorAccent,
 		);
 
-		final amoledTheme = darkTheme.copyWith(surface: Colors.black);
+		final amoledTheme = darkTheme.copyWith(
+			surface: Color(0xFF000000),
+			surfaceContainer: Color(0xFF151515),
+			surfaceContainerHighest: Color(0xFF333333),
+		);
 
 
 		return SafeArea(
@@ -64,7 +68,7 @@ class MyApp extends StatelessWidget {
 					useMaterial3: true,
 					appBarTheme: const AppBarTheme(
 						scrolledUnderElevation: 0.0,
-						color: Colors.transparent,
+						backgroundColor: Colors.transparent,
 					),
 					colorScheme: lightTheme,
 				),
@@ -72,7 +76,7 @@ class MyApp extends StatelessWidget {
 					useMaterial3: true,
 					appBarTheme: const AppBarTheme(
 						scrolledUnderElevation: 0.0,
-						color: Colors.transparent,
+						backgroundColor: Colors.transparent,
 					),
 					colorScheme: settings.isAmoled
 						? amoledTheme

@@ -12,8 +12,8 @@ class TitleDetails extends StatelessWidget {
 	final String? episodesTotal;
 	final List<dynamic>? genres;
 
-	TitleDetails({
-		Key? key,
+	const TitleDetails({
+		super.key,
 		required this.titleId,
 		required this.nameRu,
 		required this.nameEn,
@@ -23,7 +23,7 @@ class TitleDetails extends StatelessWidget {
 		required this.isOngoing,
 		required this.episodesTotal,
 		required this.genres,
-	}) : super(key: key);
+	});
 
 
 	@override
@@ -81,7 +81,7 @@ class TitleDetails extends StatelessWidget {
 								children: genres!.map((v) {
 									return FilterChip(
 										label: Text(v['name']),
-										backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+										backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
 										onSelected: (_) => Navigator.push(context,
 											MaterialPageRoute(
 												builder: (context) => Catalog(searchParameters: { 'genres': <int>[ v['id'].toInt() ] })
@@ -150,11 +150,11 @@ class TitleDetails extends StatelessWidget {
 								cacheManager: customCacheManager,
 								fit: BoxFit.cover,
 								placeholder: (context, url) => Container(
-									color: Theme.of(context).colorScheme.surfaceVariant,
+									color: Theme.of(context).colorScheme.surfaceContainerHighest,
 									child: const Center(child: CircularProgressIndicator()),
 								),
 								errorWidget: (context, url, error) => Container(
-									color: Theme.of(context).colorScheme.surfaceVariant,
+									color: Theme.of(context).colorScheme.surfaceContainerHighest,
 									child: const Icon(Icons.broken_image, size: 50),
 								),
 							),

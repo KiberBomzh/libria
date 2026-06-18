@@ -25,12 +25,12 @@ part 'franchise.dart';
 
 
 class TitleScreen extends StatefulWidget {
-	LastTitleInfo currentTitle;
+	final LastTitleInfo currentTitle;
 
-	TitleScreen({
-		Key? key,
+	const TitleScreen({
+		super.key,
 		required this.currentTitle,
-	}) : super(key: key);
+	});
 
 
 	@override

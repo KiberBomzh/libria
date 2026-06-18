@@ -57,19 +57,17 @@ class _TitleState extends State<TitleScreen> {
 			barrierDismissible: true,
 			builder: (context) {
 				return SimpleDialog(
-					title: Container(
-						child: Column(
-							children: [
-								Text('Выберите торрент',
-									style: Theme.of(context).textTheme.titleLarge,
+					title: Column(
+						children: [
+							Text('Выберите торрент',
+								style: Theme.of(context).textTheme.titleLarge,
+							),
+							Text('Долгое нажатие чтоб скопировать magnet-ссылку',
+								style: Theme.of(context).textTheme.titleSmall?.copyWith(
+									color: Colors.grey,
 								),
-								Text('Долгое нажатие чтоб скопировать magnet-ссылку',
-									style: Theme.of(context).textTheme.titleSmall?.copyWith(
-										color: Colors.grey,
-									),
-								),
-							],
-						),
+							),
+						],
 					),
 					children: [
 						SizedBox(
@@ -248,7 +246,7 @@ class _TitleState extends State<TitleScreen> {
 								left: 5,
 							),
 							decoration: BoxDecoration(
-								color: Theme.of(context).colorScheme.surfaceVariant,
+								color: Theme.of(context).colorScheme.surfaceContainerHighest,
 								border: Border.all(
 									width: 2,
 									color: Theme.of(context).colorScheme.outline,
@@ -277,7 +275,7 @@ class _TitleState extends State<TitleScreen> {
 			snapPoint: 0.5,
 
 			borderRadius: BorderRadius.circular(12),
-			color: Theme.of(context).colorScheme.surfaceVariant,
+			color: Theme.of(context).colorScheme.surfaceContainerHighest,
 			backdropEnabled: true,
 			
 			onPanelSlide: (_isBottomSheetOpen)

@@ -6,10 +6,10 @@ class ColorPickerDialog extends StatefulWidget {
 	final Function(ColorItem) onColorSelected;
   
 	const ColorPickerDialog({
-		Key? key,
+		super.key,
 		this.initialColor,
 		required this.onColorSelected,
-	}) : super(key: key);
+	});
 
 	@override
 	State<ColorPickerDialog> createState() => _ColorPickerDialogState();
@@ -58,7 +58,6 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 								itemBuilder: (context, index) {
 									final colorItem = _allColors[index];
 									final color = colorItem.color;
-									final colorName = colorItem.name;
                   
 									return GestureDetector(
 										onTap: () {
@@ -78,7 +77,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 												boxShadow: [
 													if (widget.initialColor == color)
 														BoxShadow(
-															color: color.withOpacity(0.5),
+															color: color.withValues(alpha: 0.5),
 															blurRadius: 8,
 															spreadRadius: 2,
 														),

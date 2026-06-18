@@ -11,14 +11,14 @@ class EpisodeListItem extends StatelessWidget {
 	final int? lastIndex;
 	
 	const EpisodeListItem({
-		Key? key,
+		super.key,
 		required this.onTap,
 		required this.onTapDownload,
 		required this.ordinal,
 		required this.currentIndex,
 		this.lastIndex,
 		this.name,
-	}) : super(key: key);
+	});
 
 
 	@override
@@ -48,8 +48,6 @@ class EpisodeListItem extends StatelessWidget {
 				color: Colors.transparent,
 				child: InkWell(
 					onTap: onTap,
-					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Padding(
 						padding: EdgeInsets.symmetric(
 							horizontal: 20,
@@ -61,9 +59,9 @@ class EpisodeListItem extends StatelessWidget {
 									width: 36,
 									height: 36,
 									decoration: BoxDecoration(
-										color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+										color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
 										border: Border.all(
-											color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+											color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
 											width: 2,
 										),
 										borderRadius: BorderRadius.circular(12),
@@ -153,12 +151,12 @@ class TorrentListItem extends StatelessWidget {
 	final int size;
 	
 	const TorrentListItem({
-		Key? key,
+		super.key,
 		required this.onTap,
 		required this.onLongTap,
 		required this.label,
 		required this.size, // в байтах
-	}) : super(key: key);
+	});
 
 
 	@override
@@ -178,8 +176,6 @@ class TorrentListItem extends StatelessWidget {
 				child: InkWell(
 					onTap: onTap,
 					onLongPressUp: onLongTap,
-					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Container(
 						padding: const EdgeInsets.all(10),
 						child: Column(

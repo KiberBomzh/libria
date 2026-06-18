@@ -7,7 +7,6 @@ import 'package:libria/screens/title/title.dart';
 import 'package:libria/services/preferences.dart';
 import 'package:libria/services/cache_manager.dart';
 import 'package:libria/services/anilibria_api.dart';
-import 'package:libria/functions/play.dart';
 import 'package:libria/screens/settings/settings.dart';
 
 part 'catalog_state.dart';
@@ -16,9 +15,9 @@ part 'filters.dart';
 
 
 class Catalog extends StatefulWidget {
-	Map<String, dynamic>? searchParameters;
+	final Map<String, dynamic>? searchParameters;
 
-	Catalog({
+	const Catalog({
 		super.key,
 		this.searchParameters,
 	});

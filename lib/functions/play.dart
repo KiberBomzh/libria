@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import 'package:libria/main.dart';
 import 'package:libria/services/preferences.dart';
 import 'package:libria/functions/ask_quality.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 
 Future<bool> play(BuildContext context, {

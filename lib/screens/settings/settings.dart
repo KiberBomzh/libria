@@ -9,7 +9,7 @@ import 'package:libria/screens/settings/color_picker_dialog.dart';
 
 
 class SettingsScreen extends StatelessWidget {
-	SettingsScreen({super.key});
+	const SettingsScreen({super.key});
 
 	@override
 	Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class SettingsScreen extends StatelessWidget {
 						if (q == null)
 							return;
 
-						await settings.setDefaultVideoQuality(q!);
+						await settings.setDefaultVideoQuality(q);
 					},
 					child: Row(
 						children: [
@@ -104,14 +104,12 @@ class SettingsScreen extends StatelessWidget {
 	}
 
 	Widget _buildListItem(BuildContext context, {required Widget child, VoidCallback? onTap}) {
-		return Container(
+		return SizedBox(
 			height: 70,
 			child: Material(
 				color: Colors.transparent,
 				child: InkWell(
 					onTap: onTap,
-					splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-					highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 					child: Container(
 						padding: const EdgeInsets.symmetric(horizontal: 15),
 						child: child,

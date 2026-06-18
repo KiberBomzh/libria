@@ -6,7 +6,7 @@ class Filters extends StatefulWidget {
 	final Function(Map<String, dynamic>) onDone;
 	final Map<String, dynamic> parameters;
 
-	Filters({
+	const Filters({
 		super.key,
 		required this.onCancel,
 		required this.onDone,
@@ -247,8 +247,6 @@ class _FiltersState extends State<Filters> {
 			color: Colors.transparent,
 			child: InkWell(
 				onTap: onTap,
-				splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-				highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
 				child: Padding(
 					padding: const EdgeInsets.symmetric(
 						horizontal: 10,
@@ -273,7 +271,7 @@ class _FiltersState extends State<Filters> {
 
 				return FilterChip(
 					label: Text(option),
-					backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+					backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
 					selected: isSelected,
 					onSelected: (bool value) {
 						setState(() {
@@ -368,7 +366,7 @@ class _FiltersState extends State<Filters> {
 				Spacer(),
 
 				if (isDownward != null)
-					Icon((isDownward!) ? Icons.arrow_downward : Icons.arrow_upward,
+					Icon((isDownward) ? Icons.arrow_downward : Icons.arrow_upward,
 						color: Theme.of(context).colorScheme.primary,
 						size: 20,
 					),
@@ -399,7 +397,7 @@ class _FiltersState extends State<Filters> {
 
 				return FilterChip(
 					label: Text(genre['name']),
-					backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+					backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
 					selected: isSelected,
 					onSelected: (bool value) {
 						setState(() {
