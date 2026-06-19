@@ -246,7 +246,7 @@ class _TitleState extends State<TitleScreen> {
 								left: 5,
 							),
 							decoration: BoxDecoration(
-								color: Theme.of(context).colorScheme.surfaceContainerHighest,
+								color: Theme.of(context).colorScheme.surfaceContainer,
 								border: Border.all(
 									width: 2,
 									color: Theme.of(context).colorScheme.outline,
@@ -275,7 +275,7 @@ class _TitleState extends State<TitleScreen> {
 			snapPoint: 0.5,
 
 			borderRadius: BorderRadius.circular(12),
-			color: Theme.of(context).colorScheme.surfaceContainerHighest,
+			color: Theme.of(context).colorScheme.surfaceContainer,
 			backdropEnabled: true,
 			
 			onPanelSlide: (_isBottomSheetOpen)

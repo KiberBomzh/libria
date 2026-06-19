@@ -23,26 +23,24 @@ class EpisodeListItem extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		BoxDecoration boxDecoration;
 		TextStyle textStyle;
 		if (lastIndex == null) {
-			boxDecoration = _buildDefaultBoxDecoration(context);
 			textStyle = _buildDefaultTextStyle(context);
 		} else {
 			if (currentIndex > lastIndex!) { // Все эпизоды ПОСЛЕ последнего просмотренного
-				boxDecoration = _buildDefaultBoxDecoration(context);
 				textStyle = _buildDefaultTextStyle(context);
 			} else if (currentIndex < lastIndex!) { // Все эпизоды ДО последнего просмотренного
-				boxDecoration = _buildInactiveBoxDecoration(context);
 				textStyle = _buildInactiveTextStyle(context);
 			} else { // Последний просмотренный
-				boxDecoration = _buildActiveBoxDecoration(context);
 				textStyle = _buildActiveTextStyle(context);
 			}
 		}
 
 		return Container(
-			decoration: boxDecoration,
+			decoration: BoxDecoration(
+				color: Theme.of(context).colorScheme.surfaceContainerHighest,
+				borderRadius: .circular(8),
+			),
 			margin: const EdgeInsets.symmetric(vertical: 5),
 			child: Material(
 				color: Colors.transparent,
@@ -70,8 +68,12 @@ class EpisodeListItem extends StatelessWidget {
 										child: (lastIndex != null)
 											? (currentIndex == lastIndex!)
 												? Icon(Icons.play_arrow)
-												: Text(ordinal, style: textStyle) 
-											: Text(ordinal, style: textStyle),
+												: Text(ordinal, style: textStyle.copyWith(
+													fontWeight: FontWeight.bold,
+												)) 
+											: Text(ordinal, style: textStyle.copyWith(
+												fontWeight: FontWeight.bold,
+											)),
 									),
 								),
 
@@ -96,34 +98,6 @@ class EpisodeListItem extends StatelessWidget {
 					),
 				),
 			),
-		);
-	}
-
-	BoxDecoration _buildActiveBoxDecoration(BuildContext context) {
-		return BoxDecoration(
-			border: Border.all(
-				width: 2,
-				color: Theme.of(context).colorScheme.primary,
-			),
-			borderRadius: BorderRadius.circular(12),
-		);
-	}
-	BoxDecoration _buildInactiveBoxDecoration(BuildContext context) {
-		return BoxDecoration(
-			border: Border.all(
-				width: 2,
-				color: Theme.of(context).colorScheme.outline,
-			),
-			borderRadius: BorderRadius.circular(12),
-		);
-	}
-	BoxDecoration _buildDefaultBoxDecoration(BuildContext context) {
-		return BoxDecoration(
-			border: Border.all(
-				width: 2,
-				color: Theme.of(context).colorScheme.secondary,
-			),
-			borderRadius: BorderRadius.circular(12),
 		);
 	}
 

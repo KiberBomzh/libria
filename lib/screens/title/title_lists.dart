@@ -123,7 +123,7 @@ class _EpisodesListState extends State<EpisodesList> {
 		return Container(
 			height: height,
 			decoration: BoxDecoration(
-				color: Theme.of(context).colorScheme.surfaceContainerHighest,
+				color: Theme.of(context).colorScheme.surfaceContainer,
 				borderRadius: .vertical(top: .circular(10)),
 			),
 			child: Row(
