@@ -10,12 +10,14 @@ class SettingsProvider extends ChangeNotifier {
 	ColorItem _colorAccent = ColorItem('blue', Colors.blue);
 	bool _reverseEpisodesSorting = false;
 	int? _defaultVideoQuality;
+	bool _isIncognito = false;
 
 	bool? get isDarkTheme => _isDarkTheme;
 	bool get isAmoled => _isAmoled;
 	Color get colorAccent => _colorAccent.color;
 	bool get reverseEpisodesSorting => _reverseEpisodesSorting;
 	int? get defaultVideoQuality => _defaultVideoQuality;
+	bool get isIncognito => _isIncognito;
 
 	SettingsProvider() {
 		_loadAllSettings();
@@ -28,6 +30,7 @@ class SettingsProvider extends ChangeNotifier {
 		_colorAccent = ColorItem.fromString(Preferences.getString('color_accent') ?? 'blue');
 		_reverseEpisodesSorting = Preferences.getBool('reverse_episodes_sorting') ?? false;
 		_defaultVideoQuality = Preferences.getInt('default_video_quality');
+		_isIncognito = Preferences.getBool('is_incognito') ?? false;
 
 		notifyListeners();
 	}
@@ -67,6 +70,13 @@ class SettingsProvider extends ChangeNotifier {
 		notifyListeners();
 	}
 
+	Future<void> setIncognito(bool value) async {
+		_isIncognito = value;
+		await Preferences.setBool('is_incognito', value);
+
+		notifyListeners();
+	}
+
 
 	Future<void> resetToDefault() async {
 		_isDarkTheme = null;
@@ -83,6 +93,9 @@ class SettingsProvider extends ChangeNotifier {
 
 		_defaultVideoQuality = null;
 		await Preferences.remove('default_video_quality');
+
+		_isIncognito = false;
+		await Preferences.remove('is_incognito');
 
 
 		notifyListeners();

@@ -89,6 +89,14 @@ class SettingsScreen extends StatelessWidget {
 				),
 
 				_buildListItem(context,
+					child: _buildSwitchListItem(context,
+						text: 'Инкогнито',
+						switchValue: settings.isIncognito,
+						onChanged: settings.setIncognito,
+					),
+				),
+
+				_buildListItem(context,
 					onTap: () => settings.resetToDefault(),
 					child: Row(
 						children: [

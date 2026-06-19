@@ -28,6 +28,7 @@ class EpisodesList extends StatefulWidget {
 class _EpisodesListState extends State<EpisodesList> {
 	int? lastIndex;
 	ScrollController scrollController = ScrollController();
+	late SettingsProvider _settings;
 
 	@override
 	void initState() {
@@ -40,6 +41,7 @@ class _EpisodesListState extends State<EpisodesList> {
 	@override
 	Widget build(BuildContext context) {
 		const double barHeight = 85.0;
+		_settings = context.watch<SettingsProvider>();
 
 		return Scaffold(
 			backgroundColor: Colors.transparent,
@@ -95,7 +97,7 @@ class _EpisodesListState extends State<EpisodesList> {
 							episodeName: widget.episodes[index]['name'],
 							episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 						);
-						if (isSucces)
+						if (isSucces && !_settings.isIncognito)
 							setState(() { lastIndex = index; });
 					},
 					onTapDownload: () async {
@@ -216,7 +218,7 @@ class _EpisodesListState extends State<EpisodesList> {
 			episodeName: widget.episodes[index]['name'],
 			episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 		);
-		if (isSucces)
+		if (isSucces && !_settings.isIncognito)
 			setState(() { lastIndex = index; });
 	}
 

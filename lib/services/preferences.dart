@@ -16,6 +16,9 @@ class Preferences {
 			title.episodeLink == null
 		   ) { return; }
 
+		if (_prefs?.getBool('is_incognito') == true)
+			return;
+
 		await _prefs?.setInt('last_title_id', title.titleId!);
 		await _prefs?.setInt('last_episode_index', title.episodeIndex!);
 		await _prefs?.setString('last_video_link', title.episodeLink!);
