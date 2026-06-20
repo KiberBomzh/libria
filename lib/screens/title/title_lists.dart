@@ -86,20 +86,7 @@ class _EpisodesListState extends State<EpisodesList> {
 					name: widget.episodes[index]['name'],
 					currentIndex: index,
 					lastIndex: lastIndex,
-					onTap: () async {
-						bool isSucces = await play(context,
-							hls_480: widget.episodes[index]['hls_480'],
-							hls_720: widget.episodes[index]['hls_720'],
-							hls_1080: widget.episodes[index]['hls_1080'],
-							currentTitle: widget.currentTitle,
-							episodeIndex: index,
-							titleName: widget.titleName,
-							episodeName: widget.episodes[index]['name'],
-							episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
-						);
-						if (isSucces && !_settings.isIncognito)
-							setState(() { lastIndex = index; });
-					},
+					onTap: () => _playEpisode(index),
 					onTapDownload: () async {
 						String? link = await askQuality(context,
 							hls_480: widget.episodes[index]['hls_480'],
@@ -208,6 +195,8 @@ class _EpisodesListState extends State<EpisodesList> {
 	}
 
 	void _playEpisode(int index) async {
+		final lastLink = widget.currentTitle.episodeLink;
+
 		bool isSucces = await play(context,
 			hls_480: widget.episodes[index]['hls_480'],
 			hls_720: widget.episodes[index]['hls_720'],
@@ -218,8 +207,13 @@ class _EpisodesListState extends State<EpisodesList> {
 			episodeName: widget.episodes[index]['name'],
 			episodeOrdinal: widget.episodes[index]['ordinal'].toString(),
 		);
+		if (_settings.isIncognito) {
+			widget.currentTitle.episodeIndex = lastIndex;
+			widget.currentTitle.episodeLink = lastLink;
+		}
+
 		if (isSucces && !_settings.isIncognito)
-			setState(() { lastIndex = index; });
+			setState(() => lastIndex = index);
 	}
 
 
