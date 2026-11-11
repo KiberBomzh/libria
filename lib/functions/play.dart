@@ -51,7 +51,7 @@ void playLink(String link,
 		final intent = AndroidIntent(
 			action: 'android.intent.action.VIEW',
 			data: link,
-			type: 'video/mp4',
+			type: 'video/*',
 			arguments: {'title': title},
 		);
 		intent.launch();
