@@ -6,6 +6,10 @@ analyzer:
     prefer_interpolation_to_compose_strings: ignore
     sort_child_properties_last: ignore
     unnecessary_this: ignore
+  exclude:
+    - build/**
+    - android/**
+    - linux/**
 include: package:flutter_lints/flutter.yaml
 
 linter:
